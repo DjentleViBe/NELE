@@ -68,7 +68,7 @@ if __name__ == "__main__":
                 'SiLU',
                 'Softplus'])
     plt.figure(figsize=(8,5))
-    plt.bar(activations, loss_collect, color='skyblue')
+    plt.bar(activations, loss_collect, color='k')
     plt.ylabel('Loss')
     plt.title('Final Loss for Different Activation Functions')
-    plt.savefig('Loss_Bar_Chart.pdf', color = 'k')
+    plt.savefig('Loss_Bar_Chart.pdf')
