@@ -6,8 +6,7 @@ def csv_write(filename, x, predicted, xname, yname):
         writer.writerow([xname, yname])  # header
         for xi, yi in zip(x, predicted):
             writer.writerow([xi.item(), yi.item()])  # convert tensors to Python floats
-    print("Predictions saved to predictions.csv")
-
+    
 def csv_read(filename, xname, yname):
     x_vals = []
     y_preds = []
