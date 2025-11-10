@@ -2,15 +2,15 @@ import matplotlib.pyplot as plt
 from csv_operations import csv_read
 
 def plot_loss(lossfiles, labels):
-    colors = ['#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090', '#e0f3f8', '#abd9e9',
-              '#74add1', '#4575b4', '#313695']
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2',
+              '#7f7f7f', '#bcbd22', '#17becf']
     plt.figure(figsize=(8,5))
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.title('Training Loss')
     for lossfile, label, color in zip(lossfiles, labels, colors):
         epochs, losses_tanh = csv_read(lossfile, 'epoch', 'loss')
-        plt.plot(epochs, losses_tanh, color, label=label)
+        plt.plot(epochs, losses_tanh, color, label=label, linewidth = 0.7)
     # Plot
     plt.yscale('log')
     plt.legend()
