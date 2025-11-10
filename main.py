@@ -6,6 +6,7 @@ from non_linear_gelu import gelu_net
 from non_linear_sigmoid import sigmoid_net
 from non_linear_lrelu import lrelu_net
 from non_linear_silu import silu_net
+from non_linear_softplus import softplus_net
 from plot_pred import plot_pred
 from plot_loss import plot_loss
 
@@ -33,6 +34,9 @@ if __name__ == "__main__":
     print("Running analysis - SiLU Activation Function")
     silu_net(x, y)
 
+    print("Running analysis - softplus Activation Function")
+    softplus_net(x, y)
+
     print("Plotting results")
     plot_pred(['RESULTS/predictions_tanh.csv',
                'RESULTS/predictions_relu.csv',
@@ -40,25 +44,29 @@ if __name__ == "__main__":
                'RESULTS/predictions_gelu.csv',
                'RESULTS/predictions_sigmoid.csv',
                'RESULTS/predictions_lrelu.csv',
-               'RESULTS/predictions_silu.csv'], 
+               'RESULTS/predictions_silu.csv',
+               'RESULTS/predictions_softplus.csv'], 
                ['Tanh',
                 'ReLU',
                 'ELU',
                 'GELU',
                 'Sigmoid',
                 'Leaky ReLU',
-                'SiLU'])
+                'SiLU',
+                'Softplus'])
     plot_loss(['RESULTS/loss_history_tanh.csv',
                'RESULTS/loss_history_relu.csv',
                'RESULTS/loss_history_elu.csv',
                'RESULTS/loss_history_gelu.csv',
                'RESULTS/loss_history_sigmoid.csv',
                'RESULTS/loss_history_lrelu.csv',
-               'RESULTS/loss_history_silu.csv'], 
+               'RESULTS/loss_history_silu.csv',
+               'RESULTS/loss_history_softplus.csv'], 
               ['Tanh',
                 'ReLU',
                 'ELU',
                 'GELU',
                 'Sigmoid',
                 'Leaky ReLU',
-                'SiLU'])
+                'SiLU',
+                'Softplus'])
