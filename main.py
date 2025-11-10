@@ -11,8 +11,8 @@ from plot_pred import plot_pred
 from plot_loss import plot_loss
 
 if __name__ == "__main__":
-    x = torch.linspace(-3, 3, 200).unsqueeze(1)
-    y = torch.sin(x) + 0.2 * torch.randn(x.size())
+    x = torch.linspace(-1, 1, 14).unsqueeze(1)
+    y = 0.1**x
     print("Running analysis - Tanh Activation Function")
     tanh_net(x, y, 'RESULTS/predictions_tanh.csv', 'RESULTS/loss_history_tanh.csv')
     print("Running analysis - ReLU Activation Function")
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     print("Running analysis - softplus Activation Function")
     softplus_net(x, y, 'RESULTS/predictions_softplus.csv', 'RESULTS/loss_history_softplus.csv')
     print("Plotting results")
-    plot_pred(['RESULTS/predictions_tanh.csv',
+    plot_pred(x, y, ['RESULTS/predictions_tanh.csv',
                'RESULTS/predictions_relu.csv',
                'RESULTS/predictions_elu.csv',
                'RESULTS/predictions_gelu.csv',

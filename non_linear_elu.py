@@ -11,7 +11,7 @@ def elu_net(x, y, pred_file, loss_file):
     model_elu = Net()
 
     # Define loss and optimizer
-    criterion = nn.MSELoss()
+    criterion = nn.L1Loss()
     optimizer = optim.Adam(model_elu.parameters(), lr=0.01)
 
     # Training loop
