@@ -4,6 +4,7 @@ from non_linear_relu import relu_net
 from non_linear_elu import elu_net
 from non_linear_gelu import gelu_net
 from non_linear_sigmoid import sigmoid_net
+from non_linear_lrelu import lrelu_net
 from plot_pred import plot_pred
 from plot_loss import plot_loss
 
@@ -25,24 +26,31 @@ if __name__ == "__main__":
     print("Running analysis - Signoid Activation Function")
     sigmoid_net(x, y)
 
+    print("Running analysis - Leaky ReLU Activation Function")
+    lrelu_net(x, y)
+
     print("Plotting results")
     plot_pred(['RESULTS/predictions_tanh.csv',
                'RESULTS/predictions_relu.csv',
                'RESULTS/predictions_elu.csv',
                'RESULTS/predictions_gelu.csv',
-               'RESULTS/predictions_sigmoid.csv'], 
+               'RESULTS/predictions_sigmoid.csv',
+               'RESULTS/predictions_lrelu.csv'], 
                ['Tanh',
                 'ReLU',
                 'ELU',
                 'GELU',
-                'Sigmoid'])
+                'Sigmoid',
+                'Leaky ReLU'])
     plot_loss(['RESULTS/loss_history_tanh.csv',
                'RESULTS/loss_history_relu.csv',
                'RESULTS/loss_history_elu.csv',
                'RESULTS/loss_history_gelu.csv',
-               'RESULTS/loss_history_sigmoid.csv'], 
+               'RESULTS/loss_history_sigmoid.csv',
+               'RESULTS/loss_history_lrelu.csv'], 
               ['Tanh',
                 'ReLU',
                 'ELU',
                 'GELU',
-                'Sigmoid'])
+                'Sigmoid',
+                'Leaky ReLU'])
