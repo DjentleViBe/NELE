@@ -7,7 +7,7 @@ from models.model_tanh import Net
 # Generate nonlinear data: y = sin(x) + noise
 torch.manual_seed(0)
 
-def tanh_net(x, y):
+def tanh_net(x, y, pred_file, loss_file):
     model_tanh = Net()
 
     # Define loss and optimizer
@@ -33,5 +33,5 @@ def tanh_net(x, y):
     loss_collect = torch.tensor(loss_collect)
 
     # Write to CSV
-    csv_write('RESULTS/predictions_tanh.csv', x, predicted, 'x' , 'y_pred')
-    csv_write('RESULTS/loss_history_tanh.csv', torch.linspace(1, epochs, epochs), loss_collect, 'epoch', 'loss')
+    csv_write(pred_file, x, predicted, 'x' , 'y_pred')
+    csv_write(loss_file, torch.linspace(1, epochs, epochs), loss_collect, 'epoch', 'loss')

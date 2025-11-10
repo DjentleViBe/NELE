@@ -7,7 +7,7 @@ from models.model_gelu import Net
 # Generate nonlinear data: y = sin(x) + noise
 torch.manual_seed(0)
 
-def gelu_net(x, y):
+def gelu_net(x, y, pred_file, loss_file):
     model_gelu = Net()
 
     # Define loss and optimizer
@@ -33,5 +33,5 @@ def gelu_net(x, y):
     loss_collect = torch.tensor(loss_collect)
 
     # Write to CSV
-    csv_write('RESULTS/predictions_gelu.csv', x, predicted, 'x' , 'y_pred')
-    csv_write('RESULTS/loss_history_gelu.csv', torch.linspace(1, epochs, epochs), loss_collect, 'epoch', 'loss')
+    csv_write(pred_file, x, predicted, 'x' , 'y_pred')
+    csv_write(loss_file, torch.linspace(1, epochs, epochs), loss_collect, 'epoch', 'loss')

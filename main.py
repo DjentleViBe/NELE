@@ -14,29 +14,21 @@ if __name__ == "__main__":
     x = torch.linspace(-3, 3, 200).unsqueeze(1)
     y = torch.sin(x) + 0.2 * torch.randn(x.size())
     print("Running analysis - Tanh Activation Function")
-    tanh_net(x, y)
-
+    tanh_net(x, y, 'RESULTS/predictions_tanh.csv', 'RESULTS/loss_history_tanh.csv')
     print("Running analysis - ReLU Activation Function")
-    relu_net(x, y)
-
+    relu_net(x, y, 'RESULTS/predictions_relu.csv', 'RESULTS/loss_history_relu.csv')
     print("Running analysis - ELU Activation Function")
-    elu_net(x, y)
-
+    elu_net(x, y, 'RESULTS/predictions_elu.csv', 'RESULTS/loss_history_elu.csv')
     print("Running analysis - GELU Activation Function")
-    gelu_net(x, y)
-
+    gelu_net(x, y, 'RESULTS/predictions_gelu.csv', 'RESULTS/loss_history_gelu.csv')
     print("Running analysis - Signoid Activation Function")
-    sigmoid_net(x, y)
-
+    sigmoid_net(x, y, 'RESULTS/predictions_sigmoid.csv', 'RESULTS/loss_history_sigmoid.csv')
     print("Running analysis - Leaky ReLU Activation Function")
-    lrelu_net(x, y)
-
+    lrelu_net(x, y, 'RESULTS/predictions_lrelu.csv', 'RESULTS/loss_history_lrelu.csv')
     print("Running analysis - SiLU Activation Function")
-    silu_net(x, y)
-
+    silu_net(x, y, 'RESULTS/predictions_silu.csv', 'RESULTS/loss_history_silu.csv')
     print("Running analysis - softplus Activation Function")
-    softplus_net(x, y)
-
+    softplus_net(x, y, 'RESULTS/predictions_softplus.csv', 'RESULTS/loss_history_softplus.csv')
     print("Plotting results")
     plot_pred(['RESULTS/predictions_tanh.csv',
                'RESULTS/predictions_relu.csv',
