@@ -1,5 +1,6 @@
 import torch
 from non_linear_tanh import tanh_net
+from non_linear_relu import relu_net
 from plot_pred import plot_pred
 from plot_loss import plot_loss
 
@@ -9,5 +10,15 @@ if __name__ == "__main__":
     print("Running analysis - Tanh Activation Function")
     tanh_net(x, y)
 
-    plot_pred(['RESULTS/predictions_tanh.csv'], ['Tanh'])
-    plot_loss(['RESULTS/loss_history_tanh.csv'], ['Tanh'])
+    print("Running analysis - ReLU Activation Function")
+    relu_net(x, y)
+
+    print("Plotting results")
+    plot_pred(['RESULTS/predictions_tanh.csv',
+               'RESULTS/predictions_relu.csv'], 
+               ['Tanh',
+                'ReLU'])
+    plot_loss(['RESULTS/loss_history_tanh.csv',
+               'RESULTS/loss_history_relu.csv'], 
+              ['Tanh',
+                'ReLU'])

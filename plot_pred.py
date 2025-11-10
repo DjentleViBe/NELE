@@ -3,16 +3,18 @@ import torch
 from csv_operations import csv_read
 
 def plot_pred(predfiles, labels):
+    colors = ['#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090', '#e0f3f8', '#abd9e9',
+              '#74add1', '#4575b4', '#313695']
     x = torch.linspace(-3, 3, 200).unsqueeze(1)
     y = torch.sin(x) + 0.2 * torch.randn(x.size())
     plt.figure(figsize=(8,5))
     # Read the CSV file
-    for predfile, label in zip(predfiles, labels):
+    for predfile, label, color in zip(predfiles, labels, colors):
         x_vals_tanh, y_preds_tanh = csv_read(predfile, 'x', 'y_pred')
-        plt.plot(x_vals_tanh, y_preds_tanh, 'r', label=label)
+        plt.plot(x_vals_tanh, y_preds_tanh, color, label=label)
     
     # Plot
-    plt.scatter(x, y, label='Data', s=10)
+    plt.scatter(x, y, label='Data', color = 'k',s=10)
     # plt.scatter(x_vals, y_preds, s=10, alpha=0.5)  # optional: scatter for points
     plt.xlabel('x')
     plt.ylabel('y_pred')
