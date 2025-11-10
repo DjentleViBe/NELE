@@ -8,7 +8,7 @@ from models.model_sigmoid import Net
 torch.manual_seed(0)
 
 def sigmoid_net(x, y, pred_file, loss_file):
-    model_sigmoid = Net()
+    model_sigmoid = Net(x.shape[1])
 
     # Define loss and optimizer
     criterion = nn.MSELoss()

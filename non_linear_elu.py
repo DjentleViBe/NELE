@@ -8,7 +8,7 @@ from models.model_elu import Net
 torch.manual_seed(0)
 
 def elu_net(x, y, pred_file, loss_file):
-    model_elu = Net()
+    model_elu = Net(x.shape[1])
 
     # Define loss and optimizer
     criterion = nn.MSELoss()

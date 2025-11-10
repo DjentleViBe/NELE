@@ -8,7 +8,7 @@ from models.model_lrelu import Net
 torch.manual_seed(0)
 
 def lrelu_net(x, y, pred_file, loss_file):
-    model_lrelu = Net()
+    model_lrelu = Net(x.shape[1])
 
     # Define loss and optimizer
     criterion = nn.MSELoss()

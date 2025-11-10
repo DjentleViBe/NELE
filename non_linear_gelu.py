@@ -8,7 +8,7 @@ from models.model_gelu import Net
 torch.manual_seed(0)
 
 def gelu_net(x, y, pred_file, loss_file):
-    model_gelu = Net()
+    model_gelu = Net(x.shape[1])
 
     # Define loss and optimizer
     criterion = nn.MSELoss()

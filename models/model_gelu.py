@@ -3,10 +3,10 @@ import torch
 import torch.nn as nn
 
 class Net(nn.Module):
-    def __init__(self):
+    def __init__(self, input_dim):
         super(Net, self).__init__()
         self.net = nn.Sequential(
-            nn.Linear(1, 64),
+            nn.Linear(input_dim, 64),
             nn.GELU(),
             nn.Linear(64, 64),
             nn.GELU(),

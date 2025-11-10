@@ -8,7 +8,7 @@ from models.model_softplus import Net
 torch.manual_seed(0)
 
 def softplus_net(x, y, pred_file, loss_file):
-    model_softplus = Net()
+    model_softplus = Net(x.shape[1])
 
     # Define loss and optimizer
     criterion = nn.MSELoss()
