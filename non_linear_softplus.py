@@ -35,3 +35,5 @@ def softplus_net(x, y, pred_file, loss_file):
     # Write to CSV
     csv_write(pred_file, x, predicted, 'x' , 'y_pred')
     csv_write(loss_file, torch.linspace(1, epochs, epochs), loss_collect, 'epoch', 'loss')
+
+    return loss.item()
