@@ -7,6 +7,7 @@ from non_linear_sigmoid import sigmoid_net
 from non_linear_lrelu import lrelu_net
 from non_linear_silu import silu_net
 from non_linear_softplus import softplus_net
+from non_linear_belu import belu_net
 from plot_pred import plot_pred
 from plot_loss import plot_loss
 from matplotlib import pyplot as plt
@@ -16,7 +17,7 @@ if __name__ == "__main__":
     x = torch.linspace(-3, 3, 200).unsqueeze(1)
     y = torch.sin(x) + 0.2 * torch.randn(x.size())
     
-    activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', 'SiLU', 'Softplus']
+    activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', 'SiLU', 'Softplus', 'BELU']
     loss_collect = np.zeros(len(activations))
     std_deviation_collect = np.zeros(len(activations))
 
@@ -36,6 +37,10 @@ if __name__ == "__main__":
     loss_collect[6], std_deviation_collect[6] = silu_net(x, y, 'RESULTS/predictions_silu.csv', 'RESULTS/loss_history_silu.csv')
     print("Running analysis - softplus Activation Function")
     loss_collect[7], std_deviation_collect[7] = softplus_net(x, y, 'RESULTS/predictions_softplus.csv', 'RESULTS/loss_history_softplus.csv')
+    
+    print("Running analysis - BELU Activation Function")
+    loss_collect[8], std_deviation_collect[8] = belu_net(x, y, 'RESULTS/predictions_belu.csv', 'RESULTS/loss_history_belu.csv')
+    
     print("Plotting results")
     plot_pred(['RESULTS/predictions_tanh.csv',
                'RESULTS/predictions_relu.csv',
@@ -44,7 +49,8 @@ if __name__ == "__main__":
                'RESULTS/predictions_sigmoid.csv',
                'RESULTS/predictions_lrelu.csv',
                'RESULTS/predictions_silu.csv',
-               'RESULTS/predictions_softplus.csv'], 
+               'RESULTS/predictions_softplus.csv',
+               'RESULTS/predictions_belu.csv'], 
                ['Tanh',
                 'ReLU',
                 'ELU',
@@ -52,7 +58,8 @@ if __name__ == "__main__":
                 'Sigmoid',
                 'Leaky ReLU',
                 'SiLU',
-                'Softplus'])
+                'Softplus',
+                'BELU'])
     plot_loss(['RESULTS/loss_history_tanh.csv',
                'RESULTS/loss_history_relu.csv',
                'RESULTS/loss_history_elu.csv',
@@ -60,7 +67,8 @@ if __name__ == "__main__":
                'RESULTS/loss_history_sigmoid.csv',
                'RESULTS/loss_history_lrelu.csv',
                'RESULTS/loss_history_silu.csv',
-               'RESULTS/loss_history_softplus.csv'], 
+               'RESULTS/loss_history_softplus.csv',
+                'RESULTS/loss_history_belu.csv'], 
               ['Tanh',
                 'ReLU',
                 'ELU',
@@ -68,7 +76,8 @@ if __name__ == "__main__":
                 'Sigmoid',
                 'Leaky ReLU',
                 'SiLU',
-                'Softplus'])
+                'Softplus',
+                'BELU'])
     plt.figure(figsize=(8,5))
     plt.bar(activations, loss_collect, color='k')
     plt.ylabel('Loss')
