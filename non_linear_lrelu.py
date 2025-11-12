@@ -7,7 +7,7 @@ from models.model_lrelu import Net
 # Generate nonlinear data: y = sin(x) + noise
 torch.manual_seed(0)
 
-def lrelu_net(x, y, pred_file, loss_file):
+def lrelu_net(x, y, pred_file, loss_file, epochs=2000):
     model_lrelu = Net(x.shape[1])
 
     # Define loss and optimizer
@@ -15,7 +15,6 @@ def lrelu_net(x, y, pred_file, loss_file):
     optimizer = optim.Adam(model_lrelu.parameters(), lr=0.01)
 
     # Training loop
-    epochs = 2000
     loss_collect = []
     for epoch in range(epochs):
         optimizer.zero_grad()

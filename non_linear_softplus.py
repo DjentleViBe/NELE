@@ -7,7 +7,7 @@ from models.model_softplus import Net
 # Generate nonlinear data: y = sin(x) + noise
 torch.manual_seed(0)
 
-def softplus_net(x, y, pred_file, loss_file):
+def softplus_net(x, y, pred_file, loss_file, epochs=2000):
     model_softplus = Net(x.shape[1])
 
     # Define loss and optimizer
@@ -15,7 +15,6 @@ def softplus_net(x, y, pred_file, loss_file):
     optimizer = optim.Adam(model_softplus.parameters(), lr=0.01)
 
     # Training loop
-    epochs = 2000
     loss_collect = []
     for epoch in range(epochs):
         optimizer.zero_grad()

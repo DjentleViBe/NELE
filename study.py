@@ -18,24 +18,33 @@ def study_data(x, y, study_type='default'):
     std_deviation_collect = np.zeros(len(activations))
     dir =  'RESULTS/' + study_type + '/'
     print("Running analysis - Tanh Activation Function")
-    loss_collect[0], std_deviation_collect[0] = tanh_net(x, y, dir + '/predictions_tanh.csv', dir + '/loss_history_tanh.csv')
+    loss_collect[0], std_deviation_collect[0] = tanh_net(x, y, dir + '/predictions_tanh.csv', 
+                                                         dir + '/loss_history_tanh.csv', 1000)
     print("Running analysis - ReLU Activation Function")
-    loss_collect[1], std_deviation_collect[1] = relu_net(x, y, dir + '/predictions_relu.csv', dir + '/loss_history_relu.csv')
+    loss_collect[1], std_deviation_collect[1] = relu_net(x, y, dir + '/predictions_relu.csv', 
+                                                         dir + '/loss_history_relu.csv', 1000)
     print("Running analysis - ELU Activation Function")
-    loss_collect[2], std_deviation_collect[2] = elu_net(x, y, dir + '/predictions_elu.csv', dir + '/loss_history_elu.csv')
+    loss_collect[2], std_deviation_collect[2] = elu_net(x, y, dir + '/predictions_elu.csv', 
+                                                        dir + '/loss_history_elu.csv', 1000)
     print("Running analysis - GELU Activation Function")
-    loss_collect[3], std_deviation_collect[3] = gelu_net(x, y, dir + '/predictions_gelu.csv', dir + '/loss_history_gelu.csv')
+    loss_collect[3], std_deviation_collect[3] = gelu_net(x, y, dir + '/predictions_gelu.csv', 
+                                                         dir + '/loss_history_gelu.csv', 1000)
     print("Running analysis - Sigmoid Activation Function")
-    loss_collect[4], std_deviation_collect[4] = sigmoid_net(x, y, dir + '/predictions_sigmoid.csv', dir + '/loss_history_sigmoid.csv')
+    loss_collect[4], std_deviation_collect[4] = sigmoid_net(x, y, dir + '/predictions_sigmoid.csv', 
+                                                            dir + '/loss_history_sigmoid.csv', 1000)
     print("Running analysis - Leaky ReLU Activation Function")
-    loss_collect[5], std_deviation_collect[5] = lrelu_net(x, y, dir + '/predictions_lrelu.csv', dir + '/loss_history_lrelu.csv')
+    loss_collect[5], std_deviation_collect[5] = lrelu_net(x, y, dir + '/predictions_lrelu.csv', 
+                                                          dir + '/loss_history_lrelu.csv', 1000)
     print("Running analysis - SiLU Activation Function")
-    loss_collect[6], std_deviation_collect[6] = silu_net(x, y, dir + '/predictions_silu.csv', dir + '/loss_history_silu.csv')
+    loss_collect[6], std_deviation_collect[6] = silu_net(x, y, dir + '/predictions_silu.csv', 
+                                                         dir + '/loss_history_silu.csv', 1000)
     print("Running analysis - softplus Activation Function")
-    loss_collect[7], std_deviation_collect[7] = softplus_net(x, y, dir + '/predictions_softplus.csv', dir + '/loss_history_softplus.csv')
+    loss_collect[7], std_deviation_collect[7] = softplus_net(x, y, dir + '/predictions_softplus.csv', 
+                                                             dir + '/loss_history_softplus.csv', 1000)
     
     print("Running analysis - BELU Activation Function")
-    loss_collect[8], std_deviation_collect[8] = belu_net(x, y, dir + '/predictions_belu.csv', dir + '/loss_history_belu.csv')
+    loss_collect[8], std_deviation_collect[8] = belu_net(x, y, dir + '/predictions_belu.csv', 
+                                                         dir + '/loss_history_belu.csv')
     
     print("Plotting results")
     plot_pred([dir + '/predictions_tanh.csv',
