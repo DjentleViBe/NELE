@@ -3,3 +3,9 @@ __pycache__
 .DS_Store
 *.csv
 *.pdf
+*.synctex*
+*.fls
+*.fdb_latexmk
+*.aux
+*.log
+*.out
