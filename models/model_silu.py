@@ -8,8 +8,6 @@ class Net(nn.Module):
         self.net = nn.Sequential(
             nn.Linear(input_dim, 64),
             nn.SiLU(),
-            nn.Linear(64, 64),
-            nn.SiLU(),
             nn.Linear(64, 1)
         )
 
