@@ -4,9 +4,10 @@ from csv_operations import csv_read
 def plot_loss(lossfiles, labels, study_type='default'):
     colors = ['#1f77b4', '#ff7f0e', '#2ca02c', 
               '#d62728', '#9467bd', '#8c564b', 
-              '#e377c2', '#7f7f7f', '#000000',
+              '#e377c2', '#7f7f7f', '#17becf',
+              '#000000',
               '#bcbd22', 
-              '#17becf']
+              ]
     plt.figure(figsize=(8,5))
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
