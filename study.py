@@ -55,7 +55,8 @@ def study_data(x, y, study_type='default'):
                 'Leaky ReLU',
                 'SiLU',
                 'Softplus',
-                'BELU'])
+                'BELU'],
+                study_type)
     plot_loss([dir + '/loss_history_tanh.csv',
                dir + '/loss_history_relu.csv',
                dir + '/loss_history_elu.csv',
@@ -73,7 +74,8 @@ def study_data(x, y, study_type='default'):
                 'Leaky ReLU',
                 'SiLU',
                 'Softplus',
-                'BELU'])
+                'BELU'],
+                study_type)
     plt.figure(figsize=(8,5))
     plt.bar(activations, loss_collect, color='k')
     plt.ylabel('Loss')

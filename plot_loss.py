@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from csv_operations import csv_read
 
-def plot_loss(lossfiles, labels):
+def plot_loss(lossfiles, labels, study_type='default'):
     colors = ['#1f77b4', '#ff7f0e', '#2ca02c', 
               '#d62728', '#9467bd', '#8c564b', 
               '#e377c2', '#7f7f7f', '#000000',
@@ -18,4 +18,4 @@ def plot_loss(lossfiles, labels):
     plt.yscale('log')
     plt.legend()
     plt.grid(True)
-    plt.savefig('PICS/training_loss.pdf')
+    plt.savefig('PICS/' + study_type + '/training_loss.pdf')
