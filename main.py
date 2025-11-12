@@ -3,7 +3,7 @@ from study import study_data
 from file_operations import reset_directory
 
 if __name__ == "__main__":
-    
+    '''
     x = torch.linspace(-3, 3, 200).unsqueeze(1)
     reset_directory('./RESULTS/')
     reset_directory('./PICS/')
@@ -49,6 +49,6 @@ if __name__ == "__main__":
     reset_directory('./RESULTS/trig_noise')
     x = torch.linspace(-5, 5, 200).unsqueeze(1)
     y = torch.sin(x) + 0.5 * torch.sin(3*x) + 0.2 * torch.randn(x.size())
-    study_data(x, y, 500, 0.001, study_type='trig_noise')
-    '''
+    study_data(x, y, 4000, 0.001, study_type='trig_noise')
+    
     

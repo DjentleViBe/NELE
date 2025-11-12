@@ -28,7 +28,7 @@ class BELU(nn.Module):
         x: shape (batch_size, num_features)
         Returns: shape (batch_size, num_features)
         """
-        t = (x + 1) / 2.0  # normalize x into [0,1]
+        t = (x + 5) / 10.0  # normalize x into [0,1]
         batch_size, num_features = x.shape
         n = self.control_points.size(0) - 1
 

@@ -48,7 +48,7 @@ def study_data(x, y, epochs, learn_rate, study_type='default'):
     
     print("Running analysis - BELU Activation Function")
     loss_collect[9], std_deviation_collect[9] = belu_net(x, y, dir + '/predictions_belu.csv', 
-                                                         dir + '/loss_history_belu.csv', 5, learn_rate, epochs)
+                                                         dir + '/loss_history_belu.csv', 20, learn_rate, epochs)
     
     print("Plotting results")
     plot_pred(x, y,
