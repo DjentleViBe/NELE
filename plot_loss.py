@@ -10,7 +10,7 @@ def plot_loss(lossfiles, labels, study_type='default'):
     plt.figure(figsize=(8,5))
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.title('Training Loss')
+    plt.title(study_type)
     for lossfile, label, color in zip(lossfiles, labels, colors):
         epochs, losses_tanh = csv_read(lossfile, 'epoch', 'loss')
         plt.plot(epochs, losses_tanh, color, label=label, linewidth = 0.7)

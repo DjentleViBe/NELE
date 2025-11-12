@@ -19,6 +19,6 @@ def plot_pred(x, y, predfiles, labels, study_type='default'):
     # plt.scatter(x_vals, y_preds, s=10, alpha=0.5)  # optional: scatter for points
     plt.xlabel('x')
     plt.ylabel('y_pred')
-    plt.title('Curve fitting')
+    plt.title(study_type)
     plt.legend()
     plt.savefig('PICS/' + study_type + '/curve_fitting.pdf')
