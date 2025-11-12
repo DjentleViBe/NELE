@@ -7,12 +7,12 @@ from models.model_sigmoid import Net
 # Generate nonlinear data: y = sin(x) + noise
 torch.manual_seed(0)
 
-def sigmoid_net(x, y, pred_file, loss_file, epochs=2000):
+def sigmoid_net(x, y, pred_file, loss_file, learn_rate, epochs=2000):
     model_sigmoid = Net(x.shape[1])
 
     # Define loss and optimizer
     criterion = nn.MSELoss()
-    optimizer = optim.Adam(model_sigmoid.parameters(), lr=0.01)
+    optimizer = optim.Adam(model_sigmoid.parameters(), lr=learn_rate)
 
     # Training loop
     loss_collect = []

@@ -7,14 +7,17 @@ from models.model_belu import Net
 # Generate nonlinear data: y = sin(x) + noise
 torch.manual_seed(0)
 
-def belu_net(x, y, pred_file, loss_file, epochs=2000):
-    model_belu = Net(x.shape[1])
+def belu_net(x, y, pred_file, loss_file, bezier_points, learn_rate, epochs=2000):
+    model_belu = Net(x.shape[1], bezier_points)
 
     # Define loss and optimizer
     criterion = nn.MSELoss()
-    optimizer = optim.Adam(model_belu.parameters(), lr=0.01)
-
-    # Training loop
+    optimizer = optim.Adam(model_belu.parameters(), lr=learn_rate)
+    x_vals = torch.linspace(-1, 1, bezier_points)
+    y_vals = torch.where(x_vals >= 0, x_vals, 0.01 * x_vals)
+    with torch.no_grad():
+        model_belu.net[1].control_points[:,0] = x_vals  # x-coords
+        model_belu.net[1].control_points[:,1] = y_vals  # y-coords# Training loop
     loss_collect = []
     for epoch in range(epochs):
         optimizer.zero_grad()
