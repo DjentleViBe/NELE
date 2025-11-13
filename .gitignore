@@ -8,4 +8,7 @@ __pycache__
 *.fdb_latexmk
 *.aux
 *.log
+*.
+*.blg
+*.bbl
 *.out
