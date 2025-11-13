@@ -3,7 +3,7 @@ from study import study_data
 from file_operations import reset_directory
 
 if __name__ == "__main__":
-    '''
+    
     x = torch.linspace(-5, 5, 200).unsqueeze(1)
     reset_directory('./RESULTS/')
     reset_directory('./PICS/')
@@ -18,9 +18,9 @@ if __name__ == "__main__":
     ################### TRIG NOISE ##########################
     reset_directory('./PICS/trig_noise')
     reset_directory('./RESULTS/trig_noise')
-    
+    x = torch.linspace(-5, 5, 200).unsqueeze(1)
     y = torch.sin(x) + 0.5 * torch.sin(3*x) + 0.2 * torch.randn(x.size())
-    study_data(x, y, 4000, 0.001, study_type='trig_noise')
+    study_data(x, y, 4000, 0.0005, study_type='trig_noise')
     
     ################### EXP NOISE ##########################
     reset_directory('./PICS/exp_noise')
@@ -42,6 +42,13 @@ if __name__ == "__main__":
 
     y = torch.tensor(x**2) + 0.2 * torch.randn(x.size())
     study_data(x, y, 2000, 0.001, study_type='quad_noise')
+
+    ################### EXP-POLY NOISE ##########################
+    reset_directory('./PICS/exppoly_noise')
+    reset_directory('./RESULTS/exppoly_noise')
+    x = torch.linspace(0, 10, 200).unsqueeze(1)
+    y = torch.tensor(x**3) / (torch.exp(x) - 1 + 1E-6) + 0.2 * torch.randn(x.size())
+    study_data(x, y, 2000, 0.001, study_type='exppoly_noise')
     '''
 
     ################### TRIG NOISE ##########################
@@ -49,6 +56,6 @@ if __name__ == "__main__":
     reset_directory('./RESULTS/trig_noise')
     x = torch.linspace(-5, 5, 200).unsqueeze(1)
     y = torch.sin(x) + 0.5 * torch.sin(3*x) + 0.2 * torch.randn(x.size())
-    study_data(x, y, 4000, 0.001, study_type='trig_noise')
-    
+    study_data(x, y, 4000, 0.0005, study_type='trig_noise')
+    '''
     

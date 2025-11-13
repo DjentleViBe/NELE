@@ -53,7 +53,7 @@ def study_data(x, y, epochs, learn_rate, study_type='default'):
     
     print("Running analysis - NELU Activation Function")
     loss_collect[10], std_deviation_collect[10] = nelu_net(x, y, dir + '/predictions_nelu.csv', 
-                                                         dir + '/loss_history_nelu.csv', 3, 2, 0.001, epochs)
+                                                         dir + '/loss_history_nelu.csv', 3, 2, learn_rate, epochs)
     
     print("Plotting results")
     plot_pred(x, y,
@@ -108,6 +108,7 @@ def study_data(x, y, epochs, learn_rate, study_type='default'):
     plt.ylabel('Loss')
     plt.yscale('log')
     plt.title(study_type)
+    plt.xticks(rotation=90)
     plt.tight_layout()
     # plt.title('Final Loss for Different Activation Functions')
     plt.savefig('./PICS/' + study_type +'/Loss_Bar_Chart.pdf')
@@ -120,5 +121,6 @@ def study_data(x, y, epochs, learn_rate, study_type='default'):
     plt.yscale('log')
     # plt.title('Standard Deviation for Different Activation Functions')
     plt.title(study_type)
+    plt.xticks(rotation=90)
     plt.tight_layout()
     plt.savefig('./PICS/' + study_type +'/Stddev_Bar_Chart.pdf')
