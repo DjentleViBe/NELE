@@ -8,13 +8,14 @@ from non_linear.non_linear_silu import silu_net
 from non_linear.non_linear_softplus import softplus_net
 from non_linear.non_linear_belu import belu_net
 from non_linear.non_linear_lelu import lelu_net
+from non_linear.non_linear_nelu import nelu_net
 from plot_pred import plot_pred
 from plot_loss import plot_loss
 from matplotlib import pyplot as plt
 import numpy as np
 
 def study_data(x, y, epochs, learn_rate, study_type='default'):
-    activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', 'SiLU', 'Softplus', 'LELU', 'BELU']
+    activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', 'SiLU', 'Softplus', 'LELU', 'BELU', 'NELU']
     loss_collect = np.zeros(len(activations))
     std_deviation_collect = np.zeros(len(activations))
     dir =  'RESULTS/' + study_type + '/'
@@ -50,6 +51,10 @@ def study_data(x, y, epochs, learn_rate, study_type='default'):
     loss_collect[9], std_deviation_collect[9] = belu_net(x, y, dir + '/predictions_belu.csv', 
                                                          dir + '/loss_history_belu.csv', 20, learn_rate, epochs)
     
+    print("Running analysis - NELU Activation Function")
+    loss_collect[10], std_deviation_collect[10] = nelu_net(x, y, dir + '/predictions_nelu.csv', 
+                                                         dir + '/loss_history_nelu.csv', 3, 2, 0.001, epochs)
+    
     print("Plotting results")
     plot_pred(x, y,
               [dir + '/predictions_tanh.csv',
@@ -61,7 +66,8 @@ def study_data(x, y, epochs, learn_rate, study_type='default'):
                dir + '/predictions_silu.csv',
                dir + '/predictions_softplus.csv',
                dir + '/predictions_lelu.csv',
-               dir + '/predictions_belu.csv'], 
+               dir + '/predictions_belu.csv',
+               dir + '/predictions_nelu.csv'], 
                ['Tanh',
                 'ReLU',
                 'ELU',
@@ -71,7 +77,8 @@ def study_data(x, y, epochs, learn_rate, study_type='default'):
                 'SiLU',
                 'Softplus',
                 'LELU',
-                'BELU'],
+                'BELU',
+                'NELU'],
                 study_type)
     plot_loss([dir + '/loss_history_tanh.csv',
                dir + '/loss_history_relu.csv',
@@ -82,7 +89,8 @@ def study_data(x, y, epochs, learn_rate, study_type='default'):
                dir + '/loss_history_silu.csv',
                dir + '/loss_history_softplus.csv',
                dir + '/loss_history_lelu.csv',
-                dir + '/loss_history_belu.csv'], 
+                dir + '/loss_history_belu.csv',
+                dir + '/loss_history_nelu.csv'], 
               ['Tanh',
                 'ReLU',
                 'ELU',
@@ -92,7 +100,8 @@ def study_data(x, y, epochs, learn_rate, study_type='default'):
                 'SiLU',
                 'Softplus',
                 'LELU',
-                'BELU'],
+                'BELU',
+                'NELU'],
                 study_type)
     plt.figure(figsize=(8,5))
     plt.bar(activations, loss_collect, color='k')
