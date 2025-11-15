@@ -32,7 +32,7 @@ def relu_net(x, y, pred_file, loss_file, learn_rate, epochs=2000):
     loss_collect = torch.tensor(loss_collect)
 
     # Write to CSV
-    csv_write(pred_file, x, predicted, 'x' , 'y_pred')
-    csv_write(loss_file, torch.linspace(1, epochs, epochs), loss_collect, 'epoch', 'loss')
+    csv_write(pred_file, x, predicted, 'x' , 'y_pred', 'y_actual', y)
+    csv_write(loss_file, torch.linspace(1, epochs, epochs), loss_collect,  'epoch', 'loss', '', torch.linspace(1, epochs, epochs))
     sigma_est = torch.std(y - predicted)
     return loss.item(), sigma_est.item()

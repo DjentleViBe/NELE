@@ -11,7 +11,8 @@ def plot_pred(x, y, predfiles, labels, study_type='default'):
     plt.figure(figsize=(8,5))
     # Read the CSV file
     for predfile, label, color in zip(predfiles, labels, colors):
-        x_vals_tanh, y_preds_tanh = csv_read(predfile, 'x', 'y_pred')
+        x_vals_tanh, y_preds_tanh, _ = csv_read(predfile, 'x', 'y_pred','y_actual')
+    
         plt.plot(x_vals_tanh, y_preds_tanh, color, label=label, linewidth=0.7)
     
     # Plot

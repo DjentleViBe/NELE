@@ -12,7 +12,7 @@ def plot_loss(lossfiles, labels, study_type='default'):
     plt.ylabel('Loss')
     plt.title(study_type)
     for lossfile, label, color in zip(lossfiles, labels, colors):
-        epochs, losses_tanh = csv_read(lossfile, 'epoch', 'loss')
+        epochs, losses_tanh, _ = csv_read(lossfile, 'epoch', 'loss', '')
         plt.plot(epochs, losses_tanh, color, label=label, linewidth = 0.7)
     # Plot
     plt.yscale('log')
