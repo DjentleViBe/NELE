@@ -3,12 +3,12 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 
-activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', 'SiLU', 'Softplus', 'LELU', 'BELU', 'NELU']
-activations_file =  ['tanh', 'relu', 'elu', 'gelu', 'sigmoid', 'lrelu', 'silu', 'softplus', 'lelu', 'belu', 'nelu']
+activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELU']
+activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'lrelu', 'lelu', 'elu', 'nelu']
 colors = ['#1f77b4', '#ff7f0e', '#2ca02c', 
            '#d62728', '#9467bd', '#8c564b', 
            '#e377c2', '#7f7f7f', '#17becf',
-           '#bcbd22', '#000000',
+           '#bcbd22', '#000000'
             ]
 
 def plot_only(x, study_type):
@@ -62,7 +62,7 @@ def plot_only(x, study_type):
     plt.scatter(x, y, label='Data', color = 'k', s=10)
     # plt.scatter(x_vals, y_preds, s=10, alpha=0.5)  # optional: scatter for points
     plt.xlabel('x')
-    plt.ylabel('y_pred')
+    plt.ylabel('y')
     plt.title(study_type)
     plt.legend()
     plt.tight_layout()
