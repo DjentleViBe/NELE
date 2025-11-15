@@ -16,6 +16,11 @@ import numpy as np
 
 def study_data(x, y, epochs, learn_rate, study_type='default'):
     activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', 'SiLU', 'Softplus', 'LELU', 'BELU', 'NELU']
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', 
+              '#d62728', '#9467bd', '#8c564b', 
+              '#e377c2', '#7f7f7f', '#17becf',
+              '#bcbd22', '#000000',
+              ]
     loss_collect = np.zeros(len(activations))
     std_deviation_collect = np.zeros(len(activations))
     dir =  'RESULTS/' + study_type + '/'
@@ -103,8 +108,8 @@ def study_data(x, y, epochs, learn_rate, study_type='default'):
                 'BELU',
                 'NELU'],
                 study_type)
-    plt.figure(figsize=(8,5))
-    plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, color='k', alpha=0.7)
+    plt.figure(figsize=(8,4))
+    plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, color=colors, alpha=0.7)
     plt.ylabel('Loss')
     plt.yscale('log')
     plt.title(study_type)
