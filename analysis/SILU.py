@@ -31,7 +31,7 @@ ax1.plot(x_points, y_points, color = 'k', label='y')
 ax2.plot(x_points, kappa_points, color = 'k', label=r'$\kappa$', linestyle = '--')
 ax1.scatter(x_max, y_max, color ='k', label=r'$\kappa_{\text{max}}$')
 ax1.legend()
-
+plt.suptitle('SiLU', fontweight='bold')
 plt.xlabel('x')
 ax1.set_ylabel('y')
 ax2.set_ylabel(r'$\kappa$')
