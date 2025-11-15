@@ -32,6 +32,41 @@ def plot_only(x, study_type):
     plt.xticks(rotation=90)
     plt.tight_layout()
     plt.savefig('./PICS/' + study_type + '/Loss_Bar_Chart_with_Error_Bars.pdf')
+    plt.cla()
+    plt.close()
+
+    plt.figure(figsize=(8,5))
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title(study_type)
+
+    for i, act in enumerate(activations):
+        epochs, losses_tanh, _ = csv_read(dir + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', '')
+        plt.plot(epochs, losses_tanh, colors[i], label=activations[i], linewidth = 0.7)
+    # Plot
+    plt.yscale('log')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig('PICS/' + study_type + '/training_loss.pdf')
+
+    plt.cla()
+    plt.close()
+
+    plt.figure(figsize=(8,5))
+    for i, act in enumerate(activations):
+        x_vals, y_preds, y = csv_read(dir + '/predictions_' + activations_file[i] + '.csv', 'x', 'y_pred','y_actual')
+        plt.plot(x_vals, y_preds, colors[i], label=activations[i], linewidth=0.7)
+    
+    # Plot
+    plt.scatter(x, y, label='Data', color = 'k', s=10)
+    # plt.scatter(x_vals, y_preds, s=10, alpha=0.5)  # optional: scatter for points
+    plt.xlabel('x')
+    plt.ylabel('y_pred')
+    plt.title(study_type)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig('PICS/' + study_type + '/curve_fitting.pdf')
 
 x = torch.linspace(-5, 5, 200).unsqueeze(1)
 
