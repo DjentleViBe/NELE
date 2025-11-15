@@ -18,4 +18,5 @@ def plot_loss(lossfiles, labels, study_type='default'):
     plt.yscale('log')
     plt.legend()
     plt.grid(True)
+    plt.tight_layout()
     plt.savefig('PICS/' + study_type + '/training_loss.pdf')

@@ -21,4 +21,5 @@ def plot_pred(x, y, predfiles, labels, study_type='default'):
     plt.ylabel('y_pred')
     plt.title(study_type)
     plt.legend()
+    plt.tight_layout()
     plt.savefig('PICS/' + study_type + '/curve_fitting.pdf')
