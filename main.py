@@ -13,7 +13,7 @@ if __name__ == "__main__":
     reset_directory('./RESULTS/sine_noise')
     
     y = torch.sin(x) + 0.2 * torch.randn(x.size())
-    study_data(x, y, 1000, 0.001, study_type='sine_noise')
+    study_data(x, y, 1000, 0.0005, study_type='sine_noise')
 
     ################### TRIG NOISE ##########################
     reset_directory('./PICS/trig_noise')
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     reset_directory('./RESULTS/exp_noise')
     
     y = torch.exp(-0.5*x) + 0.2 * torch.randn(x.size())
-    study_data(x, y, 1000, 0.001, study_type='exp_noise')
+    study_data(x, y, 4000, 0.0005, study_type='exp_noise')
     
     ################### HYP NOISE ##########################
     reset_directory('./PICS/hyp_noise')
