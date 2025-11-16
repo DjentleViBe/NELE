@@ -28,7 +28,6 @@ def plot_only(x, study_type):
     plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, color=colors, alpha=0.7)
     plt.ylabel('Loss')
     plt.yscale('log')
-    plt.title(study_type)
     plt.xticks(rotation=90)
     plt.tight_layout()
     plt.savefig('./PICS/' + study_type + '/Loss_Bar_Chart_with_Error_Bars.pdf')
@@ -38,7 +37,6 @@ def plot_only(x, study_type):
     plt.figure(figsize=(8,5))
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.title(study_type)
 
     for i, act in enumerate(activations):
         epochs, losses_tanh, _ = csv_read(dir + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', '')
@@ -63,7 +61,6 @@ def plot_only(x, study_type):
     # plt.scatter(x_vals, y_preds, s=10, alpha=0.5)  # optional: scatter for points
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.title(study_type)
     plt.legend()
     plt.tight_layout()
     plt.savefig('PICS/' + study_type + '/curve_fitting.pdf')
