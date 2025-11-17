@@ -8,6 +8,8 @@ from SILU import silu_process
 from GELU import gelu_process
 from lelu import lelu_process
 from Mish import mish_process
+from RELU import relu_process
+from LRELU import lrelu_process
 
 x_points = np.linspace(-5, 5, 200)
 colors = ['#1f77b4', '#ff7f0e', '#2ca02c', 
@@ -28,6 +30,8 @@ y_points_collect[2], kappa_points_collect[2], x_max_collect[2], y_max_collect[2]
 y_points_collect[3], kappa_points_collect[3], x_max_collect[3], y_max_collect[3] = elu_process(x_points)
 y_points_collect[4], kappa_points_collect[4], x_max_collect[4], y_max_collect[4] = silu_process(x_points)
 y_points_collect[5], kappa_points_collect[5], x_max_collect[5], y_max_collect[5] = gelu_process(x_points)
+y_points_collect[6], kappa_points_collect[6], x_max_collect[6], y_max_collect[6] = relu_process(x_points)
+y_points_collect[7], kappa_points_collect[7], x_max_collect[7], y_max_collect[7] = lrelu_process(x_points)
 y_points_collect[8], kappa_points_collect[8], x_max_collect[8], y_max_collect[8] = lelu_process(x_points)
 y_points_collect[9], kappa_points_collect[9], x_max_collect[9], y_max_collect[9] = mish_process(x_points)
 plt.close()
