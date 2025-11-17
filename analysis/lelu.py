@@ -21,35 +21,35 @@ def kappa(x, alpha=1):
         kappa
     )
 
-x_points = np.linspace(-5, 5, 200)
-y_points = []
-kappa_points = []
+def lelu_process(x_points):
+    y_points = []
+    kappa_points = []
 
-alpha = 0.3
+    alpha = 0.3
 
-beta = 1 - 0.5**0.5
-x_kmax = -np.log(2) * np.sqrt(2)/2
-alpha = beta
+    beta = 1 - 0.5**0.5
+    x_kmax = -np.log(2) * np.sqrt(2)/2
+    alpha = beta
 
-x_points = np.linspace(-5, 5, 200)
-y_points = LELU(x_points, alpha)
-kappa_points = kappa(x_points, alpha)
+    x_points = np.linspace(-5, 5, 200)
+    y_points = LELU(x_points, alpha)
+    kappa_points = kappa(x_points, alpha)
 
-fig, ax1 = plt.subplots()
-ax2 = ax1.twinx()
+    fig, ax1 = plt.subplots()
+    ax2 = ax1.twinx()
 
-ax1.plot(x_points, y_points, color = 'k', label='y')
-ax2.plot(x_points, kappa_points, color = 'k', label=r'$\kappa$', linestyle = '--')
+    ax1.plot(x_points, y_points, color = 'k', label='y')
+    ax2.plot(x_points, kappa_points, color = 'k', label=r'$\kappa$', linestyle = '--')
 
-
-
-print(beta)
-ax1.scatter(x_kmax, LELU(x_kmax, beta), color ='k', label=r'$\kappa_{\text{max}}$')
-ax1.legend()
-plt.suptitle('LELU', fontweight='bold')
-plt.xlabel('x')
-ax1.set_ylabel('y')
-ax2.set_ylabel(r'$\kappa$')
-plt.legend()
-plt.tight_layout()
-plt.savefig('./analysis/LELU.pdf')
+    print(beta)
+    y_max = LELU(x_kmax, beta)
+    ax1.scatter(x_kmax, y_max, color ='k', label=r'$\kappa_{\text{max}}$')
+    ax1.legend()
+    plt.suptitle('LELU', fontweight='bold')
+    plt.xlabel('x')
+    ax1.set_ylabel('y')
+    ax2.set_ylabel(r'$\kappa$')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig('./analysis/LELU.pdf')
+    return y_points, kappa_points, x_kmax, y_max

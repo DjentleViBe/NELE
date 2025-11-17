@@ -18,27 +18,28 @@ def kappa(x, alpha=1):
     kappa = np.abs(y_2) / (1 + y_1**2)**1.5
     return kappa
 
-x_points = np.linspace(-5, 5, 200)
-y_points = []
-kappa_points = []
+def tanh_process(x_points):
+    y_points = []
+    kappa_points = []
 
-alpha = 1
-x_points = np.linspace(-5, 5, 200)
-y_points = tanh(x_points)
-kappa_points = kappa(x_points)
+    alpha = 1
+    y_points = tanh(x_points)
+    kappa_points = kappa(x_points)
 
-x_kmax = 0.9196
-fig, ax1 = plt.subplots()
-ax2 = ax1.twinx()
-print(kappa(x_kmax, alpha))
-ax1.plot(x_points, y_points, color = 'k', label='y')
-ax2.plot(x_points, kappa_points, color = 'k', label=r'$\kappa$', linestyle = '--')
-ax1.scatter(x_kmax, tanh(x_kmax, alpha), color ='k', label=r'$\kappa_{\text{max}}$')
-ax1.legend()
-plt.xlabel('x')
-ax1.set_ylabel('y')
-ax2.set_ylabel(r'$\kappa$')
-plt.suptitle('tanh', fontweight='bold')
-plt.legend()
-plt.tight_layout()
-plt.savefig('./analysis/tanh.pdf')
+    x_kmax = 0.9196
+    y_max = tanh(x_kmax, alpha)
+    fig, ax1 = plt.subplots()
+    ax2 = ax1.twinx()
+    print(kappa(x_kmax, alpha))
+    ax1.plot(x_points, y_points, color = 'k', label='y')
+    ax2.plot(x_points, kappa_points, color = 'k', label=r'$\kappa$', linestyle = '--')
+    ax1.scatter(x_kmax, y_max, color ='k', label=r'$\kappa_{\text{max}}$')
+    ax1.legend()
+    plt.xlabel('x')
+    ax1.set_ylabel('y')
+    ax2.set_ylabel(r'$\kappa$')
+    plt.suptitle('tanh', fontweight='bold')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig('./analysis/tanh.pdf')
+    return y_points, kappa_points, x_kmax, y_max
