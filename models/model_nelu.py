@@ -44,19 +44,19 @@ class NELU(nn.Module):
         assert num_features == self.num_features, "Input feature size must match num_features"
 
         # Map input to [0,1] for NURBS evaluation
-        u = torch.sigmoid(x)
+        # u = torch.sigmoid(x)
 
         # Uniform knot vector
         n = self.num_points - 1
-        knots = torch.linspace(0, 1, n + self.degree + 2, device=device)
+        knots = torch.linspace(x.min(), x.max(), n + self.degree + 2, device=device)
 
         # Initialize numerator and denominator
-        y = torch.zeros_like(u)
-        denom = torch.zeros_like(u)
+        y = torch.zeros_like(x)
+        denom = torch.zeros_like(x)
 
         # Evaluate NURBS per control point
         for i in range(self.num_points):
-            Ni = self.N(i, self.degree, u, knots)  # (batch_size, num_features)
+            Ni = self.N(i, self.degree, x, knots)  # (batch_size, num_features)
             cp = self.control_points[:, i].unsqueeze(0)  # (1, num_features)
             w = self.weights[:, i].unsqueeze(0)          # (1, num_features)
             y += Ni * w * cp
