@@ -44,7 +44,7 @@ for l in range(0, len(activations)):
     ax1.scatter(x_max_collect[l], y_max_collect[l], label=activations[l],color = colors[l], s = 3, zorder=5)
 
 for l in range(0, len(activations)):
-    ax3.plot(x_points, kappa_points_collect[l], color = colors[l], label=activations[l], linewidth = 0.7)
+    ax3.plot(x_points, kappa_points_collect[l], color = colors[l], label=activations[l], linewidth = 0.7, linestyle = 'dashed')
 
 ax3.set_xlabel('x')
 ax1.set_ylabel('y')
