@@ -3,7 +3,7 @@ from study import study_data
 from file_operations import reset_directory
 
 if __name__ == "__main__":
-    '''
+    
     x = torch.linspace(-5, 5, 200).unsqueeze(1)
     reset_directory('./RESULTS/')
     reset_directory('./PICS/')
@@ -56,6 +56,6 @@ if __name__ == "__main__":
     x = torch.linspace(-5, 5, 200).unsqueeze(1)
     y = torch.tanh(x) + 0.2 * torch.randn(x.size())
     study_data(x, y, 3000, 0.0005, study_type='hyp_noise')
-
+    '''
     
     
