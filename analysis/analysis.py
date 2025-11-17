@@ -38,8 +38,10 @@ plt.close()
 fig, (ax1, ax3) = plt.subplots(2, 1, sharex=True, figsize=(6, 6))
 
 for l in range(0, len(activations)):
-    ax1.plot(x_points, y_points_collect[l], color = colors[l], linewidth = 0.7, linestyle = 'dotted')
-    ax1.scatter(x_max_collect[l], y_max_collect[l], label=activations[l],color = colors[l], s = 3)
+    ax1.plot(x_points, y_points_collect[l], color = colors[l], linewidth = 0.7)
+
+for l in range(0, len(activations)):
+    ax1.scatter(x_max_collect[l], y_max_collect[l], label=activations[l],color = colors[l], s = 3, zorder=5)
 
 for l in range(0, len(activations)):
     ax3.plot(x_points, kappa_points_collect[l], color = colors[l], label=activations[l], linewidth = 0.7)
