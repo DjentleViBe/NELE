@@ -41,8 +41,9 @@ def lelu_process(x_points):
     ax1.plot(x_points, y_points, color = 'k', label='y')
     ax2.plot(x_points, kappa_points, color = 'k', label=r'$\kappa$', linestyle = '--')
 
-    print(beta)
+    
     y_max = LELU(x_kmax, beta)
+    print("LELU_ymax = ", y_max, np.max(kappa_points))
     ax1.scatter(x_kmax, y_max, color ='k', label=r'$\kappa_{\text{max}}$')
     ax1.legend()
     plt.suptitle('LELU', fontweight='bold')
