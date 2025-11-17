@@ -28,17 +28,17 @@ y_points_collect[2], kappa_points_collect[2], x_max_collect[2], y_max_collect[2]
 y_points_collect[3], kappa_points_collect[3], x_max_collect[3], y_max_collect[3] = elu_process(x_points)
 y_points_collect[4], kappa_points_collect[4], x_max_collect[4], y_max_collect[4] = silu_process(x_points)
 y_points_collect[5], kappa_points_collect[5], x_max_collect[5], y_max_collect[5] = gelu_process(x_points)
-y_points_collect[6], kappa_points_collect[6], x_max_collect[6], y_max_collect[6] = lelu_process(x_points)
-y_points_collect[7], kappa_points_collect[7], x_max_collect[7], y_max_collect[7] = mish_process(x_points)
+y_points_collect[8], kappa_points_collect[8], x_max_collect[8], y_max_collect[8] = lelu_process(x_points)
+y_points_collect[9], kappa_points_collect[9], x_max_collect[9], y_max_collect[9] = mish_process(x_points)
 plt.close()
 fig, (ax1, ax3) = plt.subplots(2, 1, sharex=True, figsize=(6, 6))
 
 for l in range(0, len(activations)):
-    ax1.plot(x_points, y_points_collect[l], color = colors[l], linewidth = 0.5)
+    ax1.plot(x_points, y_points_collect[l], color = colors[l], linewidth = 0.7, linestyle = 'dotted')
     ax1.scatter(x_max_collect[l], y_max_collect[l], label=activations[l],color = colors[l], s = 3)
 
 for l in range(0, len(activations)):
-    ax3.plot(x_points, kappa_points_collect[l], color = colors[l], label=activations[l], linewidth = 0.5)
+    ax3.plot(x_points, kappa_points_collect[l], color = colors[l], label=activations[l], linewidth = 0.7)
 
 ax3.set_xlabel('x')
 ax1.set_ylabel('y')
