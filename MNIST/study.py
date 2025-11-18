@@ -7,6 +7,8 @@ from MNIST.Neuralnet import DeepFCNet
 from file_operations import create_directory
 from csv_operations import csv_write
 import numpy as np
+from models.model_lelu import LELU
+from models.model_nele import NELE
 # Hyperparameters
 input_size = 28 * 28
 hidden_size = 128
@@ -47,6 +49,10 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
         activation = nn.Softmax()
     elif activation_type == 'tanh':
         activation = nn.Tanh()
+    elif activation_type == 'lelu':
+        activation = LELU()
+    elif activation_type == 'nele':
+        activation = NELE(1, 4, 3)
     else:
         raise ValueError("Invalid activation type")
 

@@ -15,6 +15,8 @@ def mnist():
     #mnist_data(300, 0.01, 'tanh')
     #mnist_data(300, 0.01, 'mish')
     #mnist_data(300, 0.01, 'silu')
+    # mnist_data(300, 0.01, 'lelu')
+    mnist_data(300, 0.001, 'nele')
 
     mnist_validation( 'tanh')
     mnist_validation( 'softplus')
@@ -24,4 +26,6 @@ def mnist():
     mnist_validation( 'gelu')
     mnist_validation( 'relu')
     mnist_validation( 'leaky_relu')
+    mnist_validation( 'lelu')
     mnist_validation( 'mish')
+    mnist_validation( 'nele')

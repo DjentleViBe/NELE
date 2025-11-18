@@ -4,6 +4,8 @@ from MNIST.study import input_size, hidden_size, num_hidden_layers, num_classes,
 from MNIST.Neuralnet import DeepFCNet
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
+from models.model_lelu import LELU
+from models.model_nele import NELE
 
 def mnist_validation(activation_type='default'):
     if activation_type == 'relu':
@@ -24,6 +26,10 @@ def mnist_validation(activation_type='default'):
         activation = nn.Softmax()
     elif activation_type == 'tanh':
         activation = nn.Tanh()
+    elif activation_type == 'lelu':
+        activation = LELU()
+    elif activation_type == 'nele':
+        activation = NELE(1, 4, 3)
     else:
         raise ValueError("Invalid activation type")
     # Load MNIST
