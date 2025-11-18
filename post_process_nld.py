@@ -3,6 +3,8 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+from smoothness import smoothness_derivative_energy, curvature_smoothness, lipschitz_constant, frequency_smoothness
+
 activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELE']
 activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'lrelu', 'lelu', 'mish', 'nele']
 colors = ["#490092", "#006ddb", 
@@ -62,7 +64,13 @@ def plot_only(x, study_type):
     for i, act in enumerate(activations):
         x_vals, y_preds, y = csv_read(dir + '/predictions_' + activations_file[i] + '.csv', 'x', 'y_pred','y_actual')
         plt.plot(x_vals, y_preds, colors[i], label=activations[i], linewidth=0.7)
-    
+        s1 = smoothness_derivative_energy(x_vals, y_preds, 1)
+        s2 = smoothness_derivative_energy(x_vals, y_preds, 2)
+        s3 = curvature_smoothness(x_vals, y_preds)
+        s4 = lipschitz_constant(x_vals, y_preds)
+        s5 = frequency_smoothness(y_preds)
+        print(f'{act} & {round(s3, 2)} \\\\')
+    print("\n")
     # Plot
     plt.scatter(x, y, label='Data', color = 'k', s=10)
     # plt.scatter(x_vals, y_preds, s=10, alpha=0.5)  # optional: scatter for points
@@ -72,14 +80,8 @@ def plot_only(x, study_type):
     plt.tight_layout()
     plt.savefig('PICS/' + study_type + '/curve_fitting.pdf', transparent=False)
 
+
 x = torch.linspace(-5, 5, 200).unsqueeze(1)
-
-################### SINE NOISE ##########################
-plot_only(x, 'sine_noise')
-
-################### TRIG NOISE ##########################
-plot_only(x, 'trig_noise')
-
 ################### EXP NOISE ##########################
 plot_only(x, 'exp_noise')
 
@@ -89,6 +91,12 @@ plot_only(x, 'hyp_noise')
 ################### QUAD NOISE ##########################
 y = x**2 + 0.2 * torch.randn(x.size())
 plot_only(x, 'quad_noise')
+
+################### SINE NOISE ##########################
+plot_only(x, 'sine_noise')
+
+################### TRIG NOISE ##########################
+plot_only(x, 'trig_noise')
 
 ################### EXP-POLY NOISE ##########################
 x = torch.linspace(0, 10, 200).unsqueeze(1)
