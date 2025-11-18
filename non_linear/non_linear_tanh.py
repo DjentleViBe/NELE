@@ -2,24 +2,23 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from csv_operations import csv_write
-from models.model_gelu import Net
+from models.model_tanh import Net
 
 # Generate nonlinear data: y = sin(x) + noise
 torch.manual_seed(0)
 
-def gelu_net(x, y, pred_file, loss_file):
-    model_gelu = Net(x.shape[1])
+def tanh_net(x, y, pred_file, loss_file, learn_rate, epochs=2000):
+    model_tanh = Net(x.shape[1])
 
     # Define loss and optimizer
     criterion = nn.MSELoss()
-    optimizer = optim.Adam(model_gelu.parameters(), lr=0.01)
+    optimizer = optim.Adam(model_tanh.parameters(), lr=learn_rate)
 
     # Training loop
-    epochs = 2000
     loss_collect = []
     for epoch in range(epochs):
         optimizer.zero_grad()
-        outputs = model_gelu(x)
+        outputs = model_tanh(x)
         loss = criterion(outputs, y)
         loss.backward()
         optimizer.step()
@@ -28,12 +27,12 @@ def gelu_net(x, y, pred_file, loss_file):
             print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
 
     # Evaluate model
-    model_gelu.eval()
-    predicted = model_gelu(x).detach()
+    model_tanh.eval()
+    predicted = model_tanh(x).detach()
     loss_collect = torch.tensor(loss_collect)
 
     # Write to CSV
-    csv_write(pred_file, x, predicted, 'x' , 'y_pred')
-    csv_write(loss_file, torch.linspace(1, epochs, epochs), loss_collect, 'epoch', 'loss')
+    csv_write(pred_file, x, predicted, 'x' , 'y_pred', 'y_actual', y)
+    csv_write(loss_file, torch.linspace(1, epochs, epochs), loss_collect,  'epoch', 'loss', '', torch.linspace(1, epochs, epochs))
     sigma_est = torch.std(y - predicted)
     return loss.item(), sigma_est.item()

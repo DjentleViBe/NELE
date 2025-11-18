@@ -2,24 +2,21 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from csv_operations import csv_write
-from models.model_sigmoid import Net
+from models.model_belu import Net
 
 # Generate nonlinear data: y = sin(x) + noise
 torch.manual_seed(0)
 
-def sigmoid_net(x, y, pred_file, loss_file):
-    model_sigmoid = Net(x.shape[1])
+def belu_net(x, y, pred_file, loss_file, bezier_points, learn_rate, epochs=2000):
+    model_belu = Net(x.shape[1], bezier_points)
 
     # Define loss and optimizer
     criterion = nn.MSELoss()
-    optimizer = optim.Adam(model_sigmoid.parameters(), lr=0.01)
-
-    # Training loop
-    epochs = 2000
+    optimizer = optim.Adam(model_belu.parameters(), lr=learn_rate)
     loss_collect = []
     for epoch in range(epochs):
         optimizer.zero_grad()
-        outputs = model_sigmoid(x)
+        outputs = model_belu(x)
         loss = criterion(outputs, y)
         loss.backward()
         optimizer.step()
@@ -28,12 +25,12 @@ def sigmoid_net(x, y, pred_file, loss_file):
             print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
 
     # Evaluate model
-    model_sigmoid.eval()
-    predicted = model_sigmoid(x).detach()
+    model_belu.eval()
+    predicted = model_belu(x).detach()
     loss_collect = torch.tensor(loss_collect)
 
     # Write to CSV
-    csv_write(pred_file, x, predicted, 'x' , 'y_pred')
-    csv_write(loss_file, torch.linspace(1, epochs, epochs), loss_collect, 'epoch', 'loss')
+    csv_write(pred_file, x, predicted, 'x' , 'y_pred', 'y_actual', y)
+    csv_write(loss_file, torch.linspace(1, epochs, epochs), loss_collect,  'epoch', 'loss', '', torch.linspace(1, epochs, epochs))
     sigma_est = torch.std(y - predicted)
     return loss.item(), sigma_est.item()

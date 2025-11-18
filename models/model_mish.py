@@ -7,7 +7,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
         self.net = nn.Sequential(
             nn.Linear(input_dim, 64),
-            nn.Tanh(),
+            nn.Mish(),
             nn.Linear(64, 1)
         )
 

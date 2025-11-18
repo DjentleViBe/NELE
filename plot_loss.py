@@ -1,18 +1,22 @@
 import matplotlib.pyplot as plt
 from csv_operations import csv_read
 
-def plot_loss(lossfiles, labels):
-    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2',
-              '#7f7f7f', '#bcbd22', '#17becf']
+def plot_loss(lossfiles, labels, study_type='default'):
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', 
+              '#d62728', '#9467bd', '#8c564b', 
+              '#e377c2', '#7f7f7f', '#17becf',
+              '#bcbd22', '#000000'
+              ]
     plt.figure(figsize=(8,5))
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.title('Training Loss')
+    plt.title(study_type)
     for lossfile, label, color in zip(lossfiles, labels, colors):
-        epochs, losses_tanh = csv_read(lossfile, 'epoch', 'loss')
+        epochs, losses_tanh, _ = csv_read(lossfile, 'epoch', 'loss', '')
         plt.plot(epochs, losses_tanh, color, label=label, linewidth = 0.7)
     # Plot
     plt.yscale('log')
     plt.legend()
     plt.grid(True)
-    plt.savefig('PICS/training_loss.pdf')
+    plt.tight_layout()
+    plt.savefig('PICS/' + study_type + '/training_loss.pdf')
