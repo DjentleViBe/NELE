@@ -76,14 +76,17 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
     loss_collect = []
     # Training loop
     for epoch in range(epochs):
+        epoch_loss = 0
         for batch_idx, (data, target) in enumerate(train_loader):
             optimizer.zero_grad()
             output = model(data)
             loss = criterion(output, target)
             loss.backward()
             optimizer.step()
-        loss_collect.append(loss.item())
-        print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
+            epoch_loss += loss.item() * data.size(0)
+        epoch_loss /= len(train_loader.dataset)
+        loss_collect.append(epoch_loss)
+        print(f'Epoch [{epoch+1}/{epochs}], Loss: {epoch_loss:.4f}')
 
     # Evaluate
     model.eval()
@@ -95,7 +98,12 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
             _, predicted = torch.max(outputs.data, 1)
             total += target.size(0)
             correct += (predicted == target).sum().item()
-    torch.save(model.state_dict(), dir + activation_type + '_' + str(epoch) + '.pth')
+    torch.save({
+    'epoch': epochs,
+    'model_state_dict': model.state_dict(),
+    'optimizer_state_dict': optimizer.state_dict(),
+    'epoch_loss': epoch_loss
+    }, dir + activation_type + '_' + str(epoch) + '.pth')
     print(f'Test Accuracy: {100 * correct / total:.2f}%')
     loss_collect = torch.tensor(loss_collect)
     csv_write(dir + '/loss_history_' + activation_type + '.csv', torch.linspace(1, epochs, epochs), loss_collect,  'epoch', 'loss', '', torch.linspace(1, epochs, epochs))
