@@ -52,7 +52,7 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
     elif activation_type == 'lelu':
         activation = LELU()
     elif activation_type == 'nele':
-        activation = NELE(1, 4, 3)
+        activation = NELE(1, 3, 2)
     else:
         raise ValueError("Invalid activation type")
 
@@ -82,7 +82,7 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
             loss = criterion(output, target)
             loss.backward()
             optimizer.step()
-            loss_collect.append(loss.item())
+        loss_collect.append(loss.item())
         print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
 
     # Evaluate
