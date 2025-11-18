@@ -2,14 +2,15 @@ from csv_operations import csv_read
 import torch 
 import numpy as np
 import matplotlib.pyplot as plt
-
+import matplotlib as mpl
 activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELE']
-activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'lrelu', 'lelu', 'elu', 'nele']
-colors = ['#1f77b4', '#ff7f0e', '#2ca02c', 
-           '#d62728', '#9467bd', '#8c564b', 
-           '#e377c2', '#7f7f7f', '#17becf',
-           '#bcbd22', '#000000'
-            ]
+activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'lrelu', 'lelu', 'mish', 'nele']
+colors = ["#1f77b4", "#aec7e8", 
+            "#ff7f0e", "#ffbb78",
+            "#2ca02c", "#98df8a",
+            "#9467bd", "#c5b0d5",
+            "#8c564b", "#c49c94",
+            '#000000']
 
 def plot_only(x, study_type):
     loss_collect = np.zeros(len(activations))
@@ -24,13 +25,19 @@ def plot_only(x, study_type):
         _, loss, _ = csv_read(dir + '/loss_history_' + act + '.csv', 'epoch', 'loss', '')
         loss_collect[i] = loss[-1]
         std_deviation_collect[i] = sigma_est.item()
+    mpl.rcParams['pdf.use14corefonts'] = False
+    mpl.rcParams['pdf.fonttype'] = 42  # keeps colors in RGB
+    plt.style.use("tableau-colorblind10")
     plt.figure(figsize=(8,4))
-    plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, color=colors, alpha=0.7)
+    plt.bar(activations, std_deviation_collect, color=colors)
+    plt.errorbar(activations, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="white", elinewidth=4, capsize=4)
+    plt.errorbar(activations, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="black", elinewidth=2, capsize=2)
+    # plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, , ecolor="#c7c7c7", error_kw={"elinewidth": 2})
     plt.ylabel('Loss')
     plt.yscale('log')
     plt.xticks(rotation=90)
     plt.tight_layout()
-    plt.savefig('./PICS/' + study_type + '/Loss_Bar_Chart_with_Error_Bars.pdf')
+    plt.savefig('./PICS/' + study_type + '/Loss_Bar_Chart_with_Error_Bars.pdf', transparent=False)
     plt.cla()
     plt.close()
 
@@ -46,7 +53,7 @@ def plot_only(x, study_type):
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig('PICS/' + study_type + '/training_loss.pdf')
+    plt.savefig('PICS/' + study_type + '/training_loss.pdf', transparent=False)
 
     plt.cla()
     plt.close()
@@ -63,7 +70,7 @@ def plot_only(x, study_type):
     plt.ylabel('y')
     plt.legend()
     plt.tight_layout()
-    plt.savefig('PICS/' + study_type + '/curve_fitting.pdf')
+    plt.savefig('PICS/' + study_type + '/curve_fitting.pdf', transparent=False)
 
 x = torch.linspace(-5, 5, 200).unsqueeze(1)
 
