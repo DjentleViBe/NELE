@@ -76,8 +76,7 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
             loss.backward()
             optimizer.step()
             loss_collect.append(loss.item())
-        if (epoch + 1) % 10 == 0:
-            print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
+        print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
 
     # Evaluate
     model.eval()
