@@ -4,7 +4,7 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from MNIST.Neuralnet import DeepFCNet
-from file_operations import reset_directory
+from file_operations import create_directory
 from csv_operations import csv_write
 import numpy as np
 # Hyperparameters
@@ -26,7 +26,8 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
     loss_collect = np.zeros(len(activations))
     std_deviation_collect = np.zeros(len(activations))
     dir = 'RESULTS/MNIST/' + activation_type + '/'
-    reset_directory('RESULTS/MNIST/' + activation_type + '/')
+    create_directory('RESULTS/MNIST/' + activation_type + '/')
+    create_directory('PICS/MNIST/' + activation_type + '/')
     # Activation function selection
     if activation_type == 'relu':
         activation = nn.ReLU()

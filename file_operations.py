@@ -17,3 +17,6 @@ def reset_directory(path):
     else:
         # Create the directory if it doesn't exist
         os.makedirs(path, exist_ok=True)
+
+def create_directory(path):
+    os.makedirs(path, exist_ok=True)
