@@ -41,7 +41,7 @@ class NELE(nn.Module):
         """
         batch_size, num_features = x.shape
         device = x.device
-        assert num_features == self.num_features, "Input feature size must match num_features"
+        # assert num_features == self.num_features, "Input feature size must match num_features"
 
         # Map input to [0,1] for NURBS evaluation
         # u = torch.sigmoid(x)
@@ -69,7 +69,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
         self.net = nn.Sequential(
             nn.Linear(input_dim, 64),
-            NELE(64, nurbs_points, degree),
+            NELE(1, nurbs_points, degree),
             nn.Linear(64, 1)
         )
 
