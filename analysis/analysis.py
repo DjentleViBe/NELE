@@ -12,11 +12,11 @@ from RELU import relu_process
 from LRELU import lrelu_process
 
 x_points = np.linspace(-5, 5, 200)
-colors = ["#1f77b4", "#aec7e8", 
-            "#ff7f0e", "#ffbb78",
+colors = ["#0000FF", "#aec7e8", 
+            "#ff0000", "#ffbb78",
             "#2ca02c", "#98df8a",
-            "#9467bd", "#c5b0d5",
-            "#8c564b", "#c49c94",
+            "#8000FF", "#d57dc1",
+            "#99342f", "#c7c7c7",
             '#000000']
 
 activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish']

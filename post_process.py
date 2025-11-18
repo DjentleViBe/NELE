@@ -5,11 +5,11 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELE']
 activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'lrelu', 'lelu', 'mish', 'nele']
-colors = ["#1f77b4", "#aec7e8", 
-            "#ff7f0e", "#ffbb78",
+colors = ["#0000FF", "#aec7e8", 
+            "#ff0000", "#ffbb78",
             "#2ca02c", "#98df8a",
-            "#9467bd", "#c5b0d5",
-            "#8c564b", "#c49c94",
+            "#8000FF", "#d57dc1",
+            "#99342f", "#c7c7c7",
             '#000000']
 
 def plot_only(x, study_type):
@@ -30,8 +30,8 @@ def plot_only(x, study_type):
     plt.style.use("tableau-colorblind10")
     plt.figure(figsize=(8,4))
     plt.bar(activations, std_deviation_collect, color=colors)
-    plt.errorbar(activations, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="white", elinewidth=4, capsize=4)
-    plt.errorbar(activations, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="black", elinewidth=2, capsize=2)
+    plt.errorbar(activations, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="black", elinewidth=3, capsize=5)
+    plt.errorbar(activations, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="white", elinewidth=0, capsize=3)
     # plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, , ecolor="#c7c7c7", error_kw={"elinewidth": 2})
     plt.ylabel('Loss')
     plt.yscale('log')
