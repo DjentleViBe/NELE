@@ -2,21 +2,21 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from csv_operations import csv_write
-from models.model_nelu import Net
+from models.model_nele import Net
 
 # Generate nonlinear data: y = sin(x) + noise
 torch.manual_seed(0)
 
-def nelu_net(x, y, pred_file, loss_file, nurbs_points, degree, learn_rate, epochs=2000):
-    model_nelu = Net(x.shape[1], nurbs_points, degree)
+def nele_net(x, y, pred_file, loss_file, nurbs_points, degree, learn_rate, epochs=2000):
+    model_nele = Net(x.shape[1], nurbs_points, degree)
 
     # Define loss and optimizer
     criterion = nn.MSELoss()
-    optimizer = optim.Adam(model_nelu.parameters(), lr=learn_rate)
+    optimizer = optim.Adam(model_nele.parameters(), lr=learn_rate)
     loss_collect = []
     for epoch in range(epochs):
         optimizer.zero_grad()
-        outputs = model_nelu(x)
+        outputs = model_nele(x)
         loss = criterion(outputs, y)
         loss.backward()
         optimizer.step()
@@ -25,8 +25,8 @@ def nelu_net(x, y, pred_file, loss_file, nurbs_points, degree, learn_rate, epoch
             print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
 
     # Evaluate model
-    model_nelu.eval()
-    predicted = model_nelu(x).detach()
+    model_nele.eval()
+    predicted = model_nele(x).detach()
     loss_collect = torch.tensor(loss_collect)
 
     # Write to CSV

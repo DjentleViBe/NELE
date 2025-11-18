@@ -3,8 +3,8 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 
-activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELU']
-activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'lrelu', 'lelu', 'elu', 'nelu']
+activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELE']
+activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'lrelu', 'lelu', 'elu', 'nele']
 colors = ['#1f77b4', '#ff7f0e', '#2ca02c', 
            '#d62728', '#9467bd', '#8c564b', 
            '#e377c2', '#7f7f7f', '#17becf',

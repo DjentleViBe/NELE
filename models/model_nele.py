@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-class NELU(nn.Module):
+class NELE(nn.Module):
     def __init__(self, num_features=64, num_points=4, degree=3):
         super().__init__()
         self.num_features = num_features
@@ -69,7 +69,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
         self.net = nn.Sequential(
             nn.Linear(input_dim, 64),
-            NELU(64, nurbs_points, degree),
+            NELE(64, nurbs_points, degree),
             nn.Linear(64, 1)
         )
 
