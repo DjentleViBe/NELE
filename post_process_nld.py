@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELE']
 activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'lrelu', 'lelu', 'mish', 'nele']
-colors = ["#0000FF", "#aec7e8", 
-            "#ff0000", "#ffbb78",
-            "#2ca02c", "#98df8a",
-            "#8000FF", "#d57dc1",
-            "#99342f", "#c7c7c7",
-            '#000000']
+colors = ["#490092", "#006ddb", 
+          "#b66dff", "#ff6db6",
+          "#920000", "#db6d00",
+          "#ffdf4d", "#004949",
+          "#009999", "#22cf22",
+          '#000000']
 
 def plot_only(x, study_type):
     loss_collect = np.zeros(len(activations))
@@ -47,11 +47,11 @@ def plot_only(x, study_type):
 
     for i, act in enumerate(activations):
         epochs, losses_tanh, _ = csv_read(dir + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', '')
-        plt.plot(epochs, losses_tanh, colors[i], label=activations[i], linewidth = 0.7)
+        plt.plot(epochs, losses_tanh, colors[i], label=activations[i], linewidth = 0.8)
     # Plot
     plt.yscale('log')
     plt.legend()
-    plt.grid(True)
+    plt.grid(True, linewidth=0.1)
     plt.tight_layout()
     plt.savefig('PICS/' + study_type + '/training_loss.pdf', transparent=False)
 

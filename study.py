@@ -17,11 +17,11 @@ import numpy as np
 
 def study_data(x, y, epochs, learn_rate, study_type='default'):
     activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', 'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
-    colors = ["#1f77b4", "#aec7e8", 
-            "#ff7f0e", "#ffbb78",
-            "#2ca02c", "#98df8a",
-            "#9467bd", "#c5b0d5",
-            "#8c564b", "#c49c94",
+    colors = ["#0072B2", "#56B4E9", 
+            "#E69F00", "#F0B775",
+            "#009E73", "#63C6A8",
+            "#CC79A7", "#DDA5C9",
+            "#8E6B55", "#C7B2A8",
             '#000000']
     loss_collect = np.zeros(len(activations))
     std_deviation_collect = np.zeros(len(activations))
