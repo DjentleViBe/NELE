@@ -10,7 +10,7 @@ from lelu import lelu_process
 from Mish import mish_process
 from RELU import relu_process
 from LRELU import lrelu_process
-
+import matplotlib as mpl
 x_points = np.linspace(-5, 5, 200)
 colors = ["#0000FF", "#aec7e8", 
             "#ff0000", "#ffbb78",
@@ -36,6 +36,9 @@ y_points_collect[7], kappa_points_collect[7], x_max_collect[7], y_max_collect[7]
 y_points_collect[8], kappa_points_collect[8], x_max_collect[8], y_max_collect[8] = lelu_process(x_points)
 y_points_collect[9], kappa_points_collect[9], x_max_collect[9], y_max_collect[9] = mish_process(x_points)
 plt.close()
+mpl.rcParams['pdf.use14corefonts'] = False
+mpl.rcParams['pdf.fonttype'] = 42  # keeps colors in RGB
+plt.style.use("tableau-colorblind10")
 fig, (ax1, ax3) = plt.subplots(2, 1, sharex=True, figsize=(6, 6))
 
 for l in range(0, len(activations)):
