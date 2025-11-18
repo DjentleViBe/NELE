@@ -34,6 +34,18 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
         activation = nn.ELU(alpha=1.0)
     elif activation_type == 'leaky_relu':
         activation = nn.LeakyReLU(negative_slope=0.1)
+    elif activation_type == 'gelu':
+        activation = nn.GELU()
+    elif activation_type == 'mish':
+        activation = nn.Mish()
+    elif activation_type == 'sigmoid':
+        activation = nn.Sigmoid()
+    elif activation_type == 'silu':
+        activation = nn.SiLU()
+    elif activation_type == 'softplus':
+        activation = nn.Softmax()
+    elif activation_type == 'tanh':
+        activation = nn.Tanh()
     else:
         raise ValueError("Invalid activation type")
 
@@ -77,7 +89,7 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
             _, predicted = torch.max(outputs.data, 1)
             total += target.size(0)
             correct += (predicted == target).sum().item()
-
+    torch.save(model.state_dict(), dir + activation_type + '_' + str(epoch) + '.pth')
     print(f'Test Accuracy: {100 * correct / total:.2f}%')
     loss_collect = torch.tensor(loss_collect)
     csv_write(dir + '/loss_history_' + activation_type + '.csv', torch.linspace(1, epochs, epochs), loss_collect,  'epoch', 'loss', '', torch.linspace(1, epochs, epochs))
