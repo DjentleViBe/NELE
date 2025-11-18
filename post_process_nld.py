@@ -81,15 +81,12 @@ plot_only(x, 'sine_noise')
 plot_only(x, 'trig_noise')
 
 ################### EXP NOISE ##########################
-
 plot_only(x, 'exp_noise')
 
 ################### HYP NOISE ##########################
-
 plot_only(x, 'hyp_noise')
 
 ################### QUAD NOISE ##########################
-
 y = x**2 + 0.2 * torch.randn(x.size())
 plot_only(x, 'quad_noise')
 
