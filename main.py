@@ -6,7 +6,7 @@ if __name__ == "__main__":
     # Synthetic data analysis
     # curve_fit()
     # MNIST
-    mnist()
+    mnist("cuda")
     # CIFAR-10
     print("Analysis completed")
     
