@@ -123,5 +123,6 @@ def mnist_data(epochs, learn_rate, device, activation_type='default'):
     
     
     loss_collect = torch.tensor(loss_collect)
-    csv_write(dir + '/loss_history_' + activation_type + '.csv', torch.linspace(1, epochs, epochs), loss_collect,  'epoch', 'loss', '', val_collect)
+    val_collect = torch.tensor(val_collect)
+    csv_write(dir + '/loss_history_' + activation_type + '.csv', torch.linspace(1, epochs, epochs), loss_collect, 'epoch', 'loss', '', val_collect)
     
