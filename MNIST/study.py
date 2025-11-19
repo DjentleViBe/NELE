@@ -16,6 +16,16 @@ num_hidden_layers = 8
 num_classes = 10
 batch_size = 64
 epochs = 20
+save_every = 20
+
+def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
+    torch.save({
+    'epoch': epochs,
+    'model_state_dict': model.state_dict(),
+    'optimizer_state_dict': optimizer.state_dict(),
+    'epoch_loss': epoch_loss
+    }, dir + activation_type + '_' + str(epoch) + '.pth')
+
 
 def mnist_data(epochs, learn_rate, device, activation_type='default'):
     activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', 'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
@@ -105,14 +115,9 @@ def mnist_data(epochs, learn_rate, device, activation_type='default'):
                     correct += (predicted == target).sum().item()
             val_collect.append(100 * correct / total)
             # print(f'Test Accuracy: {100 * correct / total:.2f}%')
+        if (epoch + 1) % save_every  == 0:
+            save(model, optimizer, epoch_loss, activation_type, epoch, dir)
         print(f'Epoch [{epoch+1}/{epochs}], Loss: {epoch_loss:.4f}, Test: {100 * correct / total:.2f}')
-    
-    torch.save({
-    'epoch': epochs,
-    'model_state_dict': model.state_dict(),
-    'optimizer_state_dict': optimizer.state_dict(),
-    'epoch_loss': epoch_loss
-    }, dir + activation_type + '_' + str(epoch) + '.pth')
     
     # Evaluate
     
