@@ -69,15 +69,19 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # Model, loss, optimizer
-    model = DeepFCNet(input_size, hidden_size, num_hidden_layers, num_classes, activation, activation_type)
+    device = torch.device("cuda")
+    model = DeepFCNet(input_size, hidden_size, num_hidden_layers, num_classes, activation, activation_type).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=learn_rate)
+    criterion = criterion.to(device)
 
     loss_collect = []
     # Training loop
     for epoch in range(epochs):
         epoch_loss = 0
         for batch_idx, (data, target) in enumerate(train_loader):
+            data = data.to(device)
+            target = target.to(device)
             optimizer.zero_grad()
             output = model(data)
             loss = criterion(output, target)
@@ -87,7 +91,7 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
         epoch_loss /= len(train_loader.dataset)
         loss_collect.append(epoch_loss)
         print(f'Epoch [{epoch+1}/{epochs}], Loss: {epoch_loss:.4f}')
-
+    
     # Evaluate
     model.eval()
     correct = 0
