@@ -17,7 +17,7 @@ num_classes = 10
 batch_size = 64
 epochs = 20
 
-def mnist_data(epochs, learn_rate, activation_type='default'):
+def mnist_data(epochs, learn_rate, device, activation_type='default'):
     activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', 'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
     colors = ["#1f77b4", "#aec7e8", 
             "#ff7f0e", "#ffbb78",
@@ -69,13 +69,14 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # Model, loss, optimizer
-    device = torch.device("cuda")
+    device = device
     model = DeepFCNet(input_size, hidden_size, num_hidden_layers, num_classes, activation, activation_type).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=learn_rate)
     criterion = criterion.to(device)
 
     loss_collect = []
+    val_collect = []
     # Training loop
     for epoch in range(epochs):
         epoch_loss = 0
@@ -90,25 +91,32 @@ def mnist_data(epochs, learn_rate, activation_type='default'):
             epoch_loss += loss.item() * data.size(0)
         epoch_loss /= len(train_loader.dataset)
         loss_collect.append(epoch_loss)
-        print(f'Epoch [{epoch+1}/{epochs}], Loss: {epoch_loss:.4f}')
+        if epoch % 5 == 0:
+            model.eval()
+            correct = 0
+            total = 0
+            with torch.no_grad():
+                for data, target in test_loader:
+                    data = data.to(device)
+                    target = target.to(device)
+                    outputs = model(data)
+                    _, predicted = torch.max(outputs.data, 1)
+                    total += target.size(0)
+                    correct += (predicted == target).sum().item()
+            val_collect.append(100 * correct / total)
+            # print(f'Test Accuracy: {100 * correct / total:.2f}%')
+        print(f'Epoch [{epoch+1}/{epochs}], Loss: {epoch_loss:.4f}, Test: {100 * correct / total:.2f}')
     
-    # Evaluate
-    model.eval()
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        for data, target in test_loader:
-            outputs = model(data)
-            _, predicted = torch.max(outputs.data, 1)
-            total += target.size(0)
-            correct += (predicted == target).sum().item()
     torch.save({
     'epoch': epochs,
     'model_state_dict': model.state_dict(),
     'optimizer_state_dict': optimizer.state_dict(),
     'epoch_loss': epoch_loss
     }, dir + activation_type + '_' + str(epoch) + '.pth')
-    print(f'Test Accuracy: {100 * correct / total:.2f}%')
+    
+    # Evaluate
+    
+    
     loss_collect = torch.tensor(loss_collect)
-    csv_write(dir + '/loss_history_' + activation_type + '.csv', torch.linspace(1, epochs, epochs), loss_collect,  'epoch', 'loss', '', torch.linspace(1, epochs, epochs))
+    csv_write(dir + '/loss_history_' + activation_type + '.csv', torch.linspace(1, epochs, epochs), loss_collect,  'epoch', 'loss', '', val_collect)
     
