@@ -113,7 +113,8 @@ def mnist_data(epochs, learn_rate, device, activation_type='default'):
                     _, predicted = torch.max(outputs.data, 1)
                     total += target.size(0)
                     correct += (predicted == target).sum().item()
-            val_collect.append(100 * correct / total)
+        val_collect.append(100 * correct / total)
+        
             # print(f'Test Accuracy: {100 * correct / total:.2f}%')
         if (epoch + 1) % save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch, dir)
