@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from models.model_lelu import LELU
 from models.model_nele import NELE
 
-def mnist_validation(epochs, activation_type='default'):
+def mnist_validation(epochs, device, activation_type='default'):
     if activation_type == 'relu':
         activation = nn.ReLU()
     elif activation_type == 'elu':
@@ -41,7 +41,8 @@ def mnist_validation(epochs, activation_type='default'):
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     model = DeepFCNet(input_size, hidden_size, num_hidden_layers, num_classes, activation, activation_type)
-    checkpoint = torch.load('RESULTS/MNIST/' + activation_type + '/' + activation_type + '_' + str(epochs - 1) + '.pth')
+    checkpoint = torch.load('RESULTS/MNIST/' + activation_type + '/' + activation_type + '_' + str(epochs - 1) + '.pth',
+                            map_location=device)
     model.load_state_dict(checkpoint['model_state_dict'])
     epoch = checkpoint['epoch']
     epoch_loss = checkpoint['epoch_loss']
@@ -55,4 +56,4 @@ def mnist_validation(epochs, activation_type='default'):
             _, predicted = torch.max(outputs.data, 1)
             total += target.size(0)
             correct += (predicted == target).sum().item()
-    print(f'{activation_type}, Test Accuracy: {100 * correct / total:.2f}%, Training loss : {epoch_loss}')
+    print(f'{activation_type}, Test Accuracy: {100 * correct / total:.2f}%, Training loss : {round(epoch_loss, 4)}')
