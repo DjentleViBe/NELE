@@ -18,14 +18,18 @@ def N(i, p, u, knots):
 # Evaluate NURBS curve
 def nurbs_curve(ctrlpts, weights, degree, u):
     n = len(ctrlpts) - 1
-    knots = np.linspace(0, 1, n + degree + 2)  # uniform knot vector
+    knots = np.concatenate((
+    np.zeros(degree),
+    np.linspace(0, 1, n - degree + 2),
+    np.ones(degree)
+    ))
     numerator = np.zeros(2)
     denominator = 0.0
     for i in range(n+1):
         Ni = N(i, degree, u, knots)
         numerator += Ni * weights[i] * np.array(ctrlpts[i])
         denominator += Ni * weights[i]
-    return numerator / denominator
+    return numerator / (denominator)
 
 # Tangent approximation using finite differences
 def nurbs_tangent(ctrlpts, weights, degree, u, delta=1e-5):
@@ -37,31 +41,29 @@ def nurbs_tangent(ctrlpts, weights, degree, u, delta=1e-5):
 ctrlpts = [
     [-10, 0],
     [0, 0],
-    [10, 1],  # notch point
+    [10, 10],  # notch point
 ]
-weights = [1.0, 1.0, 1.0]
-degree = 3
+weights_2 = [1.0, 0.3, 1.0]
+weights_1 = [1.0, 1.0, 1.0]
+weights_0 = [1.0, 5.0, 1.0]
+degree = 2
 
 # Evaluate curve points
 u_vals = np.linspace(0, 1, 200)
-curve_points = np.array([nurbs_curve(ctrlpts, weights, degree, u) for u in u_vals])
-
-# Tangent at notch
-u_notch = 0.5
-tangent = nurbs_tangent(ctrlpts, weights, degree, u_notch)
-point = nurbs_curve(ctrlpts, weights, degree, u_notch)
-
+curve_points_w2 = np.array([nurbs_curve(ctrlpts, weights_2, degree, u) for u in u_vals])
+curve_points_w1 = np.array([nurbs_curve(ctrlpts, weights_1, degree, u) for u in u_vals])
+curve_points_w0 = np.array([nurbs_curve(ctrlpts, weights_0, degree, u) for u in u_vals])
 # Plotting
-plt.figure(figsize=(5, 5))
-plt.plot(curve_points[:,0], curve_points[:,1], 'b-', label='NURBS curve', color='k')
-plt.plot(*zip(*ctrlpts), 'ro--', label='Control points', color='red')
-#plt.quiver(point[0], point[1], tangent[0], tangent[1],
-#           color='g', scale=5, width=0.01, label='Tangent at notch')
-#plt.scatter(point[0], point[1], color='k', zorder=5, label='Notch point')
-plt.title("NURBS Curve from Scratch with Tangent")
+plt.figure(figsize=(5, 4))
+plt.plot(curve_points_w2[:,0], curve_points_w2[:,1], label='w = 0.3', color='k', linestyle = '-.')
+plt.plot(curve_points_w1[:,0], curve_points_w1[:,1], label='w = 1.0', color='k')
+plt.plot(curve_points_w0[:,0], curve_points_w0[:,1], label='w = 5.0', color='k', linestyle = ':')
+
+plt.plot(*zip(*ctrlpts), label='Control points', color='red', linestyle = '--', marker ='o')
 plt.xlabel("X")
 plt.ylabel("Y")
 plt.legend()
-plt.ylim(-1, 2)
-plt.grid(True)
-plt.show()
+plt.tight_layout()
+plt.ylim(-0.25, 11)
+plt.grid(True, linewidth=0.1)
+plt.savefig('PICS/nurbs.pdf')
