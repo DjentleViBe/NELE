@@ -4,8 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import config as cfg
-activations =  ['lr = 1e-3', 'lr = 1e-4', 'lr = 1e-5']
-activations_file =  ['nele=0.001', 'nele=0.0001', 'nele=0.00001']
+activations =  cfg.AF_plot
+activations_file =  cfg.AF
 colors = ["#0000FF",
             "#ff0000",
             "#2ca02c",
@@ -25,10 +25,7 @@ def plot_only(study_type):
     for i, act in enumerate(activations_file):
         epochs, losses_train, losses_test = csv_read('RESULTS/' + study_type  + '/' + act + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', '')
         print(f'{act} : {round(max(losses_test), 2)}, index : {losses_test.index(max(losses_test))}')
-        if act == 'nele' or act =='lelu':
-            ax1.plot(epochs, losses_train, color = colors[i], label=activations[i], linewidth = 0.7)
-        else:
-            ax1.plot(epochs, losses_train, colors[i], label=activations[i], linewidth = 0.7)
+        ax1.plot(epochs, losses_train, color = colors[i], label=activations[i], linewidth = 0.7)
         selected_epochs = []
         selected_losses = []
 
@@ -38,13 +35,8 @@ def plot_only(study_type):
                 selected_losses.append(l)
         selected_epochs.append(epochs[-1])
         selected_losses.append(losses_test[-1])
-        if act == 'sigmoid' or act == 'softplus':
-            ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7, linestyle = '--')
-        elif act == 'nele' or act =='lelu':
-            ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7, linestyle = '--')
-        else:
-            ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7, linestyle = '--')
-    
+        ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7, linestyle = '--')
+
     ax1.set_xlim(1, cfg.epochs)
     ax1.set_xticks(range(1, cfg.epochs, cfg.epochs//3))
     ax1.grid(True, linewidth = 0.1)
@@ -55,6 +47,5 @@ def plot_only(study_type):
     plt.cla()
     plt.close()
 
-plot_only('MNIST')
-
-    
+def mnist_nele():
+    plot_only('MNIST')
