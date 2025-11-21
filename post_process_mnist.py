@@ -13,8 +13,8 @@ colors = ["#0000FF", "#aec7e8",
             '#000000']
 
 def plot_only(study_type):
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize = (7,3))
-    fig.subplots_adjust(bottom = 0.4, wspace = 0.35) 
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize = (11, 3))
+    fig.subplots_adjust(wspace = 0.2, right = 0.82, bottom=0.14) 
     # plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, , ecolor="#c7c7c7", error_kw={"elinewidth": 2})
     ax1.set_ylabel('Training Loss')
     ax2.set_ylabel('Test Loss (%)')
@@ -67,8 +67,8 @@ def plot_only(study_type):
         lines += l
         labels += lab
     
-    fig.legend(lines, labels, loc='lower center', ncol = 4, bbox_to_anchor = (0.5, 0.0))
-    #fig.tight_layout()
+    fig.legend(lines, labels, loc='lower center', bbox_to_anchor = (0.945, 0.1))
+    # fig.tight_layout()
     plt.savefig('PICS/' + study_type + '/training_loss.pdf', transparent=False)
 
     plt.cla()

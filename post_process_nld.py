@@ -30,7 +30,8 @@ def plot_only(x, study_type):
     mpl.rcParams['pdf.use14corefonts'] = False
     mpl.rcParams['pdf.fonttype'] = 42  # keeps colors in RGB
     plt.style.use("tableau-colorblind10")
-    plt.figure(figsize=(8,4))
+    plt.figure(figsize=(5,3))
+
     plt.bar(activations, std_deviation_collect, color=colors)
     plt.errorbar(activations, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="black", elinewidth=3, capsize=5)
     plt.errorbar(activations, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="white", elinewidth=0, capsize=3)
@@ -43,7 +44,8 @@ def plot_only(x, study_type):
     plt.cla()
     plt.close()
 
-    plt.figure(figsize=(8,5))
+    plt.figure(figsize=(5,3))
+    plt.subplots_adjust(right = 0.65)
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
 
@@ -52,7 +54,7 @@ def plot_only(x, study_type):
         plt.plot(epochs, losses_tanh, colors[i], label=activations[i], linewidth = 0.8)
     # Plot
     plt.yscale('log')
-    plt.legend()
+    plt.legend(loc = 'lower right', bbox_to_anchor = (1.47, -0.04))
     plt.grid(True, linewidth=0.1)
     plt.tight_layout()
     plt.savefig('PICS/' + study_type + '/training_loss.pdf', transparent=False)
@@ -60,7 +62,7 @@ def plot_only(x, study_type):
     plt.cla()
     plt.close()
 
-    plt.figure(figsize=(8,5))
+    plt.figure(figsize=(5,3))
     for i, act in enumerate(activations):
         x_vals, y_preds, y = csv_read(dir + '/predictions_' + activations_file[i] + '.csv', 'x', 'y_pred','y_actual')
         plt.plot(x_vals, y_preds, colors[i], label=activations[i], linewidth=0.7)
