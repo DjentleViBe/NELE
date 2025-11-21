@@ -13,8 +13,8 @@ colors = ["#0000FF", "#aec7e8",
             '#000000']
 
 def plot_only(study_type):
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize = (7,7))
-    fig.subplots_adjust(right = 0.7, hspace = 0.35) 
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize = (7,3))
+    fig.subplots_adjust(bottom = 0.4, wspace = 0.35) 
     # plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, , ecolor="#c7c7c7", error_kw={"elinewidth": 2})
     ax1.set_ylabel('Training Loss')
     ax2.set_ylabel('Test Loss (%)')
@@ -53,7 +53,9 @@ def plot_only(study_type):
     ax3.set_xlim(1, 20)
     ax4.set_xlim(1, int(max(epochs)))
     ax5.set_xlim(1, int(max(epochs)))
+    ax1.set_xticks(range(1, 20, 5))
     ax2.set_xticks(range(1, 20, 5))
+    ax3.set_xticks(range(1, 20, 5))
     ax1.grid(True, linewidth = 0.1)
     ax2.grid(True, linewidth = 0.1)
     lines = []
@@ -64,7 +66,7 @@ def plot_only(study_type):
         lines += l
         labels += lab
     
-    fig.legend(lines, labels, loc='center left', bbox_to_anchor=(0.75, 0.7))
+    fig.legend(lines, labels, loc='lower center', ncol = 4, bbox_to_anchor = (0.5, 0.0))
     #fig.tight_layout()
     plt.savefig('PICS/' + study_type + '/training_loss.pdf', transparent=False)
 
