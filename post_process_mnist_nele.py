@@ -44,8 +44,8 @@ def plot_only(study_type):
         else:
             ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7, linestyle = '--')
     
-    ax1.set_xlim(1, 20)
-    ax1.set_xticks(range(1, 20, 5))
+    ax1.set_xlim(1, 300)
+    ax1.set_xticks(range(1, 300, 100))
     ax1.grid(True, linewidth = 0.1)
     plt.legend(loc='lower right')
     plt.tight_layout()
