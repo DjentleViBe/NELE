@@ -41,27 +41,27 @@ def mnist_data(epochs, learn_rate, device, activation_type='default'):
     create_directory('RESULTS/MNIST/' + activation_type + '/')
     create_directory('PICS/MNIST/' + activation_type + '/')
     # Activation function selection
-    if activation_type == 'relu':
+    if 'relu' in activation_type.lower():
         activation = nn.ReLU()
-    elif activation_type == 'elu':
+    elif 'elu' in activation_type.lower():
         activation = nn.ELU(alpha=1.0)
-    elif activation_type == 'leaky_relu':
+    elif 'leaky_relu' in activation_type.lower():
         activation = nn.LeakyReLU(negative_slope=0.1)
-    elif activation_type == 'gelu':
+    elif 'gelu' in activation_type.lower():
         activation = nn.GELU()
-    elif activation_type == 'mish':
+    elif 'mish' in activation_type.lower():
         activation = nn.Mish()
-    elif activation_type == 'sigmoid':
+    elif 'sigmoid' in activation_type.lower():
         activation = nn.Sigmoid()
-    elif activation_type == 'silu':
+    elif 'silu' in activation_type.lower():
         activation = nn.SiLU()
-    elif activation_type == 'softplus':
+    elif 'softplus' in activation_type.lower():
         activation = nn.Softmax()
-    elif activation_type == 'tanh':
+    elif 'tanh'in activation_type.lower():
         activation = nn.Tanh()
-    elif activation_type == 'lelu':
+    elif 'lelu' in activation_type.lower():
         activation = LELU()
-    elif activation_type == 'nele':
+    elif 'nele' in activation_type.lower():
         activation = NELE(1, 3, 2)
     else:
         raise ValueError("Invalid activation type")
