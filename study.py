@@ -49,14 +49,11 @@ def study_data(x, y, epochs, learn_rate, study_type='default'):
     print("Running analysis - LELU Activation Function")
     loss_collect[8], std_deviation_collect[8] = lelu_net(x, y, dir + '/predictions_lelu.csv', 
                                                              dir + '/loss_history_lelu.csv', learn_rate, epochs)
-    print("Running analysis - BELU Activation Function")
-    loss_collect[9], std_deviation_collect[9] = belu_net(x, y, dir + '/predictions_belu.csv', 
-                                                         dir + '/loss_history_belu.csv', 20, learn_rate, epochs)
     print("Running analysis - Mish Activation Function")
-    loss_collect[10], std_deviation_collect[10] = mish_net(x, y, dir + '/predictions_mish.csv', 
+    loss_collect[9], std_deviation_collect[9] = mish_net(x, y, dir + '/predictions_mish.csv', 
                                                              dir + '/loss_history_mish.csv', learn_rate, epochs)
     print("Running analysis - NELE Activation Function")
-    loss_collect[11], std_deviation_collect[11] = nele_net(x, y, dir + '/predictions_nele.csv', 
+    loss_collect[10], std_deviation_collect[10] = nele_net(x, y, dir + '/predictions_nele.csv', 
                                                          dir + '/loss_history_nele.csv', 3, 2, learn_rate, epochs)
     
     print("Plotting results")
