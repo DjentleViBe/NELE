@@ -3,6 +3,7 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import config as cfg
 activations =  ['lr = 1e-3', 'lr = 1e-4', 'lr = 1e-5']
 activations_file =  ['nele=0.001', 'nele=0.0001', 'nele=0.00001']
 colors = ["#0000FF",
@@ -44,8 +45,8 @@ def plot_only(study_type):
         else:
             ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7, linestyle = '--')
     
-    ax1.set_xlim(1, 300)
-    ax1.set_xticks(range(1, 300, 100))
+    ax1.set_xlim(1, cfg.epochs)
+    ax1.set_xticks(range(1, cfg.epochs, cfg.epochs//3))
     ax1.grid(True, linewidth = 0.1)
     plt.legend(loc='lower right')
     plt.tight_layout()

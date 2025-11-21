@@ -82,26 +82,24 @@ def plot_only(x, study_type):
     plt.tight_layout()
     plt.savefig('PICS/' + study_type + '/curve_fitting.pdf', transparent=False)
 
+def process_nld():
+    x = torch.linspace(-5, 5, 200).unsqueeze(1)
+    ################### EXP NOISE ##########################
+    plot_only(x, 'exp_noise')
 
-x = torch.linspace(-5, 5, 200).unsqueeze(1)
-################### EXP NOISE ##########################
-plot_only(x, 'exp_noise')
+    ################### HYP NOISE ##########################
+    plot_only(x, 'hyp_noise')
 
-################### HYP NOISE ##########################
-plot_only(x, 'hyp_noise')
+    ################### QUAD NOISE ##########################
+    plot_only(x, 'quad_noise')
 
-################### QUAD NOISE ##########################
-y = x**2 + 0.2 * torch.randn(x.size())
-plot_only(x, 'quad_noise')
+    ################### SINE NOISE ##########################
+    plot_only(x, 'sine_noise')
 
-################### SINE NOISE ##########################
-plot_only(x, 'sine_noise')
+    ################### TRIG NOISE ##########################
+    plot_only(x, 'trig_noise')
 
-################### TRIG NOISE ##########################
-plot_only(x, 'trig_noise')
-
-################### EXP-POLY NOISE ##########################
-x = torch.linspace(0, 10, 200).unsqueeze(1)
-y = x**3 / (torch.exp(x) - 1 + 1E-6) + 0.2 * torch.randn(x.size())
-plot_only(x, 'exppoly_noise')
+    ################### EXP-POLY NOISE ##########################
+    x = torch.linspace(0, 10, 200).unsqueeze(1)
+    plot_only(x, 'exppoly_noise')   
     

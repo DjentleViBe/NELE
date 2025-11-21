@@ -3,8 +3,9 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import config as cfg
 activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELE']
-activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'leaky_relu', 'lelu', 'mish',  'nele']
+activations_file =  cfg.AF
 colors = ["#0000FF", "#aec7e8", 
             "#ff0000", "#ffbb78",
             "#2ca02c", "#98df8a",
@@ -74,6 +75,5 @@ def plot_only(study_type):
     plt.cla()
     plt.close()
 
-plot_only('MNIST')
-
-    
+def process_mnist():
+    plot_only('MNIST')

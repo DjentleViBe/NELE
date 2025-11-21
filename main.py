@@ -1,12 +1,27 @@
 from curve_fit import curve_fit
-from mnist import mnist, mnist_validation
+from mnist import mnist_train, mnist_eval
+from post_process_nld import process_nld
+from post_process_mnist import process_mnist
+import argparse
 
 if __name__ == "__main__":
     print("Begin Analysis")
-    # Synthetic data analysis
-    # curve_fit()
-    # MNIST
-    mnist("cuda")
-    # CIFAR-10
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--type", type=str, default='nlsd')
+    parser.add_argument("--mode", type=str, default='train')
+    parser.add_argument("--device", type=str, default='cpu')
+    args = parser.parse_args()
+    if args.type == 'nlsd':
+        if args.mode == 'train':
+            curve_fit()
+        elif args.mode == 'process':
+            process_nld()
+    elif args.type == 'mnist':
+        if args.mode == 'train':
+            mnist_train(args.device)
+        elif args.mode == 'eval':
+            mnist_eval(args.device)
+        elif args.mode == 'process':
+            process_mnist()
     print("Analysis completed")
     

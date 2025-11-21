@@ -1,6 +1,6 @@
 import torch.nn as nn
 import torch
-from MNIST.study import input_size, hidden_size, num_hidden_layers, num_classes, batch_size
+from config import input_size, hidden_size, num_hidden_layers, num_classes, batch_size
 from MNIST.Neuralnet import DeepFCNet
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
@@ -8,27 +8,33 @@ from models.model_lelu import LELU
 from models.model_nele import NELE
 
 def mnist_validation(epochs, device, activation_type='default'):
-    if activation_type == 'relu':
+    if '=' in activation_type:
+        base, param = activation_type.split('=')
+        param = float(param)  # convert parameter to float if needed
+    else:
+        base = activation_type
+        param = None
+    if base == 'relu':
         activation = nn.ReLU()
-    elif activation_type == 'elu':
+    elif base == 'elu':
         activation = nn.ELU(alpha=1.0)
-    elif activation_type == 'leaky_relu':
+    elif base == 'leaky_relu' :
         activation = nn.LeakyReLU(negative_slope=0.1)
-    elif activation_type == 'gelu':
+    elif base == 'gelu' :
         activation = nn.GELU()
-    elif activation_type == 'mish':
+    elif base == 'mish' :
         activation = nn.Mish()
-    elif activation_type == 'sigmoid':
+    elif base == 'sigmoid' :
         activation = nn.Sigmoid()
-    elif activation_type == 'silu':
+    elif base == 'silu' :
         activation = nn.SiLU()
-    elif activation_type == 'softplus':
+    elif base == 'softplus' :
         activation = nn.Softmax()
-    elif activation_type == 'tanh':
+    elif base == 'tanh':
         activation = nn.Tanh()
-    elif activation_type == 'lelu':
+    elif base == 'lelu' :
         activation = LELU()
-    elif activation_type == 'nele':
+    elif base == 'nele' :
         activation = NELE(1, 3, 2)
     else:
         raise ValueError("Invalid activation type")
