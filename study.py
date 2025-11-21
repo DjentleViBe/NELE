@@ -14,15 +14,11 @@ from plot_pred import plot_pred
 from plot_loss import plot_loss
 from matplotlib import pyplot as plt
 import numpy as np
+import config as cfg
 
 def study_data(x, y, epochs, learn_rate, study_type='default'):
-    activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', 'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
-    colors = ["#0072B2", "#56B4E9", 
-            "#E69F00", "#F0B775",
-            "#009E73", "#63C6A8",
-            "#CC79A7", "#DDA5C9",
-            "#8E6B55", "#C7B2A8",
-            '#000000']
+    activations =  cfg.AF
+    colors = cfg.colors
     loss_collect = np.zeros(len(activations))
     std_deviation_collect = np.zeros(len(activations))
     dir =  'RESULTS/' + study_type + '/'

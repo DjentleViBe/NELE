@@ -4,14 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import config as cfg
-activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELE']
+activations =  cfg.AF_plot
 activations_file =  cfg.AF
-colors = ["#0000FF", "#aec7e8", 
-            "#ff0000", "#ffbb78",
-            "#2ca02c", "#98df8a",
-            "#8000FF", "#d57dc1",
-            "#99342f", "#c7c7c7",
-            '#000000']
+colors = cfg.colors
 
 def plot_only(study_type):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize = (11, 3))
