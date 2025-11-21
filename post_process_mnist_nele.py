@@ -21,7 +21,7 @@ def plot_only(study_type):
     ax1.set_ylabel('Training loss')
     ax1.set_xlabel('epochs')
     ax2 = ax1.twinx()
-    ax2.set_ylabel('Test Loss (%)')
+    ax2.set_ylabel('Test Accuracy (%)')
     for i, act in enumerate(activations_file):
         epochs, losses_train, losses_test = csv_read('RESULTS/' + study_type  + '/' + act + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', '')
         print(f'{act} : {round(max(losses_test), 2)}, index : {losses_test.index(max(losses_test))}')

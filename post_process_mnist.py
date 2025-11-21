@@ -13,19 +13,19 @@ def plot_only(study_type):
     fig.subplots_adjust(wspace = 0.2, right = 0.82, bottom=0.14) 
     # plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, , ecolor="#c7c7c7", error_kw={"elinewidth": 2})
     ax1.set_ylabel('Training Loss')
-    ax2.set_ylabel('Test Loss (%)')
+    ax2.set_ylabel('Test Accuracy (%)')
    
     ax1.set_yscale('log')
     ax1.set_xlabel('epochs')
     ax3 = ax2.twinx()
     ax4 = ax1.twiny()
     ax5 = ax2.twiny()
-    ax3.set_ylabel('Test Loss (%)')
+    ax3.set_ylabel('Test Accuracy (%)')
     ax2.set_xlabel('epochs')
     for i, act in enumerate(activations_file):
         epochs, losses_train, losses_test = csv_read('RESULTS/' + study_type  + '/' + act + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', '')
         print(f'{act} : {round(max(losses_test), 2)}, index : {losses_test.index(max(losses_test))}')
-        if act == 'nele' or act =='lelu':
+        if 'nele' in act or 'lelu' in act:
             ax4.plot(epochs, losses_train, color = colors[i], label=activations[i], linewidth = 0.7)
         else:
             ax1.plot(epochs, losses_train, colors[i], label=activations[i], linewidth = 0.7)
@@ -40,7 +40,7 @@ def plot_only(study_type):
         selected_losses.append(losses_test[-1])
         if act == 'sigmoid' or act == 'softplus':
             ax3.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
-        elif act == 'nele' or act =='lelu':
+        elif 'nele' in act or 'lelu' in act:
             ax5.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
         else:
             ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
