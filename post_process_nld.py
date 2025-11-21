@@ -63,6 +63,7 @@ def plot_only(x, study_type):
     plt.close()
 
     plt.figure(figsize=(5,3))
+    plt.subplots_adjust(right = 0.65)
     for i, act in enumerate(activations):
         x_vals, y_preds, y = csv_read(dir + '/predictions_' + activations_file[i] + '.csv', 'x', 'y_pred','y_actual')
         plt.plot(x_vals, y_preds, colors[i], label=activations[i], linewidth=0.7)
@@ -78,7 +79,7 @@ def plot_only(x, study_type):
     # plt.scatter(x_vals, y_preds, s=10, alpha=0.5)  # optional: scatter for points
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.legend()
+    plt.legend(loc = 'lower right', bbox_to_anchor = (1.48, -0.13))
     plt.tight_layout()
     plt.savefig('PICS/' + study_type + '/curve_fitting.pdf', transparent=False)
 
@@ -102,4 +103,3 @@ def process_nld():
     ################### EXP-POLY NOISE ##########################
     x = torch.linspace(0, 10, 200).unsqueeze(1)
     plot_only(x, 'exppoly_noise')   
-    
