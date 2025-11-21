@@ -3,12 +3,11 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELE']
-activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'leaky_relu', 'lelu', 'mish',  'nele']
-colors = ["#0000FF", "#aec7e8", 
-            "#ff0000", "#ffbb78",
-            "#2ca02c", "#98df8a",
-            "#8000FF", "#d57dc1",
+activations =  ['lr = 1e-3', 'lr = 1e-4', 'lr = 1e-5']
+activations_file =  ['nele=0.001', 'nele=0.0001', 'nele=0.00001']
+colors = ["#0000FF",
+            "#ff0000",
+            "#2ca02c",
             "#99342f", "#c7c7c7",
             '#000000']
 
@@ -69,7 +68,7 @@ def plot_only(study_type):
     
     fig.legend(lines, labels, loc='lower center', ncol = 4, bbox_to_anchor = (0.5, 0.0))
     #fig.tight_layout()
-    plt.savefig('PICS/' + study_type + '/training_loss.pdf', transparent=False)
+    plt.savefig('PICS/' + study_type + '/nele_training_loss.pdf', transparent=False)
 
     plt.cla()
     plt.close()
