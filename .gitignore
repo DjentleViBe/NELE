@@ -12,3 +12,5 @@ __pycache__
 *.blg
 *.bbl
 *.out
+data
+*.pth

@@ -12,12 +12,12 @@ from RELU import relu_process
 from LRELU import lrelu_process
 import matplotlib as mpl
 x_points = np.linspace(-5, 5, 200)
-colors = ["#0000FF", "#aec7e8", 
-            "#ff0000", "#ffbb78",
-            "#2ca02c", "#98df8a",
-            "#8000FF", "#d57dc1",
-            "#99342f", "#c7c7c7",
-            '#000000']
+colors = ["#490092", "#006ddb", 
+          "#b66dff", "#ff6db6",
+          "#920000", "#db6d00",
+          "#ffdf4d", "#004949",
+          "#009999", "#22cf22",
+          '#000000']
 
 activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish']
 y_points_collect = np.zeros((len(activations), 200))
@@ -45,7 +45,7 @@ for l in range(0, len(activations)):
     ax1.plot(x_points, y_points_collect[l], color = colors[l], linewidth = 0.7)
 
 for l in range(0, len(activations)):
-    ax1.scatter(x_max_collect[l], y_max_collect[l], label=activations[l],color = colors[l], s = 3, zorder=5)
+    ax1.scatter(x_max_collect[l], y_max_collect[l], label=activations[l],color = colors[l], s = 6, zorder=5, edgecolors='black', linewidth=0.03)
 
 for l in range(0, len(activations)):
     ax3.plot(x_points, kappa_points_collect[l], color = colors[l], label=activations[l], linewidth = 0.7, linestyle = 'dashed')
@@ -55,8 +55,8 @@ ax1.set_ylabel('y')
 ax3.set_ylabel(r'$\kappa$')
 ax1.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 ax3.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-ax1.grid(True, linewidth=0.3)
-ax3.grid(True, linewidth=0.3)
+ax1.grid(True, linewidth=0.1)
+ax3.grid(True, linewidth=0.1)
 ax3.set_xlim(-5, 5)
 ax3.locator_params(axis='x', nbins=10)
 plt.tight_layout()

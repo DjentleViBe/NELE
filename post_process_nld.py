@@ -3,14 +3,16 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+from smoothness import smoothness_derivative_energy, curvature_smoothness, lipschitz_constant, frequency_smoothness
+
 activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELE']
 activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'lrelu', 'lelu', 'mish', 'nele']
-colors = ["#0000FF", "#aec7e8", 
-            "#ff0000", "#ffbb78",
-            "#2ca02c", "#98df8a",
-            "#8000FF", "#d57dc1",
-            "#99342f", "#c7c7c7",
-            '#000000']
+colors = ["#490092", "#006ddb", 
+          "#b66dff", "#ff6db6",
+          "#920000", "#db6d00",
+          "#ffdf4d", "#004949",
+          "#009999", "#22cf22",
+          '#000000']
 
 def plot_only(x, study_type):
     loss_collect = np.zeros(len(activations))
@@ -28,7 +30,8 @@ def plot_only(x, study_type):
     mpl.rcParams['pdf.use14corefonts'] = False
     mpl.rcParams['pdf.fonttype'] = 42  # keeps colors in RGB
     plt.style.use("tableau-colorblind10")
-    plt.figure(figsize=(8,4))
+    plt.figure(figsize=(5,3))
+
     plt.bar(activations, std_deviation_collect, color=colors)
     plt.errorbar(activations, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="black", elinewidth=3, capsize=5)
     plt.errorbar(activations, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="white", elinewidth=0, capsize=3)
@@ -41,60 +44,62 @@ def plot_only(x, study_type):
     plt.cla()
     plt.close()
 
-    plt.figure(figsize=(8,5))
+    plt.figure(figsize=(5,3))
+    plt.subplots_adjust(right = 0.65)
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
 
     for i, act in enumerate(activations):
         epochs, losses_tanh, _ = csv_read(dir + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', '')
-        plt.plot(epochs, losses_tanh, colors[i], label=activations[i], linewidth = 0.7)
+        plt.plot(epochs, losses_tanh, colors[i], label=activations[i], linewidth = 0.8)
     # Plot
     plt.yscale('log')
-    plt.legend()
-    plt.grid(True)
+    plt.legend(loc = 'lower right', bbox_to_anchor = (1.47, -0.04))
+    plt.grid(True, linewidth=0.1)
     plt.tight_layout()
     plt.savefig('PICS/' + study_type + '/training_loss.pdf', transparent=False)
 
     plt.cla()
     plt.close()
 
-    plt.figure(figsize=(8,5))
+    plt.figure(figsize=(5,3))
+    plt.subplots_adjust(right = 0.65)
     for i, act in enumerate(activations):
         x_vals, y_preds, y = csv_read(dir + '/predictions_' + activations_file[i] + '.csv', 'x', 'y_pred','y_actual')
         plt.plot(x_vals, y_preds, colors[i], label=activations[i], linewidth=0.7)
-    
+        s1 = smoothness_derivative_energy(x_vals, y_preds, 1)
+        s2 = smoothness_derivative_energy(x_vals, y_preds, 2)
+        s3 = curvature_smoothness(x_vals, y_preds)
+        s4 = lipschitz_constant(x_vals, y_preds)
+        s5 = frequency_smoothness(y_preds)
+        print(f'{act} & {round(s3, 2)} \\\\')
+    print("\n")
     # Plot
     plt.scatter(x, y, label='Data', color = 'k', s=10)
     # plt.scatter(x_vals, y_preds, s=10, alpha=0.5)  # optional: scatter for points
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.legend()
+    plt.legend(loc = 'lower right', bbox_to_anchor = (1.48, -0.13))
     plt.tight_layout()
     plt.savefig('PICS/' + study_type + '/curve_fitting.pdf', transparent=False)
 
-x = torch.linspace(-5, 5, 200).unsqueeze(1)
+def process_nld():
+    x = torch.linspace(-5, 5, 200).unsqueeze(1)
+    ################### EXP NOISE ##########################
+    plot_only(x, 'exp_noise')
 
-################### SINE NOISE ##########################
-plot_only(x, 'sine_noise')
+    ################### HYP NOISE ##########################
+    plot_only(x, 'hyp_noise')
 
-################### TRIG NOISE ##########################
-plot_only(x, 'trig_noise')
+    ################### QUAD NOISE ##########################
+    plot_only(x, 'quad_noise')
 
-################### EXP NOISE ##########################
+    ################### SINE NOISE ##########################
+    plot_only(x, 'sine_noise')
 
-plot_only(x, 'exp_noise')
+    ################### TRIG NOISE ##########################
+    plot_only(x, 'trig_noise')
 
-################### HYP NOISE ##########################
-
-plot_only(x, 'hyp_noise')
-
-################### QUAD NOISE ##########################
-
-y = x**2 + 0.2 * torch.randn(x.size())
-plot_only(x, 'quad_noise')
-
-################### EXP-POLY NOISE ##########################
-x = torch.linspace(0, 10, 200).unsqueeze(1)
-y = x**3 / (torch.exp(x) - 1 + 1E-6) + 0.2 * torch.randn(x.size())
-plot_only(x, 'exppoly_noise')
-    
+    ################### EXP-POLY NOISE ##########################
+    x = torch.linspace(0, 10, 200).unsqueeze(1)
+    plot_only(x, 'exppoly_noise')   
