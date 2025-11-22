@@ -16,7 +16,7 @@ class GaussianNoise(nn.Module):
 # Learning rate scheduler: linear decay after 100 epochs
 def adjust_lr(optimizer, epoch, total_epochs=200):
     if epoch >= 100:
-        lr = 1e-3 * (200 - epoch) / 100
+        lr = 1e-3 * (total_epochs - epoch) / 100
         for param_group in optimizer.param_groups:
             param_group['lr'] = lr
 # -------------------------

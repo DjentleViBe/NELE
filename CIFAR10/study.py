@@ -92,6 +92,8 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
         epoch_loss = 0
         model.train()
         adjust_lr(optimizer, epoch)
+        for param_group in optimizer.param_groups:
+            lr = param_group['lr']
         for x, y in train_loader:
             x, y = x.to(device), y.to(device)
             optimizer.zero_grad()
@@ -99,20 +101,22 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
             loss.backward()
             optimizer.step()
             epoch_loss += loss.item() * x.size(0)
+            
         epoch_loss /= len(train_loader.dataset)
         loss_collect.append(epoch_loss)
         
         # Optional: validation
         model.eval()
-        correct, total = 0, 0
+        correct_val, total_val = 0, 0
+        correct_test, total_test = 0, 0
         with torch.no_grad():
             for x, y in val_loader:
                 x, y = x.to(device), y.to(device)
                 outputs = model(x)
                 _, predicted = outputs.max(1)
-                total += y.size(0)
-                correct += (predicted == y).sum().item()
-        val_acc = correct / total
+                total_val += y.size(0)
+                correct_val += (predicted == y).sum().item()
+        val_acc = correct_val / total_val
         val_collect.append(val_acc)
         if epoch % 5 == 0:
             model.eval()
@@ -124,12 +128,12 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
                     target = target.to(device)
                     outputs = model(data)
                     _, predicted = torch.max(outputs.data, 1)
-                    total += target.size(0)
-                    correct += (predicted == target).sum().item()
-        test_collect.append(100 * correct / total)
+                    total_test += target.size(0)
+                    correct_test += (predicted == target).sum().item()
+        test_collect.append(100 * correct_test / total_test)
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch, dir)    
-        print(f"Epoch {epoch+1}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct / total:.4f}")
+        print(f"Epoch {epoch+1}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / total_test:.4f}, lr : {lr}")
 
     loss_collect = torch.tensor(loss_collect)
     test_collect = torch.tensor(test_collect)
