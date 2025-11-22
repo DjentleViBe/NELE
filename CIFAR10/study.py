@@ -22,8 +22,9 @@ def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
 def cifar10_data(epochs, learn_rate, device, activation_type='default'):
     activations = cfg.AF
     colors = cfg.colors
-    loss_collect = np.zeros(len(activations))
-    test_collect = np.zeros(len(activations))
+    loss_collect = []
+    val_collect = []
+    test_collect = []
     dir = 'RESULTS/CIFAR10/' + activation_type + '/'
     create_directory('RESULTS/CIFAR10/' + activation_type + '/')
     create_directory('PICS/CIFAR10/' + activation_type + '/')
@@ -108,6 +109,7 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
                 total += y.size(0)
                 correct += (predicted == y).sum().item()
         val_acc = correct / total
+        val_collect.append(val_acc)
         if epoch % 5 == 0:
             model.eval()
             correct = 0
@@ -125,8 +127,8 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
 
     loss_collect = torch.tensor(loss_collect)
     test_collect = torch.tensor(test_collect)
-    val_acc = torch.tensor(val_acc)
+    val_collect = torch.tensor(val_collect)
     csv_write2(dir + '/loss_history_' + activation_type + '.csv', 
               torch.linspace(1, cfg.epochs, cfg.epochs), 
-              loss_collect, 'epoch', 'loss', '', 'test', val_acc, test_collect)
+              loss_collect, 'epoch', 'loss', '', 'test', val_collect, test_collect)
     
