@@ -6,7 +6,15 @@ def csv_write(filename, x, predicted, xname, yname, zname, y_actual):
         writer.writerow([xname, yname, zname])  # header
         for xi, yi, zi in zip(x, predicted, y_actual):
             writer.writerow([xi.item(), yi.item(), zi.item()])  # convert tensors to Python floats
-    
+
+
+def csv_write2(filename, x, predicted, xname, yname, zname, wname, y_actual, w_actual):
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([xname, yname, zname, wname])  # header
+        for xi, yi, zi, wi in zip(x, predicted, y_actual, w_actual):
+            writer.writerow([xi.item(), yi.item(), zi.item(), wi.item()]) 
+
 def csv_read(filename, xname, yname, zname):
     x_vals = []
     y_preds = []

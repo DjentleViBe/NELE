@@ -3,6 +3,7 @@ from MNIST.mnist import mnist_train, mnist_eval
 from NLSD.post_process_nld import process_nld
 from MNIST.post_process_mnist import process_mnist
 from MNIST.post_process_mnist_nele import mnist_nele
+from CIFAR10.cifar import cifar10_train
 import argparse
 
 if __name__ == "__main__":
@@ -28,5 +29,8 @@ if __name__ == "__main__":
             process_mnist()
         elif args.mode == 'process_nele':
             mnist_nele()
+    elif args.type == 'cifar10':
+        if args.mode == 'train':
+            cifar10_train(args.device, args.reset)
     print("Analysis completed")
     
