@@ -1,8 +1,8 @@
-from curve_fit import curve_fit
-from mnist import mnist_train, mnist_eval
-from post_process_nld import process_nld
-from post_process_mnist import process_mnist
-from post_process_mnist_nele import mnist_nele
+from NLSD.curve_fit import curve_fit
+from MNIST.mnist import mnist_train, mnist_eval
+from NLSD.post_process_nld import process_nld
+from MNIST.post_process_mnist import process_mnist
+from MNIST.post_process_mnist_nele import mnist_nele
 import argparse
 
 if __name__ == "__main__":

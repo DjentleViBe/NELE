@@ -8,16 +8,20 @@ num_classes = 10
 batch_size = 64
 epochs = 300
 save_every = 20
-learning_rate = 0.002
-AF = ['nele=0.002']
-AF_plot = ['lr=0.002']
-# AF =  ['tanh', 'relu', 'elu', 'gelu', 
+learning_rate = 0.00001
+#AF = ['nele=0.00001']
+#AF_plot = ['lr=0.00001']
+#AF =  ['tanh', 'relu', 'elu', 'gelu', 
 #       'sigmoid', 'leaky_relu', 'silu', 
-#       'softplus', 'lelu', 'mish', 'nele']
-#AF =  ['nele=0.002', 'nele=0.001', 'nele=0.0001', 
-#       'nele=0.00001']
-#AF_plot =  ['lr=0.002', 'lr=0.001', 'lr=0.0001', 
-#       'lr=0.00001']
+#       'softplus', 'lelu', 'mish', 'nele=0.002']
+#AF_plot =  ['Tanh', 'ReLU', 'ELU', 'GELU', 
+#       'Sigmoid', 'Leaky_ReLU', 'SiLU', 
+#       'Softplus', 'LeLU', 'Mish', 'NELE']
+AF =  ['nele=0.003', 'nele=0.002', 'nele=0.001', 'nele=0.0001', 
+       'nele=0.00001']
+AF_plot =  ['lr=0.003', 'lr=0.002', 'lr=0.001', 'lr=0.0001', 
+       'lr=0.00001']
+################# CIFAR-10 ####################
 
 ################# PLOTS #######################
 colors = ["#0072B2", "#56B4E9", 

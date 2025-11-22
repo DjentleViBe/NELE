@@ -3,7 +3,7 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-from smoothness import smoothness_derivative_energy, curvature_smoothness, lipschitz_constant, frequency_smoothness
+from NLSD.smoothness import smoothness_derivative_energy, curvature_smoothness, lipschitz_constant, frequency_smoothness
 
 activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELE']
 activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'lrelu', 'lelu', 'mish', 'nele']

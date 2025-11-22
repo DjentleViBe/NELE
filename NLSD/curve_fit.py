@@ -1,6 +1,6 @@
 import torch
 from file_operations import reset_directory, create_directory
-from study import study_data
+from NLSD.study import study_data
 
 def curve_fit(reset):
     x = torch.linspace(-5, 5, 200).unsqueeze(1)
