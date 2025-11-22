@@ -108,7 +108,6 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
         # Optional: validation
         model.eval()
         correct_val, total_val = 0, 0
-        correct_test, total_test = 0, 0
         with torch.no_grad():
             for x, y in val_loader:
                 x, y = x.to(device), y.to(device)
@@ -120,8 +119,7 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
         val_collect.append(val_acc)
         if epoch % 5 == 0:
             model.eval()
-            correct = 0
-            total = 0
+            correct_test, total_test = 0, 0
             with torch.no_grad():
                 for data, target in test_loader:
                     data = data.to(device)
