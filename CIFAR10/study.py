@@ -89,6 +89,7 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
     # Training loop skeleton
     # -------------------------
     for epoch in range(epochs):
+        epoch_loss = 0
         model.train()
         adjust_lr(optimizer, epoch)
         for x, y in train_loader:
@@ -97,6 +98,9 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
             loss = criterion(model(x), y)
             loss.backward()
             optimizer.step()
+            epoch_loss += loss.item() * x.size(0)
+        epoch_loss /= len(train_loader.dataset)
+        loss_collect.append(epoch_loss)
         
         # Optional: validation
         model.eval()
@@ -123,6 +127,8 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
                     total += target.size(0)
                     correct += (predicted == target).sum().item()
         test_collect.append(100 * correct / total)
+        if (epoch + 1) % cfg.save_every  == 0:
+            save(model, optimizer, epoch_loss, activation_type, epoch, dir)    
         print(f"Epoch {epoch+1}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct / total:.4f}")
 
     loss_collect = torch.tensor(loss_collect)
