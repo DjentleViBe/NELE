@@ -62,8 +62,7 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
 
     # CIFAR-10 transforms (ZCA whitening placeholder)
     transform_train = transforms.Compose([
-        transforms.ToTensor(),
-        GaussianNoise(0.15)  # Gaussian noise on input
+        transforms.ToTensor()  # Gaussian noise on input
     ])
     transform_test = transforms.ToTensor()
 

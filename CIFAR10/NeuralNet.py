@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 import torch
+import numpy as np
 
 class ZCATestTransform:
     def __init__(self, mean, W_zca):
