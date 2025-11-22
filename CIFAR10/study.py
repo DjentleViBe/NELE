@@ -8,7 +8,7 @@ from models.model_nele import NELE
 from torch.optim import Adam
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, random_split
-from CIFAR10.NeuralNet import CIFAR10CNN, adjust_lr, GaussianNoise
+from CIFAR10.NeuralNet import CIFAR10CNN, adjust_lr, GaussianNoise, ZCADataset, ZCATestTransform
 from csv_operations import csv_write2
 
 def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
@@ -69,18 +69,43 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
 
     train_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
     test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
+    X_train = np.array([np.array(img) for img, _ in train_dataset], dtype=np.float32)
+    X_train = X_train.reshape(len(X_train), -1) / 255.0  # flatten and normalize
+
+    # Center the data
+    X_mean = np.mean(X_train, axis=0)
+    X_centered = X_train - X_mean
+
+    # Covariance and SVD
+    sigma = np.cov(X_centered, rowvar=False)
+    U, S, _ = np.linalg.svd(sigma)
+    epsilon = 1e-5
+    W_zca = U @ np.diag(1.0 / np.sqrt(S + epsilon)) @ U.T
+
+    # Apply ZCA
+    X_zca = X_centered @ W_zca
+    X_zca = X_zca.reshape(-1, 3, 32, 32)
+
+    # Convert back to torch tensor
+    X_zca_tensor = torch.tensor(X_zca, dtype=torch.float32)
+
+    # Wrap in a custom dataset with labels
+    labels = torch.tensor([y for _, y in train_dataset], dtype=torch.long)
+    train_dataset_zca = ZCADataset(X_zca_tensor, labels)
 
     # Example: split validation
-    train_dataset, val_dataset = random_split(train_dataset, [45000, 5000])
+    train_dataset_zca, val_dataset_zca = random_split(train_dataset, [45000, 5000])
 
-    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=128)
+    transform_test = ZCATestTransform(X_mean, W_zca)
+    test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
+    
+    train_loader = DataLoader(train_dataset_zca, batch_size=128, shuffle=True)
+    val_loader = DataLoader(val_dataset_zca, batch_size=128)
     test_loader = DataLoader(test_dataset, batch_size=128)
 
     # -------------------------
     # Training setup
     # -------------------------
-    device = "cuda" if torch.cuda.is_available() else "cpu"
     model = CIFAR10CNN(activation=activation).to(device)
     optimizer = Adam(model.parameters(), lr=learn_rate)
     criterion = nn.CrossEntropyLoss()
@@ -131,7 +156,7 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
         test_collect.append(100 * correct_test / total_test)
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch, dir)    
-        print(f"Epoch {epoch+1}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / total_test:.4f}, lr : {lr}")
+        print(f"Epoch {epoch+1}, loss: {epoch_loss}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / total_test:.4f}, lr : {lr:.5f}")
 
     loss_collect = torch.tensor(loss_collect)
     test_collect = torch.tensor(test_collect)
