@@ -2,6 +2,33 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 
+class ZCATestTransform:
+    def __init__(self, mean, W_zca):
+        self.mean = mean
+        self.W_zca = W_zca
+
+    def __call__(self, img):
+        x = np.array(img, dtype=np.float32).flatten() / 255.0
+        x_centered = x - self.mean
+        x_zca = x_centered @ self.W_zca
+        return torch.tensor(x_zca.reshape(3,32,32), dtype=torch.float32)
+    
+class ZCADataset(torch.utils.data.Dataset):
+    def __init__(self, data, labels, add_noise_sigma=0.15):
+        self.data = data
+        self.labels = labels
+        self.sigma = add_noise_sigma
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        x = self.data[idx]
+        y = self.labels[idx]
+        if self.sigma > 0:
+            x = x + torch.randn_like(x) * self.sigma
+        return x, y
+    
 class GaussianNoise(nn.Module):
     def __init__(self, sigma=0.15):
         super().__init__()
