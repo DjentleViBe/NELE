@@ -60,7 +60,7 @@ python main.py --type=mnist --mode=process-nele
 This command can be used for processing different configurations with $NELE$. Plots will contain data for cases defined inside [```AF_plot```](./config.py) array.
 
 ## config.py
-The ```config.py``` is divided into sections depending on the daata used for the analysis.
+The ```config.py``` is divided into sections depending on the data used for the analysis.
 ### AF
 This array holds variables required to indicate AF type to be used for the simulation. A detailed list of supported variables and their AF is given below:
 | Variable name | AF | 
@@ -70,7 +70,7 @@ relu |ReLU
 elu|ELU 
 gelu |GELU 
 sigmoid|Sigmoid
-leaky_relu|Leaky_ReLU
+leaky_relu|Leaky ReLU
 silu|SiLU
 softplus|Softplus
 lelu|LeLU
@@ -78,5 +78,5 @@ mish |Mish
 nele|NELE
 
 To facilitate running studies with different configurations, the variables can be appended with additional text followed by ```=``` such as ```nele=0.001```. ```AF_plot``` array also needs to be updated accordingly if the cases need to be post-processed.
-A folder with this name is created inside ```RESULTS```, which holds the simulation raw files and ```PICS```, which contains any post-processing files.
+A folder with this name is created inside ```RESULTS```, which holds the simulation raw files and inside ```PICS```, which contains any post-processing files.
 
