@@ -14,20 +14,20 @@ pip install -r requirements.txt
 
 # Studies
 There are 3 types of analysis that can be performed:
-- Non-linear Synthetic Dataset (NLSD)
-- MNIST
-- CIFAR-10
+- **Non-linear Synthetic Dataset (NLSD)**
+- **MNIST**
+- **CIFAR-10**
 
 The details for each simulation can be set inside [config.py](./config.py)
 The device is set to ```cpu```, by default. It can be changed by using the argument, ```--device=cuda```.
 ## NLSD 
-To run the training :
+To run training :
 ```
 python main.py --type=nlsd --mode=train
 ```
 The command runs NLSD cases for the following activation functions (AF) : $Tanh$, $ReLU$, $ELU$, $GELU$, $Sigmoid$, $Leaky-ReLU$, $SiLU$, $Softplus$, $LeLU$, $Mish$, $NELE$.
 
-To run the validation :
+To run validation :
 ```
 python main.py --type=nlsd --mode=eval
 ```
