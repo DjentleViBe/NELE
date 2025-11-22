@@ -6,9 +6,8 @@ from file_operations import create_directory
 from models.model_lelu import LELU
 from models.model_nele import NELE
 from torch.optim import Adam
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, random_split
-from CIFAR10.NeuralNet import CIFAR10CNN, adjust_lr, GaussianNoise, ZCADataset, ZCATestTransform
+from torch.utils.data import DataLoader
+from CIFAR10.NeuralNet import CIFAR10CNN, adjust_lr, prepare_datasets
 from csv_operations import csv_write2
 
 def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
@@ -60,47 +59,13 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
     else:
         raise ValueError("Invalid activation type")
 
-    # CIFAR-10 transforms (ZCA whitening placeholder)
-    transform_train = transforms.Compose([
-        transforms.ToTensor()  # Gaussian noise on input
-    ])
-    transform_test = transforms.ToTensor()
-
-    train_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
-    test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
-    X_train = np.array([np.array(img) for img, _ in train_dataset], dtype=np.float32)
-    X_train = X_train.reshape(len(X_train), -1) / 255.0  # flatten and normalize
-
-    # Center the data
-    X_mean = np.mean(X_train, axis=0)
-    X_centered = X_train - X_mean
-
-    # Covariance and SVD
-    sigma = np.cov(X_centered, rowvar=False)
-    U, S, _ = np.linalg.svd(sigma)
-    epsilon = 1e-5
-    W_zca = U @ np.diag(1.0 / np.sqrt(S + epsilon)) @ U.T
-
-    # Apply ZCA
-    X_zca = X_centered @ W_zca
-    X_zca = X_zca.reshape(-1, 3, 32, 32)
-
-    # Convert back to torch tensor
-    X_zca_tensor = torch.tensor(X_zca, dtype=torch.float32)
-
-    # Wrap in a custom dataset with labels
-    labels = torch.tensor([y for _, y in train_dataset], dtype=torch.long)
-    train_dataset_zca = ZCADataset(X_zca_tensor, labels)
-
-    # Example: split validation
-    train_dataset_zca, val_dataset_zca = random_split(train_dataset_zca, [45000, 5000])
-
-    transform_test = ZCATestTransform(X_mean, W_zca)
-    test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
-    
-    train_loader = DataLoader(train_dataset_zca, batch_size=128, shuffle=True)
-    val_loader = DataLoader(val_dataset_zca, batch_size=128)
-    test_loader = DataLoader(test_dataset, batch_size=128)
+    # Step 2: Prepare datasets
+    train_dataset, val_dataset, test_dataset = prepare_datasets(
+        val_ratio=0.1
+    )
+    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=128, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
 
     # -------------------------
     # Training setup
