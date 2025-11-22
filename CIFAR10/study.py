@@ -123,7 +123,7 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
                     total += target.size(0)
                     correct += (predicted == target).sum().item()
         test_collect.append(100 * correct / total)
-        print(f"Epoch {epoch+1}, Val Acc: {val_acc:.4f}")
+        print(f"Epoch {epoch+1}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct / total:.4f}")
 
     loss_collect = torch.tensor(loss_collect)
     test_collect = torch.tensor(test_collect)
