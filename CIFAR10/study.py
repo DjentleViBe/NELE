@@ -93,7 +93,7 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
     train_dataset_zca = ZCADataset(X_zca_tensor, labels)
 
     # Example: split validation
-    train_dataset_zca, val_dataset_zca = random_split(train_dataset, [45000, 5000])
+    train_dataset_zca, val_dataset_zca = random_split(train_dataset_zca, [45000, 5000])
 
     transform_test = ZCATestTransform(X_mean, W_zca)
     test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
