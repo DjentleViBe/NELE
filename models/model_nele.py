@@ -39,7 +39,7 @@ class NELE(nn.Module):
         x: (batch_size, num_features)
         Returns: (batch_size, num_features)
         """
-        batch_size, num_features = x.shape
+        # batch_size, num_features,_,_ = x.shape
         device = x.device
         # assert num_features == self.num_features, "Input feature size must match num_features"
 
