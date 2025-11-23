@@ -55,7 +55,7 @@ def mnist_data(epochs, learn_rate, device, activation_type='default'):
     elif base == 'silu' :
         activation = nn.SiLU()
     elif base == 'softplus' :
-        activation = nn.Softmax()
+        activation = nn.Softplus()
     elif base == 'tanh':
         activation = nn.Tanh()
     elif base == 'lelu' :
