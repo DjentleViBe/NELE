@@ -39,14 +39,7 @@ class NELE(nn.Module):
         x: (batch_size, num_features)
         Returns: (batch_size, num_features)
         """
-        # batch_size, num_features,_,_ = x.shape
         device = x.device
-        # assert num_features == self.num_features, "Input feature size must match num_features"
-
-        # Map input to [0,1] for NURBS evaluation
-        # u = torch.sigmoid(x)
-
-        # Uniform knot vector
         n = self.num_points - 1
         knots = torch.linspace(x.min(), x.max(), n + self.degree + 2, device=device)
 
