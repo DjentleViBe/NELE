@@ -117,23 +117,26 @@ class CIFAR10CNN(nn.Module):
         act = self.activation  # shortcut
 
         # Block 1
-        x = act(self.bn1(self.conv1(x)))
-        x = act(self.bn2(self.conv2(x)))
-        x = act(self.bn3(self.conv3(x)))
+        x = self.bn1(self.conv1(x))
+        x = self.bn2(self.conv2(x))
+        x = self.bn3(self.conv3(x))
         x = self.pool1(x)
+        x = act(x)
         x = self.dropout1(x)
 
         # Block 2
-        x = act(self.bn4(self.conv4(x)))
-        x = act(self.bn5(self.conv5(x)))
-        x = act(self.bn6(self.conv6(x)))
+        x = self.bn4(self.conv4(x))
+        x = self.bn5(self.conv5(x))
+        x = self.bn6(self.conv6(x))
         x = self.pool2(x)
+        x = act(x)
         x = self.dropout2(x)
 
         # Block 3
-        x = act(self.bn7(self.conv7(x)))
-        x = act(self.bn8(self.conv8(x)))
-        x = act(self.bn9(self.conv9(x)))
+        x = self.bn7(self.conv7(x))
+        x = self.bn8(self.conv8(x))
+        x = self.bn9(self.conv9(x))
+        x = act(x)
 
         # Global average pooling
         x = self.global_avg_pool(x)
