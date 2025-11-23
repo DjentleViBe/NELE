@@ -143,6 +143,7 @@ class CIFAR10CNN(nn.Module):
 
 def prepare_datasets(val_ratio=0.1, data_root='./data'):
     """Prepare training, validation and test datasets"""
+    print('Preparing CIFAR10 dataset')
     # Load raw training data
     train_dataset_raw = datasets.CIFAR10(root=data_root, train=True, download=True, 
                                          transform=transforms.ToTensor())
@@ -179,4 +180,5 @@ def prepare_datasets(val_ratio=0.1, data_root='./data'):
     test_dataset = ZCADataset(testx_white, torch.tensor(labels_test, dtype=torch.long),
                               add_noise_sigma=0.0, training=False)
     #print(train_dataset.shape)
+    print('CIFAR10 dataset preparation completed')
     return train_dataset, val_dataset, test_dataset
