@@ -5,6 +5,7 @@ import numpy as np
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
 from scipy import linalg
+import config as cfg
 
 class ZCADataset(torch.utils.data.Dataset):
     def __init__(self, data, labels, add_noise_sigma=0.15, training=True):
@@ -71,7 +72,7 @@ class ZCA(object):
 # Learning rate scheduler: linear decay after 100 epochs
 def adjust_lr(optimizer, epoch, total_epochs=200):
     if epoch >= 100:
-        lr = 1e-3 * (total_epochs - epoch) / 100
+        lr = cfg.learning_rate * (total_epochs - epoch) / 100
         for param_group in optimizer.param_groups:
             param_group['lr'] = lr
 # -------------------------
