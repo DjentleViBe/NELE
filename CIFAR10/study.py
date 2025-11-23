@@ -9,6 +9,7 @@ from torch.optim import Adam
 from torch.utils.data import DataLoader
 from CIFAR10.NeuralNet import CIFAR10CNN, adjust_lr, prepare_datasets
 from csv_operations import csv_write2
+import time
 
 def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
     torch.save({
@@ -83,14 +84,19 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
         adjust_lr(optimizer, epoch)
         for param_group in optimizer.param_groups:
             lr = param_group['lr']
+        i = 0
         for x, y in train_loader:
+            start_epoch = time.time()
             x, y = x.to(device), y.to(device)
             optimizer.zero_grad()
             loss = criterion(model(x), y)
             loss.backward()
             optimizer.step()
             epoch_loss += loss.item() * x.size(0)
-            
+            end_epoch = time.time()
+            print(f"Batch : {i}, Time : {end_epoch - start_epoch:.2f} seconds")
+            i += 1
+        
         epoch_loss /= len(train_loader.dataset)
         loss_collect.append(epoch_loss)
         
@@ -99,12 +105,13 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
         correct_val, total_val = 0, 0
         with torch.no_grad():
             for x, y in val_loader:
+                
                 x, y = x.to(device), y.to(device)
                 outputs = model(x)
                 _, predicted = outputs.max(1)
                 total_val += y.size(0)
                 correct_val += (predicted == y).sum().item()
-        val_acc = correct_val / total_val
+                val_acc = correct_val / total_val
         val_collect.append(val_acc)
         if epoch % 5 == 0:
             model.eval()

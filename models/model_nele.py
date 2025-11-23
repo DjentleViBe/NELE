@@ -15,54 +15,45 @@ class NELE(nn.Module):
         )
         self.weights = nn.Parameter(torch.ones(num_features, num_points))
 
-    def N(self, i, p, u, knots):
-        """
-        Vectorized B-spline basis evaluation.
-        u: (batch_size, num_features)
-        knots: 1D tensor
-        Returns: (batch_size, num_features)
-        """
-        if p == 0:
-            return ((u >= knots[i]) & (u < knots[i+1])).float()
-        denom1 = knots[i+p] - knots[i]
-        denom2 = knots[i+p+1] - knots[i+1]
-        term1 = torch.zeros_like(u)
-        term2 = torch.zeros_like(u)
-        if denom1 != 0:
-            term1 = (u - knots[i]) / denom1 * self.N(i, p-1, u, knots)
-        if denom2 != 0:
-            term2 = (knots[i+p+1] - u) / denom2 * self.N(i+1, p-1, u, knots)
-        return term1 + term2
-
     def forward(self, x):
-        """
-        x: (batch_size, num_features, H, W)
-        Returns: (batch_size, num_features, H, W)
-        """
-        batch_size, num_features, H, W = x.shape
+        B, C, H, W = x.shape
         device = x.device
 
-        # Flatten spatial dimensions to (batch_size*H*W, num_features)
-        x_flat = x.permute(0, 2, 3, 1).reshape(-1, num_features)  # (B*H*W, C)
+        # Flatten spatial dims: (N, C)
+        x_flat = x.permute(0,2,3,1).reshape(-1, C)  # (N, C)
+        N = x_flat.shape[0]
 
-        # Uniform knot vector per feature
-        n = self.num_points - 1
-        knots = torch.linspace(x_flat.min(), x_flat.max(), n + self.degree + 2, device=device)
+        # Normalize input to [0,1] per channel
+        x_min, x_max = x_flat.min(dim=0, keepdim=True)[0], x_flat.max(dim=0, keepdim=True)[0]
+        u = (x_flat - x_min) / (x_max - x_min + 1e-6)  # (N, C)
 
-        y = torch.zeros_like(x_flat)
-        denom = torch.zeros_like(x_flat)
+        # Quadratic B-spline knots
+        degree = 2
+        n_knots = self.num_points + degree + 1
+        knots = torch.linspace(-3, 3, n_knots, device=device)  # (num_points+3)
 
-        # Evaluate NURBS per control point
-        for i in range(self.num_points):
-            Ni = self.N(i, self.degree, x_flat, knots)  # (B*H*W, C)
-            cp = self.control_points[:, i].unsqueeze(0) # (1, C)
-            w = self.weights[:, i].unsqueeze(0)         # (1, C)
-            y += Ni * w * cp
-            denom += Ni * w
+        # Compute all degree-0 basis functions: shape (N, C, num_points)
+        B0 = ((u.unsqueeze(2) >= knots[:self.num_points].view(1,1,-1)) & 
+              (u.unsqueeze(2) < knots[2:self.num_points+2].view(1,1,-1))).float()
 
-        y = y / (denom + 1e-6)
-        # Reshape back to (batch_size, C, H, W)
-        y = y.reshape(batch_size, H, W, num_features).permute(0, 3, 1, 2).contiguous()
+        # For quadratic (degree-2), approximate using weighted sum of neighbors
+        # Shifted versions of B0
+        B0_pad = torch.cat([B0[:,:,:1], B0, B0[:,:,-1:]], dim=2)  # pad edges
+        # Approx degree-2 basis using simple convolution along control points
+        B0_pad = torch.cat([B0[:,:,:1], B0, B0[:,:,-1:]], dim=2)  # pad edges
+        B2 = 0.25*B0_pad[:, :, :-2] + 0.5*B0_pad[:, :, 1:-1] + 0.25*B0_pad[:, :, 2:]
+        
+        # Apply learnable weights and control points
+        cp = self.control_points.unsqueeze(0)  # (1, C, num_points)
+        w  = self.weights.unsqueeze(0)         # (1, C, num_points)
+
+        numerator = B2 * w * cp
+        denominator = B2 * w + 1e-6
+
+        y_flat = numerator.sum(dim=2) / denominator.sum(dim=2)  # (N, C)
+
+        # Reshape back to (B, C, H, W)
+        y = y_flat.view(B,H,W,C).permute(0,3,1,2).contiguous()
         return y
 
 class Net(nn.Module):
