@@ -2,7 +2,7 @@ from CIFAR10.study import cifar10_data
 from file_operations import reset_directory, create_directory
 import config as cfg
 
-def cifar10_train(reset, device):
+def cifar10_train(device, reset):
     print("Starting CIFAR10")
     if reset == 1:
         reset_directory('./RESULTS/CIFAR10')
