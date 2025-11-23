@@ -16,22 +16,21 @@ class NELE(nn.Module):
         self.weights = nn.Parameter(torch.ones(num_features, num_points))
 
     def forward(self, x):
-        """
-        Ultra-fast hardcoded quadratic B-spline with 3 control points.
-        x: (batch_size, num_features)
-        Returns: (batch_size, num_features)
-        """
-        # Quadratic basis functions for uniform knot vector [0,0,0,1,1,1]
-        # Closed-form expressions for degree 2, 3 control points
         one_minus_t = 1 - x
+
         N0 = one_minus_t * one_minus_t
-        N1 = (x + x) * one_minus_t  # 2*t*(1-t) = t + t - 2*t*t, but this is faster
+        N1 = 2 * x * one_minus_t
         N2 = x * x
-        
-        # Extract control points and weights
-        N = torch.stack([N0, N1, N2], dim=-1)  # (batch_size, num_features, 3)
-        numerator = (N * self.weights.unsqueeze(0) * self.control_points.unsqueeze(0)).sum(dim=-1)
-        denominator = (N * self.weights.unsqueeze(0)).sum(dim=-1)
+
+        # numerator and denominator directly
+        numerator = N0 * self.weights[:, 0] * self.control_points[:, 0] + \
+                    N1 * self.weights[:, 1] * self.control_points[:, 1] + \
+                    N2 * self.weights[:, 2] * self.control_points[:, 2]
+
+        denominator = N0 * self.weights[:, 0] + \
+                    N1 * self.weights[:, 1] + \
+                    N2 * self.weights[:, 2]
+
         return numerator / (denominator + 1e-6)
 
 class Net(nn.Module):
