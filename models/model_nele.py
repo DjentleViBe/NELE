@@ -54,7 +54,7 @@ class NELE(nn.Module):
         device = x.device
 
         n = self.num_points - 1
-        knots = torch.linspace(x_flat.min(), x_flat.max(), n + self.degree + 2, device=device)
+        knots = torch.linspace(0, 1, n + self.degree + 2, device=device)
 
         # Compute basis functions for all samples and features
         # Ni_all: (B*H*W, C, num_points)
