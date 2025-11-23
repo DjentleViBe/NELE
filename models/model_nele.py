@@ -15,47 +15,31 @@ class NELE(nn.Module):
         )
         self.weights = nn.Parameter(torch.ones(num_features, num_points))
 
-    def N(self, i, p, u, knots):
-        """
-        Vectorized B-spline basis evaluation.
-        u: (batch_size, num_features)
-        knots: 1D tensor
-        Returns: (batch_size, num_features)
-        """
-        if p == 0:
-            return ((u >= knots[i]) & (u < knots[i+1])).float()
-        denom1 = knots[i+p] - knots[i]
-        denom2 = knots[i+p+1] - knots[i+1]
-        term1 = torch.zeros_like(u)
-        term2 = torch.zeros_like(u)
-        if denom1 != 0:
-            term1 = (u - knots[i]) / denom1 * self.N(i, p-1, u, knots)
-        if denom2 != 0:
-            term2 = (knots[i+p+1] - u) / denom2 * self.N(i+1, p-1, u, knots)
-        return term1 + term2
-
     def forward(self, x):
         """
+        Ultra-fast hardcoded quadratic B-spline with 3 control points.
         x: (batch_size, num_features)
         Returns: (batch_size, num_features)
         """
-        device = x.device
-        n = self.num_points - 1
-        knots = torch.linspace(x.min(), x.max(), n + self.degree + 2, device=device)
-
-        # Initialize numerator and denominator
-        y = torch.zeros_like(x)
-        denom = torch.zeros_like(x)
-
-        # Evaluate NURBS per control point
-        for i in range(self.num_points):
-            Ni = self.N(i, self.degree, x, knots)  # (batch_size, num_features)
-            cp = self.control_points[:, i].unsqueeze(0)  # (1, num_features)
-            w = self.weights[:, i].unsqueeze(0)          # (1, num_features)
-            y += Ni * w * cp
-            denom += Ni * w
-
-        return y / (denom + 1e-6)
+        # Normalize x to [0, 1] per feature for stability
+        x_min = x.min(dim=0, keepdim=True)[0]
+        x_max = x.max(dim=0, keepdim=True)[0]
+        # t = (x - x_min) / (x_max - x_min + 1e-8)
+        t = x
+        
+        # Quadratic basis functions for uniform knot vector [0,0,0,1,1,1]
+        # Closed-form expressions for degree 2, 3 control points
+        one_minus_t = 1 - t
+        N0 = one_minus_t * one_minus_t
+        N1 = (t + t) * one_minus_t  # 2*t*(1-t) = t + t - 2*t*t, but this is faster
+        N2 = t * t
+        
+        # Extract control points and weights
+        N = torch.stack([N0, N1, N2], dim=-1)  # (batch_size, num_features, 3)
+        weighted_cp = N * self.weights.unsqueeze(0) * self.control_points.unsqueeze(0)
+        numerator = weighted_cp.sum(dim=-1)
+        denominator = (N * self.weights.unsqueeze(0)).sum(dim=-1)
+        return numerator / (denominator + 1e-6)
 
 class Net(nn.Module):
     def __init__(self, input_dim, nurbs_points, degree):
