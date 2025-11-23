@@ -63,7 +63,7 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
     train_dataset, val_dataset, test_dataset = prepare_datasets(
         val_ratio=0.1
     )
-    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True)
+    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=4, pin_memory=True)
     val_loader = DataLoader(val_dataset, batch_size=128, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
 
@@ -73,7 +73,7 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
     model = CIFAR10CNN(activation=activation).to(device)
     optimizer = Adam(model.parameters(), lr=learn_rate)
     criterion = nn.CrossEntropyLoss()
-
+    scaler = torch.amp.GradScaler(device=device)
     # -------------------------
     # Training loop skeleton
     # -------------------------
@@ -83,19 +83,21 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
         adjust_lr(optimizer, epoch)
         for param_group in optimizer.param_groups:
             lr = param_group['lr']
-        i = 0
-        for x, y in train_loader:
+        
+        for i, (x, y) in enumerate(train_loader):
             start_epoch = time.time()
             
             x, y = x.to(device), y.to(device)
             optimizer.zero_grad()
-            loss = criterion(model(x), y)
-            loss.backward()
-            optimizer.step()
+            with torch.amp.autocast(device_type=device):
+                loss = criterion(model(x), y)
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
             epoch_loss += loss.item() * x.size(0)
             end_epoch = time.time()
             print(f"Batch : {i}, Time : {end_epoch - start_epoch:.2f} seconds")
-            i+=1
+            
         epoch_loss /= len(train_loader.dataset)
         loss_collect.append(epoch_loss)
         
