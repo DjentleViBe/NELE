@@ -21,23 +21,16 @@ class NELE(nn.Module):
         x: (batch_size, num_features)
         Returns: (batch_size, num_features)
         """
-        # Normalize x to [0, 1] per feature for stability
-        x_min = x.min(dim=0, keepdim=True)[0]
-        x_max = x.max(dim=0, keepdim=True)[0]
-        # t = (x - x_min) / (x_max - x_min + 1e-8)
-        t = x
-        
         # Quadratic basis functions for uniform knot vector [0,0,0,1,1,1]
         # Closed-form expressions for degree 2, 3 control points
-        one_minus_t = 1 - t
+        one_minus_t = 1 - x
         N0 = one_minus_t * one_minus_t
-        N1 = (t + t) * one_minus_t  # 2*t*(1-t) = t + t - 2*t*t, but this is faster
-        N2 = t * t
+        N1 = (x + x) * one_minus_t  # 2*t*(1-t) = t + t - 2*t*t, but this is faster
+        N2 = x * x
         
         # Extract control points and weights
         N = torch.stack([N0, N1, N2], dim=-1)  # (batch_size, num_features, 3)
-        weighted_cp = N * self.weights.unsqueeze(0) * self.control_points.unsqueeze(0)
-        numerator = weighted_cp.sum(dim=-1)
+        numerator = (N * self.weights.unsqueeze(0) * self.control_points.unsqueeze(0)).sum(dim=-1)
         denominator = (N * self.weights.unsqueeze(0)).sum(dim=-1)
         return numerator / (denominator + 1e-6)
 
