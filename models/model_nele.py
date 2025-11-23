@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 class NELE(nn.Module):
-    def __init__(self, num_features=64, num_points=4, degree=3):
+    def __init__(self, num_features=1, num_points=3, degree=2):
         super().__init__()
         self.num_features = num_features
         self.num_points = num_points
@@ -36,33 +36,34 @@ class NELE(nn.Module):
 
     def forward(self, x):
         """
-        x: (batch_size, num_features)
-        Returns: (batch_size, num_features)
+        x: (batch_size, num_features, H, W)
+        Returns: (batch_size, num_features, H, W)
         """
-        # batch_size, num_features,_,_ = x.shape
+        batch_size, num_features, H, W = x.shape
         device = x.device
-        # assert num_features == self.num_features, "Input feature size must match num_features"
 
-        # Map input to [0,1] for NURBS evaluation
-        # u = torch.sigmoid(x)
+        # Flatten spatial dimensions to (batch_size*H*W, num_features)
+        x_flat = x.permute(0, 2, 3, 1).reshape(-1, num_features)  # (B*H*W, C)
 
-        # Uniform knot vector
+        # Uniform knot vector per feature
         n = self.num_points - 1
-        knots = torch.linspace(x.min(), x.max(), n + self.degree + 2, device=device)
+        knots = torch.linspace(x_flat.min(), x_flat.max(), n + self.degree + 2, device=device)
 
-        # Initialize numerator and denominator
-        y = torch.zeros_like(x)
-        denom = torch.zeros_like(x)
+        y = torch.zeros_like(x_flat)
+        denom = torch.zeros_like(x_flat)
 
         # Evaluate NURBS per control point
         for i in range(self.num_points):
-            Ni = self.N(i, self.degree, x, knots)  # (batch_size, num_features)
-            cp = self.control_points[:, i].unsqueeze(0)  # (1, num_features)
-            w = self.weights[:, i].unsqueeze(0)          # (1, num_features)
+            Ni = self.N(i, self.degree, x_flat, knots)  # (B*H*W, C)
+            cp = self.control_points[:, i].unsqueeze(0) # (1, C)
+            w = self.weights[:, i].unsqueeze(0)         # (1, C)
             y += Ni * w * cp
             denom += Ni * w
 
-        return y / (denom + 1e-6)
+        y = y / (denom + 1e-6)
+        # Reshape back to (batch_size, C, H, W)
+        y = y.reshape(batch_size, H, W, num_features).permute(0, 3, 1, 2).contiguous()
+        return y
 
 class Net(nn.Module):
     def __init__(self, input_dim, nurbs_points, degree):

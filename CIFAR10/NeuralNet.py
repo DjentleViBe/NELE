@@ -5,6 +5,7 @@ import numpy as np
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
 from scipy import linalg
+from models.model_nele import NELE
 
 class ZCADataset(torch.utils.data.Dataset):
     def __init__(self, data, labels, add_noise_sigma=0.15, training=True):
@@ -80,7 +81,16 @@ def adjust_lr(optimizer, epoch, total_epochs=200):
 class CIFAR10CNN(nn.Module):
     def __init__(self, activation=F.relu):
         super().__init__()
-        self.activation = activation
+        if isinstance(activation, NELE):
+            self.activation1 = NELE(num_features=96, num_points=3, degree=2)
+            self.activation2 = NELE(num_features=96, num_points=3, degree=2)
+            self.activation3 = NELE(num_features=96, num_points=3, degree=2)
+            self.activation4 = NELE(num_features=192, num_points=3, degree=2)
+            self.activation5 = NELE(num_features=192, num_points=3, degree=2)
+            self.activation6 = NELE(num_features=192, num_points=3, degree=2)
+            self.activation7 = NELE(num_features=192, num_points=3, degree=2)
+            self.activation8 = NELE(num_features=192, num_points=3, degree=2)
+            self.activation9 = NELE(num_features=192, num_points=3, degree=2)
         # Block 1
         self.conv1 = nn.Conv2d(3, 96, 3, padding=1)
         self.bn1 = nn.BatchNorm2d(96)
@@ -113,27 +123,25 @@ class CIFAR10CNN(nn.Module):
         self.fc = nn.Linear(192, 10)
         
     def forward(self, x):
-        # Block 1
-        act = self.activation  # shortcut
 
         # Block 1
-        x = act(self.bn1(self.conv1(x)))
-        x = act(self.bn2(self.conv2(x)))
-        x = act(self.bn3(self.conv3(x)))
+        x = self.activation1(self.bn1(self.conv1(x)))
+        x = self.activation2(self.bn2(self.conv2(x)))
+        x = self.activation3(self.bn3(self.conv3(x)))
         x = self.pool1(x)
         x = self.dropout1(x)
 
         # Block 2
-        x = act(self.bn4(self.conv4(x)))
-        x = act(self.bn5(self.conv5(x)))
-        x = act(self.bn6(self.conv6(x)))
+        x = self.activation4(self.bn4(self.conv4(x)))
+        x = self.activation5(self.bn5(self.conv5(x)))
+        x = self.activation6(self.bn6(self.conv6(x)))
         x = self.pool2(x)
         x = self.dropout2(x)
 
         # Block 3
-        x = act(self.bn7(self.conv7(x)))
-        x = act(self.bn8(self.conv8(x)))
-        x = act(self.bn9(self.conv9(x)))
+        x = self.activation7(self.bn7(self.conv7(x)))
+        x = self.activation8(self.bn8(self.conv8(x)))
+        x = self.activation9(self.bn9(self.conv9(x)))
 
         # Global average pooling
         x = self.global_avg_pool(x)

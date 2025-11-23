@@ -55,7 +55,7 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
     elif base == 'lelu' :
         activation = LELU()
     elif base == 'nele' :
-        activation = NELE(1, 3, 2)
+        activation = NELE(num_features=1, num_points=3, degree=2)
     else:
         raise ValueError("Invalid activation type")
 
