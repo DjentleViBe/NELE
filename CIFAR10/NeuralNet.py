@@ -102,11 +102,11 @@ class CIFAR10CNN(nn.Module):
         self.dropout2 = nn.Dropout(0.5)
         
         # Block 3
-        self.conv7 = nn.Conv2d(192, 192, 3)  # 3x3 conv without padding, 8x8 -> 6x6
+        self.conv7 = nn.Conv2d(192, 192, 3, padding=1)  # 3x3 conv without padding, 8x8 -> 6x6
         self.bn7 = nn.BatchNorm2d(192)
-        self.conv8 = nn.Conv2d(192, 192, 1)
+        self.conv8 = nn.Conv2d(192, 192, 1, padding=1)
         self.bn8 = nn.BatchNorm2d(192)
-        self.conv9 = nn.Conv2d(192, 192, 1)
+        self.conv9 = nn.Conv2d(192, 192, 1, padding=1)
         self.bn9 = nn.BatchNorm2d(192)
         
         self.global_avg_pool = nn.AdaptiveAvgPool2d(1)

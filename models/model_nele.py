@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 class NELE(nn.Module):
-    def __init__(self, num_features=64, num_points=4, degree=3):
+    def __init__(self, num_features=64, num_points=3, degree=2):
         super().__init__()
         self.num_features = num_features
         self.num_points = num_points
