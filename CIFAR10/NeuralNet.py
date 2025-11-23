@@ -117,31 +117,27 @@ class CIFAR10CNN(nn.Module):
         act = self.activation  # shortcut
 
         # Block 1
-        x = self.bn1(self.conv1(x))
-        x = self.bn2(self.conv2(x))
-        x = self.bn3(self.conv3(x))
+        x = act(self.bn1(self.conv1(x)))
+        x = act(self.bn2(self.conv2(x)))
+        x = act(self.bn3(self.conv3(x)))
         x = self.pool1(x)
-        x = act(x)
         x = self.dropout1(x)
 
         # Block 2
-        x = self.bn4(self.conv4(x))
-        x = self.bn5(self.conv5(x))
-        x = self.bn6(self.conv6(x))
+        x = act(self.bn4(self.conv4(x)))
+        x = act(self.bn5(self.conv5(x)))
+        x = act(self.bn6(self.conv6(x)))
         x = self.pool2(x)
-        x = act(x)
         x = self.dropout2(x)
 
         # Block 3
-        x = self.bn7(self.conv7(x))
-        x = self.bn8(self.conv8(x))
-        x = self.bn9(self.conv9(x))
-        x = act(x)
+        x = act(self.bn7(self.conv7(x)))
+        x = act(self.bn8(self.conv8(x)))
+        x = act(self.bn9(self.conv9(x)))
 
         # Global average pooling
         x = self.global_avg_pool(x)
-        x = x.view(x.size(0), -1)
-        x = self.fc(x)
+        x = torch.flatten(x, 1)
         return x
 
 def prepare_datasets(val_ratio=0.1, data_root='./data'):
