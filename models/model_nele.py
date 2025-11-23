@@ -15,54 +15,60 @@ class NELE(nn.Module):
         )
         self.weights = nn.Parameter(torch.ones(num_features, num_points))
 
-    def N(self, i, p, u, knots):
+    def basis_functions(self, u, degree, knots):
         """
-        Vectorized B-spline basis evaluation.
-        u: (batch_size, num_features)
-        knots: 1D tensor
-        Returns: (batch_size, num_features)
+        u: (num_samples,)
+        knots: (num_knots,)
+        Returns: (num_samples, num_basis) B-spline basis for all u
         """
-        if p == 0:
-            return ((u >= knots[i]) & (u < knots[i+1])).float()
-        denom1 = knots[i+p] - knots[i]
-        denom2 = knots[i+p+1] - knots[i+1]
-        term1 = torch.zeros_like(u)
-        term2 = torch.zeros_like(u)
-        if denom1 != 0:
-            term1 = (u - knots[i]) / denom1 * self.N(i, p-1, u, knots)
-        if denom2 != 0:
-            term2 = (knots[i+p+1] - u) / denom2 * self.N(i+1, p-1, u, knots)
-        return term1 + term2
+        num_basis = len(knots) - degree - 1
+        B = torch.zeros(u.shape[0], num_basis, device=u.device)
+
+        # Degree 0
+        for i in range(num_basis):
+            B[:, i] = ((u >= knots[i]) & (u < knots[i+1])).float()
+
+        # Higher degrees
+        for p in range(1, degree+1):
+            B_prev = B.clone()
+            for i in range(num_basis):
+                denom1 = knots[i+p] - knots[i]
+                denom2 = knots[i+p+1] - knots[i+1]
+
+                term1 = torch.zeros_like(u)
+                term2 = torch.zeros_like(u)
+                if denom1 > 0:
+                    term1 = (u - knots[i]) / denom1 * B_prev[:, i]
+                if denom2 > 0 and i+1 < num_basis:
+                    term2 = (knots[i+p+1] - u) / denom2 * B_prev[:, i+1]
+                B[:, i] = term1 + term2
+        return B  # (num_samples, num_basis)
 
     def forward(self, x):
         """
-        x: (batch_size, num_features, H, W)
-        Returns: (batch_size, num_features, H, W)
+        x: (B, C, H, W)
+        Returns: (B, C, H, W)
         """
-        batch_size, num_features, H, W = x.shape
+        B, C, H, W = x.shape
+        x_flat = x.permute(0, 2, 3, 1).reshape(-1, C)  # (B*H*W, C)
         device = x.device
 
-        # Flatten spatial dimensions to (batch_size*H*W, num_features)
-        x_flat = x.permute(0, 2, 3, 1).reshape(-1, num_features)  # (B*H*W, C)
-
-        # Uniform knot vector per feature
         n = self.num_points - 1
         knots = torch.linspace(x_flat.min(), x_flat.max(), n + self.degree + 2, device=device)
 
-        y = torch.zeros_like(x_flat)
-        denom = torch.zeros_like(x_flat)
+        # Compute basis functions for all samples and features
+        # Ni_all: (B*H*W, C, num_points)
+        Ni_all = torch.stack([self.basis_functions(x_flat[:, c], self.degree, knots) for c in range(C)], dim=1)
 
-        # Evaluate NURBS per control point
-        for i in range(self.num_points):
-            Ni = self.N(i, self.degree, x_flat, knots)  # (B*H*W, C)
-            cp = self.control_points[:, i].unsqueeze(0) # (1, C)
-            w = self.weights[:, i].unsqueeze(0)         # (1, C)
-            y += Ni * w * cp
-            denom += Ni * w
+        # Broadcast weights and control points
+        cp = self.control_points.unsqueeze(0)  # (1, C, num_points)
+        w = self.weights.unsqueeze(0)          # (1, C, num_points)
 
-        y = y / (denom + 1e-6)
-        # Reshape back to (batch_size, C, H, W)
-        y = y.reshape(batch_size, H, W, num_features).permute(0, 3, 1, 2).contiguous()
+        numerator = Ni_all * w * cp
+        denominator = Ni_all * w
+
+        y_flat = numerator.sum(dim=2) / (denominator.sum(dim=2) + 1e-6)
+        y = y_flat.reshape(B, H, W, C).permute(0, 3, 1, 2).contiguous()
         return y
 
 class Net(nn.Module):
