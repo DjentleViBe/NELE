@@ -85,18 +85,17 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
             lr = param_group['lr']
         
         for i, (x, y) in enumerate(train_loader):
-            start_epoch = time.time()
+            #start_epoch = time.time()
             
             x, y = x.to(device), y.to(device)
             optimizer.zero_grad()
-            with torch.amp.autocast(device_type=device):
-                loss = criterion(model(x), y)
-            scaler.scale(loss).backward()
-            scaler.step(optimizer)
-            scaler.update()
+            #with torch.amp.autocast(device_type=device):
+            loss = criterion(model(x), y)
+            loss.backward()
+            optimizer.step()
             epoch_loss += loss.item() * x.size(0)
-            end_epoch = time.time()
-            print(f"Batch : {i}, Time : {end_epoch - start_epoch:.2f} seconds")
+            #end_epoch = time.time()
+            #print(f"Batch : {i}, Time : {end_epoch - start_epoch:.2f} seconds")
             
         epoch_loss /= len(train_loader.dataset)
         loss_collect.append(epoch_loss)
