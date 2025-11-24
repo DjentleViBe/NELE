@@ -72,12 +72,12 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
 
     if exec == 1:
         # load the latest .pth file
-        checkpoint_path = getlatest('RESULTS/CIFAR10/' + activation_type)
+        checkpoint_path = getlatest('RESULTS/CIFAR10/' + activation_type + '/')
         checkpoint = torch.load(checkpoint_path, map_location=device)
-        model.load_state_dict(checkpoint)
+        model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         start_epoch = checkpoint['epoch'] + 1
-        with open('RESULTS/CIFAR10/' + activation_type + 'split_indices.pkl', 'rb') as f:
+        with open('RESULTS/CIFAR10/' + activation_type + '/split_indices.pkl', 'rb') as f:
             train_indices, val_indices = pickle.load(f)
         full_train_set, _,test_dataset, _, _ = prepare_datasets(
             val_ratio=0.1,
@@ -102,7 +102,9 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
     # -------------------------
     # Training loop skeleton
     # -------------------------
-    for epoch in range(start_epoch, epochs):
+    correct_val, total_val = 0, 0
+    correct_test, total_test = 0, 0
+    for epoch in range(start_epoch - 1, epochs):
         epoch_loss = 0
         model.train()
         adjust_lr(optimizer, epoch)
@@ -126,7 +128,6 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
         
         # Optional: validation
         model.eval()
-        correct_val, total_val = 0, 0
         with torch.no_grad():
             for x, y in val_loader:
                 x, y = x.to(device), y.to(device)
@@ -138,7 +139,6 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
         val_collect.append(val_acc)
         if epoch % 5 == 0:
             model.eval()
-            correct_test, total_test = 0, 0
             with torch.no_grad():
                 for data, target in test_loader:
                     data = data.to(device)
@@ -147,11 +147,11 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
                     _, predicted = torch.max(outputs.data, 1)
                     total_test += target.size(0)
                     correct_test += (predicted == target).sum().item()
-                test_collect.append(100 * correct_test / total_test)
+                test_collect.append(100 * correct_test / max(total_test, 1))
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch, dir)    
-        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / total_test:.4f}, lr : {lr:.5f}")
-
+        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / max(total_test, 1):.4f}, lr : {lr:.5f}")
+    
     loss_collect = torch.tensor(loss_collect)
     test_collect = torch.tensor(test_collect)
     val_collect = torch.tensor(val_collect)
