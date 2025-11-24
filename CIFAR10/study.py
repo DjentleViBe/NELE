@@ -76,7 +76,7 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
         checkpoint = torch.load(checkpoint_path, map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        start_epoch = checkpoint['epoch'] + 1
+        start_epoch = checkpoint['epoch'] - 1
         with open('RESULTS/CIFAR10/' + activation_type + '/split_indices.pkl', 'rb') as f:
             train_indices, val_indices = pickle.load(f)
         full_train_set, _,test_dataset, _, _ = prepare_datasets(
@@ -104,7 +104,7 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
     # -------------------------
     correct_val, total_val = 0, 0
     correct_test, total_test = 0, 0
-    start_epoch = max(start_epoch, 0)
+    print(f'Starting epoch:{start_epoch}')
     for epoch in range(start_epoch, epochs):
         epoch_loss = 0
         model.train()
@@ -148,15 +148,18 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
                     _, predicted = torch.max(outputs.data, 1)
                     total_test += target.size(0)
                     correct_test += (predicted == target).sum().item()
-                test_collect.append(100 * correct_test / max(total_test, 1))
+        test_collect.append(100 * correct_test / max(total_test, 1))
         if (epoch + 1) % cfg.save_every  == 0:
-            save(model, optimizer, epoch_loss, activation_type, epoch, dir)    
+            save(model, optimizer, epoch_loss, activation_type, epoch + 1, dir)    
         print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / max(total_test, 1):.4f}, lr : {lr:.5f}")
     
     loss_collect = torch.tensor(loss_collect)
     test_collect = torch.tensor(test_collect)
     val_collect = torch.tensor(val_collect)
+    print(loss_collect)
+    print(test_collect)
+    print(val_collect)
     csv_write2(dir + '/loss_history_' + activation_type + '.csv', 
-              torch.linspace(1, cfg.epochs, cfg.epochs), 
+              torch.linspace(1, cfg.epochs+1, cfg.epochs+1), 
               loss_collect, 'epoch', 'loss', '', 'test', val_collect, test_collect, exec)
     
