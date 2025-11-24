@@ -39,14 +39,15 @@ def plot_only(study_type):
     fig.subplots_adjust(wspace = 0.2, right = 0.82, bottom=0.14) 
     # plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, , ecolor="#c7c7c7", error_kw={"elinewidth": 2})
     ax1.set_ylabel('Training Loss')
-    ax2.set_ylabel('Test Accuracy (%)')
+    ax2.set_ylabel('Test Error (%)')
    
     ax1.set_yscale('log')
+    ax2.set_yscale('log')
     ax1.set_xlabel('epochs')
-    ax3 = ax2.twinx()
-    ax4 = ax1.twiny()
-    ax5 = ax2.twiny()
-    ax3.set_ylabel('Test Accuracy (%)')
+    #ax3 = ax2.twinx()
+    #ax4 = ax1.twiny()
+    #ax5 = ax2.twiny()
+    #ax3.set_ylabel('Test Accuracy (%)')
     ax2.set_xlabel('epochs')
 
     for i, act in enumerate(activations_file):
@@ -55,40 +56,36 @@ def plot_only(study_type):
         epochs, losses_train2, losses_test2 = csv_read('RESULTS/' + study_type  + '/' + act + '=2/loss_history_' + act + '=2.csv', 'epoch', 'loss', 'test')
         epochs, losses_train3, losses_test3 = csv_read('RESULTS/' + study_type  + '/' + act + '=3/loss_history_' + act + '=3.csv', 'epoch', 'loss', 'test')
         losses_train, losses_test = take_median(losses_train1, losses_test1, losses_train2, losses_test2, losses_train3, losses_test3)
-        # print(f'{act} : {round(max(losses_test), 2)}, index : {losses_test.index(max(losses_test))}')
-        if 'nele' in act:
-            ax4.plot(epochs, losses_train, color = colors[i], label=activations[i], linewidth = 0.7)
-        else:
-            ax1.plot(epochs, losses_train, colors[i], label=activations[i], linewidth = 0.7)
+        max_loss = round(np.max(losses_test), 2)
+        max_index = np.argmax(losses_test)
+
+        print(f'{act} : {max_loss}, index : {max_index}')
+
+        ax1.plot(epochs, losses_train, colors[i], label=activations[i], linewidth = 0.7)
         selected_epochs = []
         selected_losses = []
         for e, l in zip(epochs, losses_test):
             if (e - 1) % 5 == 0:   # 1,6,11,...
                 selected_epochs.append(e)
-                selected_losses.append(l)
+                selected_losses.append(100-l)
         selected_epochs.append(epochs[-1])
-        selected_losses.append(losses_test[-1])
-        if act == 'sigmoid' or act == 'softplus':
-            ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
-        elif 'nele' in act or 'lelu' in act:
-            ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
-        else:
-            ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
+        selected_losses.append(100 - losses_test[-1])
+        ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
     
     ax1.set_xlim(1, cfg.epochs)
     ax2.set_xlim(1, cfg.epochs)
-    ax3.set_xlim(1, cfg.epochs)
-    ax4.set_xlim(1, int(max(epochs)))
-    ax5.set_xlim(1, int(max(epochs)))
+    #ax3.set_xlim(1, cfg.epochs)
+    #ax4.set_xlim(1, int(max(epochs)))
+    #ax5.set_xlim(1, int(max(epochs)))
     ax1.set_xticks(range(1, cfg.epochs, 10))
     ax2.set_xticks(range(1, cfg.epochs, 10))
-    ax3.set_xticks(range(1, cfg.epochs, 10))
+    #ax3.set_xticks(range(1, cfg.epochs, 10))
     ax1.grid(True, linewidth = 0.1)
     ax2.grid(True, linewidth = 0.1)
     lines = []
     labels = []
 
-    for ax in [ax1, ax4]:
+    for ax in [ax1]:
         l, lab = ax.get_legend_handles_labels()
         lines += l
         labels += lab

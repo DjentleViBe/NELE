@@ -14,13 +14,20 @@ class NELE(nn.Module):
             torch.linspace(-1, 1, num_points).repeat(num_features, 1)
         )
         self.weights = nn.Parameter(torch.ones(num_features, num_points))
+         # learnable input/output scaling
+        self.in_shift  = nn.Parameter(torch.zeros(1))
+        self.in_scale  = nn.Parameter(torch.ones(1))
+        self.out_shift = nn.Parameter(torch.zeros(1))
+        self.out_scale = nn.Parameter(torch.ones(1))
 
     def forward(self, x):
-        one_minus_t = 1 - x
+        x_norm = (x - self.in_shift) / (self.in_scale.abs() + 1e-6)
+        x_norm = torch.clamp(x_norm, 0, 1)
+        one_minus_t = 1 - x_norm
 
         N0 = one_minus_t * one_minus_t
-        N1 = 2 * x * one_minus_t
-        N2 = x * x
+        N1 = 2 * x_norm * one_minus_t
+        N2 = x_norm * x_norm
 
         # numerator and denominator directly
         numerator = N0 * self.weights[:, 0] * self.control_points[:, 0] + \
@@ -30,8 +37,8 @@ class NELE(nn.Module):
         denominator = N0 * self.weights[:, 0] + \
                     N1 * self.weights[:, 1] + \
                     N2 * self.weights[:, 2]
-
-        return numerator / (denominator + 1e-6)
+        y_norm = numerator / (denominator + 1e-6)
+        return y_norm * self.out_scale + self.out_shift
 
 class Net(nn.Module):
     def __init__(self, input_dim, nurbs_points, degree):
