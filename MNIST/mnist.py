@@ -12,6 +12,7 @@ def mnist_train(device, reset):
         create_directory('./RESULTS/MNIST')
         create_directory('./PICS/MNIST')
     for af in cfg.AF:
+        print(f'Activation : {af}')
         mnist_data(cfg.epochs, cfg.learning_rate, device, af)
 
 def mnist_eval(device, reset):
@@ -22,4 +23,5 @@ def mnist_eval(device, reset):
         create_directory('./RESULTS/MNIST')
         create_directory('./PICS/MNIST')
     for af in cfg.AF:
+        print(f'Activation : {af}')
         mnist_validation(cfg.epochs, device, af)

@@ -128,16 +128,18 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
         loss_collect.append(epoch_loss)
         
         # Optional: validation
-        model.eval()
-        with torch.no_grad():
-            for x, y in val_loader:
-                x, y = x.to(device), y.to(device)
-                outputs = model(x)
-                _, predicted = outputs.max(1)
-                total_val += y.size(0)
-                correct_val += (predicted == y).sum().item()
-        val_acc = correct_val / total_val
-        val_collect.append(val_acc)
+        val_acc = 0.0
+        if cfg.val_ratio != 0:
+            model.eval()
+            with torch.no_grad():
+                for x, y in val_loader:
+                    x, y = x.to(device), y.to(device)
+                    outputs = model(x)
+                    _, predicted = outputs.max(1)
+                    total_val += y.size(0)
+                    correct_val += (predicted == y).sum().item()
+            val_acc = correct_val / total_val
+            val_collect.append(val_acc)
         if epoch % 5 == 0:
             model.eval()
             with torch.no_grad():
