@@ -104,7 +104,8 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
     # -------------------------
     correct_val, total_val = 0, 0
     correct_test, total_test = 0, 0
-    for epoch in range(start_epoch - 1, epochs):
+    start_epoch = max(start_epoch, 0)
+    for epoch in range(start_epoch, epochs):
         epoch_loss = 0
         model.train()
         adjust_lr(optimizer, epoch)
