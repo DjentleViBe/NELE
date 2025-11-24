@@ -11,7 +11,7 @@ class NELE(nn.Module):
         # Per-feature control points and weights
         # Shape: (num_features, num_points)
         self.control_points = nn.Parameter(
-            torch.linspace(-1, 1, num_points).repeat(num_features, 1)
+            torch.tensor([[-0.1, 0.0, 1.0]]).repeat(num_features, 1)
         )
         self.weights = nn.Parameter(torch.ones(num_features, num_points))
          # learnable input/output scaling
@@ -21,8 +21,8 @@ class NELE(nn.Module):
         self.out_scale = nn.Parameter(torch.ones(1))
 
     def forward(self, x):
-        x_norm = (x - self.in_shift) / (self.in_scale.abs() + 1e-6)
-        x_norm = torch.clamp(x_norm, 0, 1)
+        x_norm = (x - self.in_shift) * self.in_scale
+        x_norm = torch.clamp(x_norm, 0.0, 1.0)
         one_minus_t = 1 - x_norm
 
         N0 = one_minus_t * one_minus_t
