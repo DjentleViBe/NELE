@@ -15,7 +15,8 @@ def csv_write2(filename, x, predicted, xname, yname, zname, wname, y_actual, w_a
         mode = 'a'
     with open(filename, mode=mode, newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([xname, yname, zname, wname])  # header
+        if exec == 0:
+            writer.writerow([xname, yname, zname, wname])  # header
         for xi, yi, zi, wi in zip(x, predicted, y_actual, w_actual):
             writer.writerow([xi.item(), yi.item(), zi.item(), wi.item()]) 
 
