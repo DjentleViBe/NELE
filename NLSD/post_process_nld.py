@@ -6,7 +6,7 @@ import matplotlib as mpl
 from NLSD.smoothness import smoothness_derivative_energy, curvature_smoothness, lipschitz_constant, frequency_smoothness
 
 activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELE']
-activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'lrelu', 'lelu', 'mish', 'nele']
+activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'leaky_relu', 'lelu', 'mish', 'nele']
 colors = ["#490092", "#006ddb", 
           "#b66dff", "#ff6db6",
           "#920000", "#db6d00",
