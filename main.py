@@ -15,6 +15,7 @@ if __name__ == "__main__":
     parser.add_argument("--mode", type=str, default='train')
     parser.add_argument("--device", type=str, default='cpu')
     parser.add_argument("--reset", type=int, default=0)
+    parser.add_argument("--exec", type=int, default=0)
     
     args = parser.parse_args()
     if args.type == 'nlsd':
@@ -33,7 +34,7 @@ if __name__ == "__main__":
             mnist_nele()
     elif args.type == 'cifar10':
         if args.mode == 'train':
-            cifar10_train(args.device, args.reset)
+            cifar10_train(args.device, args.reset, args.exec)
         elif args.mode == 'process':
             process_cifar10()
         elif args.mode == 'process_nele':

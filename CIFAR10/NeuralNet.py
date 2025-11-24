@@ -141,7 +141,7 @@ class CIFAR10CNN(nn.Module):
         x = torch.flatten(x, 1)
         return x
 
-def prepare_datasets(val_ratio=0.1, data_root='./data'):
+def prepare_datasets(mode, val_ratio=0.1, data_root='./data'):
     """Prepare training, validation and test datasets"""
     print('Preparing CIFAR10 dataset')
     # Load raw training data
@@ -159,18 +159,6 @@ def prepare_datasets(val_ratio=0.1, data_root='./data'):
     # Create full dataset
     full_train_dataset = ZCADataset(trainx_white, labels_tensor, add_noise_sigma=0.15, training=True)
     
-    # Split train/validation
-    total_size = len(full_train_dataset)
-    val_size = int(total_size * val_ratio)
-    train_size = total_size - val_size
-    train_dataset, val_dataset = random_split(full_train_dataset, [train_size, val_size])
-    
-    # Validation dataset without noise
-    val_indices = val_dataset.indices
-    X_val_data = trainx_white[val_indices]
-    val_labels = labels_tensor[val_indices]
-    val_dataset = ZCADataset(X_val_data, val_labels, add_noise_sigma=0.0, training=False)
-    
     # Test dataset
     test_dataset_raw = datasets.CIFAR10(root=data_root, train=False, download=True,
                                         transform=transforms.ToTensor())
@@ -178,7 +166,29 @@ def prepare_datasets(val_ratio=0.1, data_root='./data'):
     labels_test = np.array([label for _, label in test_dataset_raw])
     testx_white = whitener.apply(X_test)
     test_dataset = ZCADataset(testx_white, torch.tensor(labels_test, dtype=torch.long),
-                              add_noise_sigma=0.0, training=False)
-    #print(train_dataset.shape)
-    print('CIFAR10 dataset preparation completed')
-    return train_dataset, val_dataset, test_dataset
+                            add_noise_sigma=0.0, training=False)
+    
+    dummy1 = None
+    dummy2 = None
+    dummy3 = None
+    dummy4 = None
+    if mode == 1:
+        print('CIFAR10 dataset restoration completed')
+        return full_train_dataset, dummy1, test_dataset, dummy3, dummy4
+    else:
+        # Split train/validation
+        total_size = len(full_train_dataset)
+        val_size = int(total_size * val_ratio)
+        train_size = total_size - val_size
+        train_dataset, val_dataset = random_split(full_train_dataset, [train_size, val_size])
+        
+        # Validation dataset without noise
+        train_indices = train_dataset.indices
+        val_indices = val_dataset.indices
+        X_val_data = trainx_white[val_indices]
+        val_labels = labels_tensor[val_indices]
+        val_dataset = ZCADataset(X_val_data, val_labels, add_noise_sigma=0.0, training=False)
+
+        #print(train_dataset.shape)
+        print('CIFAR10 dataset preparation completed')
+        return train_dataset, val_dataset, test_dataset, train_indices, val_indices

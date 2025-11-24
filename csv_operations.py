@@ -8,7 +8,11 @@ def csv_write(filename, x, predicted, xname, yname, zname, y_actual):
             writer.writerow([xi.item(), yi.item(), zi.item()])  # convert tensors to Python floats
 
 
-def csv_write2(filename, x, predicted, xname, yname, zname, wname, y_actual, w_actual):
+def csv_write2(filename, x, predicted, xname, yname, zname, wname, y_actual, w_actual, exec=0):
+    if exec == 0:
+        mode = 'w'
+    else:
+        mode = 'a'
     with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow([xname, yname, zname, wname])  # header

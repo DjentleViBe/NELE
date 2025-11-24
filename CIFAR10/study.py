@@ -2,7 +2,7 @@ import torch
 import config as cfg
 import numpy as np
 import torch.nn as nn
-from file_operations import create_directory
+from file_operations import create_directory, getlatest
 from models.model_lelu import LELU
 from models.model_nele import NELE
 from torch.optim import Adam
@@ -10,6 +10,8 @@ from torch.utils.data import DataLoader
 from CIFAR10.NeuralNet import CIFAR10CNN, adjust_lr, prepare_datasets
 from csv_operations import csv_write2
 import time
+import pickle
+
 torch.manual_seed(0)
 def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
     torch.save({
@@ -19,7 +21,7 @@ def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
     'epoch_loss': epoch_loss
     }, dir + activation_type + '_' + str(epoch) + '.pth')
 
-def cifar10_data(epochs, learn_rate, device, activation_type='default'):
+def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
     activations = cfg.AF
     colors = cfg.colors
     loss_collect = []
@@ -60,14 +62,6 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
     else:
         raise ValueError("Invalid activation type")
 
-    # Step 2: Prepare datasets
-    train_dataset, val_dataset, test_dataset = prepare_datasets(
-        val_ratio=0.1
-    )
-    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=4, pin_memory=True)
-    val_loader = DataLoader(val_dataset, batch_size=128, shuffle=False)
-    test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
-
     # -------------------------
     # Training setup
     # -------------------------
@@ -75,10 +69,40 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
     optimizer = Adam(model.parameters(), lr=learn_rate)
     criterion = nn.CrossEntropyLoss()
     scaler = torch.amp.GradScaler(device=device)
+
+    if exec == 1:
+        # load the latest .pth file
+        checkpoint_path = getlatest('RESULTS/CIFAR10/' + activation_type)
+        checkpoint = torch.load(checkpoint_path, map_location=device)
+        model.load_state_dict(checkpoint)
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        start_epoch = checkpoint['epoch'] + 1
+        with open('RESULTS/CIFAR10/' + activation_type + 'split_indices.pkl', 'rb') as f:
+            train_indices, val_indices = pickle.load(f)
+        full_train_set, _,test_dataset, _, _ = prepare_datasets(
+            val_ratio=0.1,
+            mode = 1
+        )
+        train_dataset = torch.utils.data.Subset(full_train_set, train_indices)
+        val_dataset   = torch.utils.data.Subset(full_train_set, val_indices)
+
+    # Step 2: Prepare datasets
+    else:
+        start_epoch = 0
+        train_dataset, val_dataset, test_dataset, train_indices, val_indices = prepare_datasets(
+            val_ratio=0.1,
+            mode = 0
+        )
+        with open('RESULTS/CIFAR10/' + activation_type + '/split_indices.pkl', 'wb') as f:
+            pickle.dump((train_indices, val_indices), f)
+    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=4, pin_memory=True)
+    val_loader = DataLoader(val_dataset, batch_size=128, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
+        
     # -------------------------
     # Training loop skeleton
     # -------------------------
-    for epoch in range(epochs):
+    for epoch in range(start_epoch, epochs):
         epoch_loss = 0
         model.train()
         adjust_lr(optimizer, epoch)
@@ -133,5 +157,5 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
     val_collect = torch.tensor(val_collect)
     csv_write2(dir + '/loss_history_' + activation_type + '.csv', 
               torch.linspace(1, cfg.epochs, cfg.epochs), 
-              loss_collect, 'epoch', 'loss', '', 'test', val_collect, test_collect)
+              loss_collect, 'epoch', 'loss', '', 'test', val_collect, test_collect, exec)
     

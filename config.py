@@ -1,8 +1,8 @@
-epochs = 2000
+epochs = 2
 save_every = 20
-learning_rate = 0.01
+learning_rate = 0.00017
 ################### NLSD ######################
-AF_NLSD = ['softplus']
+AF_NLSD = ['nele']
 # ['sin', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
 FUNC_NLSD = ['quad']
 ################### MNIST #####################
@@ -23,8 +23,14 @@ batch_size = 64
 #       'nele=0.00001']
 #AF_plot =  ['lr=0.003', 'lr=0.002', 'lr=0.001', 'lr=0.0001', 
 #       'lr=0.00001']
-AF = ['nele=0.0003']
-AF_plot = ['nele=0.0003']
+#AF = ['tanh', 'relu', 'elu', 'gelu', 
+#       'sigmoid', 'leaky_relu', 'silu', 
+#       'softplus', 'lelu', 'mish', 'nele=0.002']
+#AF_plot = ['Tanh', 'ReLU', 'ELU', 'GELU', 
+#       'Sigmoid', 'Leaky_ReLU', 'SiLU', 
+#       'Softplus', 'LeLU', 'Mish', 'NELE']
+AF = ['nele=0.00017']
+AF_plot = ['nele=0.00017']
 ################# CIFAR-10 ####################
 
 ################# PLOTS #######################
