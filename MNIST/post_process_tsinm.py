@@ -50,12 +50,12 @@ def plot_only(study_type):
     ax2.set_xlabel('epochs')
 
     for i, act in enumerate(activations_file):
-
-        epochs, losses_train1, losses_test1 = csv_read('RESULTS/' + study_type  + '/' + act + '=1/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', 'test')
-        epochs, losses_train2, losses_test2 = csv_read('RESULTS/' + study_type  + '/' + act + '=2/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', 'test')
-        epochs, losses_train3, losses_test3 = csv_read('RESULTS/' + study_type  + '/' + act + '=3/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', 'test')
+        act = act.split('=')[0]
+        epochs, losses_train1, losses_test1 = csv_read('RESULTS/' + study_type  + '/' + act + '=1/loss_history_' + act + '=1.csv', 'epoch', 'loss', 'test')
+        epochs, losses_train2, losses_test2 = csv_read('RESULTS/' + study_type  + '/' + act + '=2/loss_history_' + act + '=2.csv', 'epoch', 'loss', 'test')
+        epochs, losses_train3, losses_test3 = csv_read('RESULTS/' + study_type  + '/' + act + '=3/loss_history_' + act + '=3.csv', 'epoch', 'loss', 'test')
         losses_train, losses_test = take_median(losses_train1, losses_test1, losses_train2, losses_test2, losses_train3, losses_test3)
-        print(f'{act} : {round(max(losses_test), 2)}, index : {losses_test.index(max(losses_test))}')
+        # print(f'{act} : {round(max(losses_test), 2)}, index : {losses_test.index(max(losses_test))}')
         if 'nele' in act:
             ax4.plot(epochs, losses_train, color = colors[i], label=activations[i], linewidth = 0.7)
         else:
