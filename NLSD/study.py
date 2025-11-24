@@ -13,8 +13,86 @@ from non_linear.non_linear_mish import mish_net
 from plot_pred import plot_pred
 from plot_loss import plot_loss
 from matplotlib import pyplot as plt
+from file_operations import create_directory
 import numpy as np
 import config as cfg
+from models.model_lelu import LELU
+from models.model_nele import NELE
+import torch.nn as nn
+import torch
+from csv_operations import csv_write
+import torch.optim as optim
+from NLSD.NeuralNet import Net
+
+def nlsd_data(x, y, af, device='cpu', study_type='default'):
+    loss_collect = []
+    val_collect = []
+    test_collect = []
+    dir = 'RESULTS/NLSD/' + study_type + '/'
+    create_directory('RESULTS/NLSD/' + study_type + '/')
+    create_directory('PICS/NLSD/' + study_type + '/')
+    
+    if '=' in af:
+        base, param = af.split('=')
+        param = float(param)  # convert parameter to float if needed
+    else:
+        base = af
+        param = None
+    if base == 'relu':
+        activation = nn.ReLU()
+    elif base == 'elu':
+        activation = nn.ELU(alpha=1.0)
+    elif base == 'leaky_relu' :
+        activation = nn.LeakyReLU(negative_slope=0.1)
+    elif base == 'gelu' :
+        activation = nn.GELU()
+    elif base == 'mish' :
+        activation = nn.Mish()
+    elif base == 'sigmoid' :
+        activation = nn.Sigmoid()
+    elif base == 'silu' :
+        activation = nn.SiLU()
+    elif base == 'softplus' :
+        activation = nn.Softplus()
+    elif base == 'tanh':
+        activation = nn.Tanh()
+    elif base == 'lelu' :
+        activation = LELU()
+    elif base == 'nele' :
+        activation = NELE(1, 3, 2)
+    else:
+        raise ValueError("Invalid activation type")
+    model = Net(x.shape[1], activation=activation)
+
+    # Define loss and optimizer
+    criterion = nn.MSELoss()
+    optimizer = optim.Adam(model.parameters(), lr=cfg.learning_rate)
+
+    # Training loop
+    loss_collect = []
+    for epoch in range(cfg.epochs):
+        optimizer.zero_grad()
+        outputs = model(x)
+        loss = criterion(outputs, y)
+        loss.backward()
+        optimizer.step()
+        loss_collect.append(loss.item())
+        if (epoch+1) % 200 == 0:
+            print(f'Epoch [{epoch+1}/{cfg.epochs}], Loss: {loss.item():.4f}')
+
+    # Evaluate model
+    model.eval()
+    predicted = model(x).detach()
+    loss_collect = torch.tensor(loss_collect)
+
+    # Write to CSV
+    pred_file = dir + '/predictions_' + base + '.csv'
+    loss_file = dir + '/loss_history_' + base + '.csv'
+    csv_write(pred_file, x, predicted, 'x' , 'y_pred', 'y_actual', y)
+    csv_write(loss_file, torch.linspace(1, cfg.epochs, cfg.epochs), loss_collect,  'epoch', 'loss', '', torch.linspace(1, cfg.epochs, cfg.epochs))
+    sigma_est = torch.std(y - predicted)
+    return loss.item(), sigma_est.item() 
+
 
 def study_data(x, y, epochs, learn_rate, study_type='default'):
     activations =  cfg.AF

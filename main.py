@@ -19,7 +19,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.type == 'nlsd':
         if args.mode == 'train':
-            curve_fit(args.reset)
+            curve_fit(args.device, args.reset)
         elif args.mode == 'process':
             process_nld()
     elif args.type == 'mnist':

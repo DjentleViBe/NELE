@@ -10,6 +10,7 @@ from torch.utils.data import DataLoader
 from CIFAR10.NeuralNet import CIFAR10CNN, adjust_lr, prepare_datasets
 from csv_operations import csv_write2
 import time
+torch.manual_seed(0)
 def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
     torch.save({
     'epoch': epoch,
@@ -89,7 +90,6 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
             
             x, y = x.to(device), y.to(device)
             optimizer.zero_grad()
-            #with torch.amp.autocast(device_type=device):
             loss = criterion(model(x), y)
             loss.backward()
             optimizer.step()
@@ -123,7 +123,7 @@ def cifar10_data(epochs, learn_rate, device, activation_type='default'):
                     _, predicted = torch.max(outputs.data, 1)
                     total_test += target.size(0)
                     correct_test += (predicted == target).sum().item()
-        test_collect.append(100 * correct_test / total_test)
+                test_collect.append(100 * correct_test / total_test)
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch, dir)    
         print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / total_test:.4f}, lr : {lr:.5f}")

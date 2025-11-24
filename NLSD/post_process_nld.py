@@ -18,7 +18,7 @@ def plot_only(x, study_type):
     loss_collect = np.zeros(len(activations))
     std_deviation_collect = np.zeros(len(activations))
     for i, act in enumerate(activations_file):
-        dir = 'RESULTS/' + study_type + '/'
+        dir = 'RESULTS/NLSD/' + study_type + '/'
         y, predicted, y_actual = csv_read(dir + '/predictions_' + act + '.csv', 'x', 'y_pred', 'y_actual')
         y_actual = torch.tensor(y_actual)
         predicted = torch.tensor(predicted)
@@ -40,7 +40,7 @@ def plot_only(x, study_type):
     plt.yscale('log')
     plt.xticks(rotation=90)
     plt.tight_layout()
-    plt.savefig('./PICS/' + study_type + '/Loss_Bar_Chart_with_Error_Bars.pdf', transparent=False)
+    plt.savefig('./PICS/NLSD/' + study_type + '/Loss_Bar_Chart_with_Error_Bars.pdf', transparent=False)
     plt.cla()
     plt.close()
 
@@ -57,7 +57,7 @@ def plot_only(x, study_type):
     plt.legend(loc = 'lower right', bbox_to_anchor = (1.47, -0.04))
     plt.grid(True, linewidth=0.1)
     plt.tight_layout()
-    plt.savefig('PICS/' + study_type + '/training_loss.pdf', transparent=False)
+    plt.savefig('PICS/NLSD/' + study_type + '/training_loss.pdf', transparent=False)
 
     plt.cla()
     plt.close()
@@ -81,7 +81,7 @@ def plot_only(x, study_type):
     plt.ylabel('y')
     plt.legend(loc = 'lower right', bbox_to_anchor = (1.48, -0.13))
     plt.tight_layout()
-    plt.savefig('PICS/' + study_type + '/curve_fitting.pdf', transparent=False)
+    plt.savefig('PICS/NLSD/' + study_type + '/curve_fitting.pdf', transparent=False)
 
 def process_nld():
     x = torch.linspace(-5, 5, 200).unsqueeze(1)
