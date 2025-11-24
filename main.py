@@ -1,7 +1,7 @@
 from NLSD.curve_fit import curve_fit
 from MNIST.mnist import mnist_train, mnist_eval
 from NLSD.post_process_nld import process_nld
-from MNIST.post_process_mnist import process_mnist
+from MNIST.post_process_tsinm import process_mnist
 from MNIST.post_process_mnist_nele import mnist_nele
 from CIFAR10.post_process_cifar10 import process_cifar10
 from CIFAR10.post_process_cifar10_nele import process_cifar10_nele
@@ -25,7 +25,7 @@ if __name__ == "__main__":
             process_nld()
     elif args.type == 'mnist':
         if args.mode == 'train':
-            mnist_train(args.device, args.reset)
+            mnist_train(args.device, args.reset, args.exec)
         elif args.mode == 'eval':
             mnist_eval(args.device, args.reset)
         elif args.mode == 'process':

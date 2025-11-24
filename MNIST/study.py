@@ -21,7 +21,7 @@ def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
     }, dir + activation_type + '_' + str(epoch) + '.pth')
 
 
-def mnist_data(epochs, learn_rate, device, activation_type='default'):
+def mnist_data(epochs, learn_rate, device, exec, activation_type='default'):
     activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', 'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
     colors = ["#1f77b4", "#aec7e8", 
             "#ff7f0e", "#ffbb78",
@@ -132,7 +132,7 @@ def mnist_data(epochs, learn_rate, device, activation_type='default'):
                     total_val += y.size(0)
                     correct_val += (predicted == y).sum().item()
             val_acc = correct_val / total_val
-            val_collect.append(val_acc)
+        val_collect.append(val_acc)
         
         if epoch % 5 == 0:
             model.eval()
@@ -157,5 +157,5 @@ def mnist_data(epochs, learn_rate, device, activation_type='default'):
     val_collect = torch.tensor(val_collect)
     csv_write2(dir + '/loss_history_' + activation_type + '.csv', 
               torch.linspace(1, cfg.epochs+1, cfg.epochs+1), 
-              loss_collect, 'epoch', 'loss', '', 'test', val_collect, test_collect, exec)
+              loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec)
     
