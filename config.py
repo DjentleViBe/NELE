@@ -13,15 +13,15 @@ num_classes = 10
 batch_size = 128
 #AF = ['nele=0.00001']
 #AF_plot = ['lr=0.00001']
-AF =  ['tanh=0.001', 'relu=0.001', 'elu=0.001', 'gelu=0.001', 
-       'sigmoid=0.001', 'leaky_relu=0.001', 'silu=0.001', 
-       'softplus=0.001', 'lelu=0.001', 'mish=0.001']
+AF =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1', 
+       'sigmoid=1', 'leaky_relu=1', 'silu=1', 
+       'softplus=1', 'lelu=1', 'mish=1']
 AF_plot =  ['Tanh', 'ReLU', 'ELU', 'GELU', 
        'Sigmoid', 'Leaky_ReLU', 'SiLU', 
        'Softplus', 'LeLU', 'Mish']
-#AF =  ['nele=0.003', 'nele=0.002', 'nele=0.001', 'nele=0.0001', 
+#AF =  ['nele=0.003', 'nele=0.002', 'nele=1', 'nele=1', 
 #       'nele=0.00001']
-#AF_plot =  ['lr=0.003', 'lr=0.002', 'lr=0.001', 'lr=0.0001', 
+#AF_plot =  ['lr=0.003', 'lr=0.002', 'lr=1', 'lr=1', 
 #       'lr=0.00001']
 #AF = ['tanh', 'relu', 'elu', 'gelu', 
 #       'sigmoid', 'leaky_relu', 'silu', 
@@ -29,10 +29,10 @@ AF_plot =  ['Tanh', 'ReLU', 'ELU', 'GELU',
 #AF_plot = ['Tanh', 'ReLU', 'ELU', 'GELU', 
 #       'Sigmoid', 'Leaky_ReLU', 'SiLU', 
 #       'Softplus', 'LeLU', 'Mish', 'NELE']
-#AF = ['nele=0.00017']
-#AF_plot = ['nele=0.00017']
+#AF = ['nele=17']
+#AF_plot = ['nele=17']
 ################# CIFAR-10 ####################
-val_ratio = 0.1
+val_ratio = 0.0
 ################# PLOTS #######################
 colors = ["#0072B2", "#56B4E9", 
             "#E69F00", "#F0B775",
