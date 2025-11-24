@@ -25,7 +25,7 @@ def plot_only(study_type):
     for i, act in enumerate(activations_file):
         epochs, losses_train, losses_test = csv_read('RESULTS/' + study_type  + '/' + act + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', '')
         print(f'{act} : {round(max(losses_test), 2)}, index : {losses_test.index(max(losses_test))}')
-        if 'nele' in act or 'lelu' in act:
+        if 'nele' in act:
             ax4.plot(epochs, losses_train, color = colors[i], label=activations[i], linewidth = 0.7)
         else:
             ax1.plot(epochs, losses_train, colors[i], label=activations[i], linewidth = 0.7)
