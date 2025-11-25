@@ -113,7 +113,7 @@ def plot_only(study_type):
         lines += l
         labels += lab
     
-    fig.legend(lines, labels, loc='lower center', bbox_to_anchor = (0.945, 0.1))
+    fig.legend(lines, labels, loc='lower center', bbox_to_anchor = (0.915, 0.1))
     # fig.tight_layout()
     plt.savefig('PICS/' + study_type + '/training_loss.pdf', transparent=False)
 
