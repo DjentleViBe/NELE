@@ -62,7 +62,7 @@ def mnist_data(epochs, learn_rate, device, exec, activation_type='default'):
     elif base == 'lelu' :
         activation = LELU()
     elif base == 'nele' :
-        activation = NELE(cfg.batch_size, 3, 2)
+        activation = NELE(1, 3, 2)
     else:
         raise ValueError("Invalid activation type")
 
