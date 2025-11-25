@@ -53,7 +53,7 @@ def plot_only(study_type):
     for i, act in enumerate(activations_file):
         act = act.split('=')[0]
         if act == 'lelu':
-            limit = 20
+            limit = cfg.epochs
         else:
             limit = cfg.epochs
         epochs, losses_train1, losses_test1 = csv_read('RESULTS/' + study_type  + '/' + act + '=1/loss_history_' + act + '=1.csv', 'epoch', 'loss', 'test')
