@@ -52,7 +52,7 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
     elif base == 'silu' :
         activation = nn.SiLU()
     elif base == 'softplus' :
-        activation = nn.Softmax()
+        activation = nn.Softplus()
     elif base == 'tanh':
         activation = nn.Tanh()
     elif base == 'lelu' :

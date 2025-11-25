@@ -1,6 +1,7 @@
 from MNIST.study import mnist_data
 from file_operations import reset_directory, create_directory
 from MNIST.validation import mnist_validation
+from MNIST.noise import noise_eval
 import config as cfg
 
 def mnist_train(device, reset, exec):
@@ -22,6 +23,7 @@ def mnist_eval(device, reset):
     else:
         create_directory('./RESULTS/MNIST')
         create_directory('./PICS/MNIST')
-    for af in cfg.AF:
-        print(f'Activation : {af}')
-        mnist_validation(cfg.epochs, device, af)
+    for i, af in enumerate(cfg.AF):
+        # print(f'Activation : {af}')
+        # mnist_validation(cfg.epochs, device, cfg.noise_level, af)
+        noise_eval(device, af, i)
