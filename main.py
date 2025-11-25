@@ -31,7 +31,7 @@ if __name__ == "__main__":
         elif args.mode == 'process':
             process_mnist()
         elif args.mode == 'process_nele':
-            mnist_nele()
+            mnist_nele(args.device, args.reset)
     elif args.type == 'cifar10':
         if args.mode == 'train':
             cifar10_train(args.device, args.reset, args.exec)

@@ -42,7 +42,7 @@ def plot_only(study_type):
     ax2.set_ylabel('Test Error (%)')
    
     ax1.set_yscale('log')
-    ax2.set_yscale('log')
+    #ax2.set_yscale('log')
     ax1.set_xlabel('epochs')
     #ax3 = ax2.twinx()
     #ax4 = ax1.twiny()
@@ -82,7 +82,7 @@ def plot_only(study_type):
         min_train_loss = round(np.min(losses_train), 4)
         min_train_index = np.argmin(losses_train)
 
-        print(f'{act} : Train = {min_train_loss}, index : {min_train_index}, Test = {max_test_loss}, index : {max_test_index}')
+        print(f'{act} : Train = {min_train_loss}, index : {min_train_index}, Test error = {round(100 - max_test_loss, 2)}, index : {max_test_index}')
 
         ax1.plot(epochs[:limit], losses_train[:limit], colors[i], label=activations[i], linewidth = 0.7)
         selected_epochs = []
