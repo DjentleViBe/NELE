@@ -52,16 +52,39 @@ def plot_only(study_type):
 
     for i, act in enumerate(activations_file):
         act = act.split('=')[0]
+        if act == 'lelu':
+            limit = 20
+        else:
+            limit = cfg.epochs
         epochs, losses_train1, losses_test1 = csv_read('RESULTS/' + study_type  + '/' + act + '=1/loss_history_' + act + '=1.csv', 'epoch', 'loss', 'test')
         epochs, losses_train2, losses_test2 = csv_read('RESULTS/' + study_type  + '/' + act + '=2/loss_history_' + act + '=2.csv', 'epoch', 'loss', 'test')
         epochs, losses_train3, losses_test3 = csv_read('RESULTS/' + study_type  + '/' + act + '=3/loss_history_' + act + '=3.csv', 'epoch', 'loss', 'test')
-        losses_train, losses_test = take_median(losses_train1, losses_test1, losses_train2, losses_test2, losses_train3, losses_test3)
-        max_loss = round(np.max(losses_test), 2)
-        max_index = np.argmax(losses_test)
+        epochs, losses_train4, losses_test4 = csv_read('RESULTS/' + study_type  + '/' + act + '=4/loss_history_' + act + '=4.csv', 'epoch', 'loss', 'test')
+        epochs, losses_train5, losses_test5 = csv_read('RESULTS/' + study_type  + '/' + act + '=5/loss_history_' + act + '=5.csv', 'epoch', 'loss', 'test')
+        epochs, losses_train6, losses_test6 = csv_read('RESULTS/' + study_type  + '/' + act + '=6/loss_history_' + act + '=6.csv', 'epoch', 'loss', 'test')
+        epochs, losses_train7, losses_test7 = csv_read('RESULTS/' + study_type  + '/' + act + '=7/loss_history_' + act + '=7.csv', 'epoch', 'loss', 'test')
+        losses_train, losses_test = take_median(losses_train1[:limit], 
+                                                losses_test1[:limit], 
+                                                losses_train2[:limit], 
+                                                losses_test2[:limit], 
+                                                losses_train3[:limit], 
+                                                losses_test3[:limit],
+                                                losses_train4[:limit], 
+                                                losses_test4[:limit],
+                                                losses_train5[:limit], 
+                                                losses_test5[:limit],
+                                                losses_train6[:limit], 
+                                                losses_test6[:limit],
+                                                losses_train7[:limit], 
+                                                losses_test7[:limit])
+        max_test_loss = round(np.max(losses_test), 2)
+        max_test_index = np.argmax(losses_test)
+        min_train_loss = round(np.min(losses_train), 4)
+        min_train_index = np.argmin(losses_train)
 
-        print(f'{act} : {max_loss}, index : {max_index}')
+        print(f'{act} : Train = {min_train_loss}, index : {min_train_index}, Test = {max_test_loss}, index : {max_test_index}')
 
-        ax1.plot(epochs, losses_train, colors[i], label=activations[i], linewidth = 0.7)
+        ax1.plot(epochs[:limit], losses_train[:limit], colors[i], label=activations[i], linewidth = 0.7)
         selected_epochs = []
         selected_losses = []
         for e, l in zip(epochs, losses_test):
