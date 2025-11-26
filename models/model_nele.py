@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from scipy.interpolate import interp1d
 
 class NELE(nn.Module):
     def __init__(self, num_features=64, num_points=3, degree=2):
@@ -10,37 +11,55 @@ class NELE(nn.Module):
 
         # Per-feature control points and weights
         # Shape: (num_features, num_points)
-        self.control_points = nn.Parameter(
-            torch.tensor([0.0]).repeat(num_features, 1)
-        )
-        self.weights = nn.Parameter(torch.ones(num_features, 1))
-         # learnable input/output scaling
-        self.in_shift  = nn.Parameter(torch.zeros(1))
-        self.in_scale  = nn.Parameter(torch.ones(1))
-        self.out_shift = nn.Parameter(torch.zeros(1))
-        self.out_scale = nn.Parameter(torch.ones(1))
+        
+        self.middle_w = nn.Parameter(torch.tensor(1.0))
+        self.middle_x = nn.Parameter(torch.tensor(0.0))
+        self.middle_y = nn.Parameter(torch.tensor(0.0))
 
     def forward(self, x):
-        mask = x > 0
-        x_norm = (x - x.min()) / (x.max() - x.min())
-        x_norm = torch.clamp(x_norm, 0.0, 1.0)
-        one_minus_t = 1 - x_norm
+        t = torch.linspace(0, 1, 20)
+        N0 = (1 - t)**2
+        N1 = 2 * t * (1 - t)
+        N2 = t**2
+        
+        cp1 = torch.stack([self.middle_x, self.middle_y])
+        cp0 = torch.tensor([-1.0, 0.0])
+        cp2 = torch.tensor([1.0, 1.0])
+        cp0[0] = x.min()
+        cp2[0] = x.max()
+        cp2[1] = x.max()
+        control_points = torch.stack([cp0, cp1, cp2])  # shape (3, 2)
 
-        N0 = one_minus_t * one_minus_t
-        N1 = 2 * x_norm * one_minus_t
-        N2 = x_norm * x_norm
+        # Weights
+        weights = torch.ones(3, device=self.middle_w.device)
+        weights[1] = self.middle_w      
+        # Numerator (weighted sum of control points)
+        numerator = (N0[:, None] * weights[0] * control_points[0] +
+                 N1[:, None] * weights[1] * control_points[1] +
+                 N2[:, None] * weights[2] * control_points[2])
+        denominator = (N0 * weights[0] + N1 * weights[1] + N2 * weights[2])[:, None]
+    
+        curve_points = numerator / (denominator + 1e-12)
+        # Linear interpolation in PyTorch
+        x_vals = curve_points[:, 0]
+        y_vals = curve_points[:, 1]
 
-        # numerator and denominator directly
-        numerator = N0 * 1.0 * -0.1 + \
-                    N1 * self.weights * self.control_points + \
-                    N2 * 1.0 * 1.0
+        # Ensure t_queries within the x range
+        t_queries_clamped = torch.clamp(x, x_vals.min(), x_vals.max())
 
-        denominator = N0 * 1.0 + \
-                    N1 * self.weights + \
-                    N2 * 1.0
-        y_norm = numerator / (denominator + 1e-6)
-        return torch.where(mask, x, y_norm*  self.out_scale + self.out_shift)
+        # Get indices for linear interpolation
+        idx = torch.searchsorted(x_vals.contiguous(), t_queries_clamped)
+        idx = torch.clamp(idx, 1, len(x_vals)-1)
 
+        x0 = x_vals[idx-1]
+        x1 = x_vals[idx]
+        y0 = y_vals[idx-1]
+        y1 = y_vals[idx]
+
+        slope = (y1 - y0) / (x1 - x0 + 1e-12)
+        y_queries = y0 + slope * (t_queries_clamped - x0)
+        return y_queries
+    
 class Net(nn.Module):
     def __init__(self, input_dim, nurbs_points, degree):
         super(Net, self).__init__()
