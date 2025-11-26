@@ -25,7 +25,7 @@ class NELE(nn.Module):
         cp1 = torch.tensor([0.0, 0.0])
         cp0 = torch.tensor([-1.0, 0.0])
         cp2 = torch.tensor([1.0, 1.0])
-
+        cp1[0] = self.middle_x
         cp1[1] = self.middle_y
         cp0[0] = x.min()
         cp2[0] = x.max()
