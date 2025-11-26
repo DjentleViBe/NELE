@@ -136,7 +136,7 @@ def mnist_data(epochs, learn_rate, device, exec, activation_type='default'):
         val_collect.append(val_acc)
         
         if (epoch + 1) % 5 == 0 or epoch == 0:
-            torch.manual_seed(1234)
+            # torch.manual_seed(1234)
             correct_test, total_test = 0.0, 0.0
             model.eval()
             with torch.no_grad():
