@@ -14,17 +14,19 @@ class NELE(nn.Module):
         
         self.middle_w = nn.Parameter(torch.tensor(1.0))
         self.middle_x = nn.Parameter(torch.tensor(0.0))
-        self.middle_y = nn.Parameter(torch.tensor(0.0))
+        self.middle_y = nn.Parameter(torch.tensor(-1.0))
 
     def forward(self, x):
-        t = torch.linspace(0, 1, 20)
+        t = torch.linspace(0, 1, 200)
         N0 = (1 - t)**2
         N1 = 2 * t * (1 - t)
         N2 = t**2
         
-        cp1 = torch.stack([self.middle_x, self.middle_y])
+        cp1 = torch.tensor([0.0, 0.0])
         cp0 = torch.tensor([-1.0, 0.0])
         cp2 = torch.tensor([1.0, 1.0])
+
+        cp1[1] = self.middle_y
         cp0[0] = x.min()
         cp2[0] = x.max()
         cp2[1] = x.max()
@@ -39,7 +41,7 @@ class NELE(nn.Module):
                  N2[:, None] * weights[2] * control_points[2])
         denominator = (N0 * weights[0] + N1 * weights[1] + N2 * weights[2])[:, None]
     
-        curve_points = numerator / (denominator + 1e-12)
+        curve_points = numerator / (denominator + 1e-6)
         # Linear interpolation in PyTorch
         x_vals = curve_points[:, 0]
         y_vals = curve_points[:, 1]
