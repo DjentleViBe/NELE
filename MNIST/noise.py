@@ -17,4 +17,5 @@ def noise_eval(device, af, i):
     plt.legend()
     plt.xticks(np.arange(0, 4, 1))
     plt.tight_layout()
+    plt.grid(True, linewidth = 0.1)
     plt.savefig('PICS/MNIST/Noise_study.pdf')

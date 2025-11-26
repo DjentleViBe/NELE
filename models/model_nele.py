@@ -13,7 +13,7 @@ class NELE(nn.Module):
         # Shape: (num_features, num_points)
         
         self.middle_w = nn.Parameter(torch.tensor(1.0))
-        self.middle_x = nn.Parameter(torch.tensor(0.0))
+        self.middle_x = nn.Parameter(torch.tensor(-0.5))
         self.middle_y = nn.Parameter(torch.tensor(-1.0))
 
     def forward(self, x):
@@ -21,11 +21,12 @@ class NELE(nn.Module):
         N0 = (1 - t)**2
         N1 = 2 * t * (1 - t)
         N2 = t**2
-        
-        cp1 = torch.tensor([0.0, 0.0])
-        cp0 = torch.tensor([-1.0, 0.0])
-        cp2 = torch.tensor([1.0, 1.0])
-        cp1[0] = self.middle_x
+        device = x.device
+        cp0 = torch.tensor([-0.5, 0.0], device=device)
+        cp1 = torch.tensor([-0.5, 0.0], device=device)
+        cp2 = torch.tensor([1.0, 1.0], device=device)
+        middle_x = torch.clamp(self.middle_x, x.min(), x.max())
+        cp1[0] = middle_x
         cp1[1] = self.middle_y
         cp0[0] = x.min()
         cp2[0] = x.max()

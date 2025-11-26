@@ -9,7 +9,7 @@ from models.model_nele import NELE
 import config as cfg
 import numpy as np
 
-def mnist_validation(epochs, device, noise_level = cfg.noise_level, activation_type='default'):
+def mnist_validation(epochs, device, noise_level, activation_type='default'):
     if '=' in activation_type:
         base, param = activation_type.split('=')
         param = float(param)  # convert parameter to float if needed
@@ -50,14 +50,15 @@ def mnist_validation(epochs, device, noise_level = cfg.noise_level, activation_t
     model = DeepFCNet(input_size, hidden_size, num_hidden_layers, num_classes, activation, activation_type)
     test_collect = []
     for i in range(1, 8):
+        torch.manual_seed(1234)
         checkpoint = torch.load('RESULTS/MNIST/' + activation_type + '=' + str(i) + '/' + activation_type + '=' + str(i) + '_' + str(epochs - 1) + '.pth',
                             map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         epoch = checkpoint['epoch']
         epoch_loss = checkpoint['epoch_loss']
         model.eval()
-        correct = 0
-        total = 0
+        correct = 0.0
+        total = 0.0
 
         with torch.no_grad():
             for data, target in test_loader:

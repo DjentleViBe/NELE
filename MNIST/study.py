@@ -135,12 +135,16 @@ def mnist_data(epochs, learn_rate, device, exec, activation_type='default'):
         val_collect.append(val_acc)
         
         if epoch % 5 == 0:
+            torch.manual_seed(1234)
+            correct_test, total_test = 0.0, 0.0
             model.eval()
             with torch.no_grad():
                 for data, target in test_loader:
                     data = data.to(device)
                     target = target.to(device)
-                    outputs = model(data)
+                    noise = torch.empty_like(data).uniform_(-cfg.noise_level, cfg.noise_level)
+                    x_noisy = data + noise
+                    outputs = model(x_noisy)
                     _, predicted = torch.max(outputs.data, 1)
                     total_test += target.size(0)
                     correct_test += (predicted == target).sum().item()
