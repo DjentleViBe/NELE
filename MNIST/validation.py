@@ -56,6 +56,7 @@ def mnist_validation(epochs, device, noise_level, activation_type='default'):
         model.load_state_dict(checkpoint['model_state_dict'])
         epoch = checkpoint['epoch']
         epoch_loss = checkpoint['epoch_loss']
+        test_loss = checkpoint['test_loss']
         model.eval()
         correct = 0.0
         total = 0.0

@@ -12,12 +12,13 @@ from models.model_nele import NELE
 import config as cfg
 from torch.utils.data import random_split
 
-def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
+def save(model, optimizer, epoch_loss, activation_type, epoch, dir, test_loss = 0.0):
     torch.save({
     'epoch': epoch,
     'model_state_dict': model.state_dict(),
     'optimizer_state_dict': optimizer.state_dict(),
-    'epoch_loss': epoch_loss
+    'epoch_loss': epoch_loss,
+    'test_loss': test_loss
     }, dir + activation_type + '_' + str(epoch) + '.pth')
 
 
@@ -134,7 +135,7 @@ def mnist_data(epochs, learn_rate, device, exec, activation_type='default'):
             val_acc = correct_val / total_val
         val_collect.append(val_acc)
         
-        if epoch % 5 == 0:
+        if (epoch + 1) % 5 == 0 or epoch == 0:
             torch.manual_seed(1234)
             correct_test, total_test = 0.0, 0.0
             model.eval()
@@ -148,10 +149,11 @@ def mnist_data(epochs, learn_rate, device, exec, activation_type='default'):
                     _, predicted = torch.max(outputs.data, 1)
                     total_test += target.size(0)
                     correct_test += (predicted == target).sum().item()
-        test_collect.append(100 * correct_test / max(total_test, 1))
+            test_loss = 100 * correct_test / max(total_test, 1)
+        test_collect.append(test_loss)
             # print(f'Test Accuracy: {100 * correct / total:.2f}%')
         if (epoch + 1) % cfg.save_every  == 0:
-            save(model, optimizer, epoch_loss, activation_type, epoch, dir)
+            save(model, optimizer, epoch_loss, activation_type, epoch, dir, test_loss)
         print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / max(total_test, 1):.4f}, lr : {lr:.5f}")
     
     # Evaluate
