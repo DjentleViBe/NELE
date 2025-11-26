@@ -61,13 +61,13 @@ AF_plot =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1',
        """
 AF_nele =  ['nele=1', 'nele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'nele=7']
 AF_plot_nele =  ['nele', 'nele', 'nele', 'nele', 'nele', 'nele', 'nele']
-AF = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
+AF = ['nele', 'tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
      'leaky_relu', 
-      'lelu', 'mish', 'nele']
-AF_plot = ['Tanh', 'Sigmoid', 'Softplus',
+      'lelu', 'mish']
+AF_plot = ['NELE', 'Tanh', 'Sigmoid', 'Softplus',
            'ELU', 'SiLU', 'GELU', 'ReLU',
        'Leaky_ReLU',  
-       'LeLU', 'Mish', 'NELE']
+       'LeLU', 'Mish']
 # AF = ['nele']
 # AF_plot = ['nele']
 ################# CIFAR-10 ####################
