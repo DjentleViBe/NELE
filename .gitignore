@@ -16,3 +16,4 @@ data
 *.pth
 *.pkl
 *.ods*
+*.png
