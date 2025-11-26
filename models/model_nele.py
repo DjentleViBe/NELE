@@ -11,17 +11,18 @@ class NELE(nn.Module):
         # Per-feature control points and weights
         # Shape: (num_features, num_points)
         self.control_points = nn.Parameter(
-            torch.tensor([[-0.1, 0.0, 1.0]]).repeat(num_features, 1)
+            torch.tensor([0.0]).repeat(num_features, 1)
         )
-        self.weights = nn.Parameter(torch.ones(num_features, num_points))
+        self.weights = nn.Parameter(torch.ones(num_features, 1))
          # learnable input/output scaling
-        self.in_shift  = nn.Parameter(torch.zeros(1))
-        self.in_scale  = nn.Parameter(torch.ones(1))
-        self.out_shift = nn.Parameter(torch.zeros(1))
-        self.out_scale = nn.Parameter(torch.ones(1))
+        # self.in_shift  = nn.Parameter(torch.zeros(1))
+        # self.in_scale  = nn.Parameter(torch.ones(1))
+        # self.out_shift = nn.Parameter(torch.zeros(1))
+        # self.out_scale = nn.Parameter(torch.ones(1))
 
     def forward(self, x):
-        x_norm = (x - self.in_shift) * self.in_scale
+        mask = x > 0
+        x_norm = (x - x.min()) / (x.max() - x.min())
         x_norm = torch.clamp(x_norm, 0.0, 1.0)
         one_minus_t = 1 - x_norm
 
@@ -30,15 +31,15 @@ class NELE(nn.Module):
         N2 = x_norm * x_norm
 
         # numerator and denominator directly
-        numerator = N0 * self.weights[:, 0] * self.control_points[:, 0] + \
-                    N1 * self.weights[:, 1] * self.control_points[:, 1] + \
-                    N2 * self.weights[:, 2] * self.control_points[:, 2]
+        numerator = N0 * 1.0 * -0.1 + \
+                    N1 * self.weights * self.control_points + \
+                    N2 * 1.0 * 1.0
 
-        denominator = N0 * self.weights[:, 0] + \
-                    N1 * self.weights[:, 1] + \
-                    N2 * self.weights[:, 2]
+        denominator = N0 * 1.0 + \
+                    N1 * self.weights + \
+                    N2 * 1.0
         y_norm = numerator / (denominator + 1e-6)
-        return y_norm * self.out_scale + self.out_shift
+        return torch.where(mask, x, y_norm)
 
 class Net(nn.Module):
     def __init__(self, input_dim, nurbs_points, degree):
