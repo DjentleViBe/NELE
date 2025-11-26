@@ -15,10 +15,10 @@ class NELE(nn.Module):
         )
         self.weights = nn.Parameter(torch.ones(num_features, 1))
          # learnable input/output scaling
-        # self.in_shift  = nn.Parameter(torch.zeros(1))
-        # self.in_scale  = nn.Parameter(torch.ones(1))
-        # self.out_shift = nn.Parameter(torch.zeros(1))
-        # self.out_scale = nn.Parameter(torch.ones(1))
+        self.in_shift  = nn.Parameter(torch.zeros(1))
+        self.in_scale  = nn.Parameter(torch.ones(1))
+        self.out_shift = nn.Parameter(torch.zeros(1))
+        self.out_scale = nn.Parameter(torch.ones(1))
 
     def forward(self, x):
         mask = x > 0
@@ -39,7 +39,7 @@ class NELE(nn.Module):
                     N1 * self.weights + \
                     N2 * 1.0
         y_norm = numerator / (denominator + 1e-6)
-        return torch.where(mask, x, y_norm)
+        return torch.where(mask, x, y_norm*  self.out_scale + self.out_shift)
 
 class Net(nn.Module):
     def __init__(self, input_dim, nurbs_points, degree):
