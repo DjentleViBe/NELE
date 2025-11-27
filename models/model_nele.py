@@ -15,7 +15,7 @@ class NELE(nn.Module):
         self.w1 = nn.Parameter(torch.tensor(1.0))
         self.w2 = nn.Parameter(torch.tensor(1.0))
         self.y1 = nn.Parameter(torch.tensor(-0.1))
-        self.x1 = nn.Parameter(torch.tensor(-0.5))
+        self.x1 = nn.Parameter(torch.tensor(-0.1))
         self.y0 = nn.Parameter(torch.tensor(0.0))
 
     def forward(self, x):
