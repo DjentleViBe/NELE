@@ -20,13 +20,13 @@ class NELE(nn.Module):
 
     def forward(self, x):
         mask = x > 0
-        t = torch.linspace(0, 1, 200)
+        device = x.device
+        t = torch.linspace(0, 1, 200).to(device)
         N0 = (1 - t)**3
         N1 = 3 * t * (1 - t)**2
         N2 = 3 * t**2 * (1 - t)
         N3 = t**3
 
-        device = x.device
         cp0 = torch.tensor([1.0, -0.1], device=device)
         cp1 = torch.tensor([-0.5, -0.1], device=device)
         cp2 = torch.tensor([-1.0, -1.0], device=device)
