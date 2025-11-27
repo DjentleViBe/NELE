@@ -1,4 +1,4 @@
-from NLSD.curve_fit import curve_fit
+from NLSD.curve_fit import curve_fit, curve_fit_nele
 from MNIST.mnist import mnist_train, mnist_eval, mnist_train_nele
 from NLSD.post_process_nld import process_nld
 from MNIST.post_process_tsinm import process_mnist
@@ -20,9 +20,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.type == 'nlsd':
         if args.mode == 'train':
-            curve_fit(args.device, args.reset)
+            curve_fit(args.device, args.reset, args.exec)
+        elif args.mode == 'train_nele':
+            curve_fit_nele(args.device, args.reset, args.exec)
         elif args.mode == 'process':
-            process_nld()
+            process_nld(args.reset)
     elif args.type == 'mnist':
         if args.mode == 'train':
             mnist_train(args.device, args.reset, args.exec)

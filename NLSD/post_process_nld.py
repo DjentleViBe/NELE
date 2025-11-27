@@ -4,37 +4,40 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from NLSD.smoothness import smoothness_derivative_energy, curvature_smoothness, lipschitz_constant, frequency_smoothness
-
-activations =  ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU', 'ReLU', 'Leaky ReLU', 'LeLU', 'Mish', 'NELE']
-activations_file =  ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu', 'leaky_relu', 'lelu', 'mish', 'nele']
-colors = ["#490092", "#006ddb", 
-          "#b66dff", "#ff6db6",
-          "#920000", "#db6d00",
-          "#ffdf4d", "#004949",
-          "#009999", "#22cf22",
-          '#000000']
-
+import config as cfg
+from file_operations import reset_directory, create_directory
 def plot_only(x, study_type):
-    loss_collect = np.zeros(len(activations))
-    std_deviation_collect = np.zeros(len(activations))
-    for i, act in enumerate(activations_file):
-        dir = 'RESULTS/NLSD/' + study_type + '/'
-        y, predicted, y_actual = csv_read(dir + '/predictions_' + act + '.csv', 'x', 'y_pred', 'y_actual')
+    loss_collect = np.zeros(len(cfg.AF_NLSD))
+    std_deviation_collect = np.zeros(len(cfg.AF_NLSD))
+    for i, act in enumerate(cfg.AF_NLSD):
+        create_directory('./PICS/NLSD/' + study_type + '/' + act)
+        predicted_collect = []
+        actual_collect = []
+        losses_collect = []
+        for j in range(1, 8):
+            dir = 'RESULTS/NLSD/' + study_type + '/' + act + '=' + str(j) + '/'
+            y, predicted, y_actual = csv_read(dir + 'predictions_' + act + '=' + str(j) + '.csv', 'x', 'y_pred', 'y_actual')
+            _, loss, _ = csv_read(dir + 'loss_history_' + act + '=' + str(j) + '.csv', 'epoch', 'loss', '')
+            losses_collect.append(loss)
+            predicted_collect.append(predicted)
+            actual_collect.append(y_actual)
+        
+        loss_c = np.median(losses_collect, axis =0)
+        y_actual = np.median(actual_collect, axis=0)
+        predicted = np.median(predicted_collect, axis = 0)
         y_actual = torch.tensor(y_actual)
         predicted = torch.tensor(predicted)
         sigma_est = torch.std(y_actual - predicted)
-
-        _, loss, _ = csv_read(dir + '/loss_history_' + act + '.csv', 'epoch', 'loss', '')
-        loss_collect[i] = loss[-1]
+        
+        loss_collect[i] = loss_c[-1]
         std_deviation_collect[i] = sigma_est.item()
     mpl.rcParams['pdf.use14corefonts'] = False
     mpl.rcParams['pdf.fonttype'] = 42  # keeps colors in RGB
     plt.style.use("tableau-colorblind10")
     plt.figure(figsize=(5,3))
-
-    plt.bar(activations, std_deviation_collect, color=colors)
-    plt.errorbar(activations, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="black", elinewidth=3, capsize=5)
-    plt.errorbar(activations, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="white", elinewidth=0, capsize=3)
+    plt.bar(cfg.AF_NLSD_PLOT, std_deviation_collect, color=cfg.colors)
+    plt.errorbar(cfg.AF_NLSD_PLOT, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="black", elinewidth=3, capsize=5)
+    plt.errorbar(cfg.AF_NLSD_PLOT, std_deviation_collect, yerr=loss_collect, fmt='none', ecolor="white", elinewidth=0, capsize=3)
     # plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, , ecolor="#c7c7c7", error_kw={"elinewidth": 2})
     plt.ylabel('Loss')
     plt.yscale('log')
@@ -49,9 +52,14 @@ def plot_only(x, study_type):
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
 
-    for i, act in enumerate(activations):
-        epochs, losses_tanh, _ = csv_read(dir + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', '')
-        plt.plot(epochs, losses_tanh, colors[i], label=activations[i], linewidth = 0.8)
+    for i, act in enumerate(cfg.AF_NLSD):
+        losses_collect = []
+        for j in range(1, 8):
+            dir = 'RESULTS/NLSD/' + study_type + '/' + act + '=' + str(j) + '/'
+            epochs, losses, _ = csv_read(dir + '/loss_history_' + act + '=' + str(j) + '.csv', 'epoch', 'loss', '')
+            losses_collect.append(losses)
+        losses = np.median(losses_collect, axis=0)
+        plt.plot(epochs, losses, cfg.colors[i], label=cfg.AF_NLSD_PLOT[i], linewidth = 0.8)
     # Plot
     plt.yscale('log')
     plt.legend(loc = 'lower right', bbox_to_anchor = (1.47, -0.04))
@@ -64,9 +72,15 @@ def plot_only(x, study_type):
 
     plt.figure(figsize=(5,3))
     plt.subplots_adjust(right = 0.65)
-    for i, act in enumerate(activations):
-        x_vals, y_preds, y = csv_read(dir + '/predictions_' + activations_file[i] + '.csv', 'x', 'y_pred','y_actual')
-        plt.plot(x_vals, y_preds, colors[i], label=activations[i], linewidth=0.7)
+    for i, act in enumerate(cfg.AF_NLSD):
+        y_preds_collect= []
+        for j in range(1, 7):
+            dir = 'RESULTS/NLSD/' + study_type + '/' + act + '=' + str(j) + '/'
+            x_vals, y_preds, y = csv_read(dir + 'predictions_' + act + '=' + str(j) +'.csv', 'x', 'y_pred','y_actual')
+            y_preds_collect.append(y_preds)
+
+        y_preds = np.median(y_preds_collect, axis = 0)
+        plt.plot(x_vals, y_preds, cfg.colors[i], label=cfg.AF_NLSD_PLOT[i], linewidth=0.7)
         s1 = smoothness_derivative_energy(x_vals, y_preds, 1)
         s2 = smoothness_derivative_energy(x_vals, y_preds, 2)
         s3 = curvature_smoothness(x_vals, y_preds)
@@ -83,23 +97,35 @@ def plot_only(x, study_type):
     plt.tight_layout()
     plt.savefig('PICS/NLSD/' + study_type + '/curve_fitting.pdf', transparent=False)
 
-def process_nld():
+def process_nld(reset):
+    if reset == 1:
+        reset_directory('./PICS/NLSD/')
+        reset_directory('./PICS/NLSD/')
+    else:
+        create_directory('./PICS/NLSD/')
+        create_directory('./PICS/NLSD/')
     x = torch.linspace(-5, 5, 200).unsqueeze(1)
     ################### EXP NOISE ##########################
-    plot_only(x, 'exp_noise')
+    create_directory('./PICS/NLSD/' + 'exp')
+    plot_only(x, 'exp')
 
     ################### HYP NOISE ##########################
-    plot_only(x, 'hyp_noise')
+    create_directory('./PICS/NLSD/' + 'hyp')
+    plot_only(x, 'hyp')
 
     ################### QUAD NOISE ##########################
-    plot_only(x, 'quad_noise')
+    create_directory('./PICS/NLSD/' + 'quad')
+    plot_only(x, 'quad')
 
     ################### SINE NOISE ##########################
-    plot_only(x, 'sine_noise')
+    create_directory('./PICS/NLSD/' + 'sine')
+    plot_only(x, 'sine')
 
     ################### TRIG NOISE ##########################
-    plot_only(x, 'trig_noise')
+    create_directory('./PICS/NLSD/' + 'trig')
+    plot_only(x, 'trig')
 
     ################### EXP-POLY NOISE ##########################
     x = torch.linspace(0, 10, 200).unsqueeze(1)
-    plot_only(x, 'exppoly_noise')   
+    create_directory('./PICS/NLSD/' + 'exppoly')
+    plot_only(x, 'exppoly')   
