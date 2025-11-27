@@ -1,6 +1,6 @@
 epochs = 75
 save_every = 75
-learning_rate = 0.001
+learning_rate = 0.002
 ################### NLSD ######################
 AF_NLSD = ['nele']
 # ['sin', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
@@ -11,7 +11,7 @@ hidden_size = 128
 num_hidden_layers = 8
 num_classes = 10
 batch_size = 128
-noise_level = 0.0
+noise_level = 3.0
 #AF = ['nele=0.002']
 #AF_plot = ['lr=0.002']
 """
@@ -73,9 +73,9 @@ AF_plot = ['NELE', 'Tanh', 'Sigmoid', 'Softplus',
 ################# CIFAR-10 ####################
 val_ratio = 0.0
 ################# PLOTS #######################
-colors = ["#0072B2", "#56B4E9", 
+colors = ['#000000',"#0072B2", "#56B4E9", 
             "#E69F00", "#F0B775",
             "#009E73", "#63C6A8",
             "#CC79A7", "#DDA5C9",
-            "#8E6B55", "#C7B2A8",
-            '#000000']
+            "#8E6B55", "#C7B2A8"
+            ]
