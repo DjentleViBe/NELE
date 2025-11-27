@@ -4,7 +4,6 @@ from NLSD.study import nlsd_data
 import config as cfg
 
 def curve_fit(device, reset, exec):
-    x = torch.linspace(-5, 5, 200).unsqueeze(1)
     if reset == 1:
         reset_directory('./RESULTS/NLSD/')
         reset_directory('./PICS/NLSD/')
@@ -20,6 +19,7 @@ def curve_fit(device, reset, exec):
             create_directory('./RESULTS/NLSD/' + afunc + '/' + af)
             print(f'Activation function : {af}, Function : {afunc}')
             if afunc == 'sine':
+                x = torch.linspace(-5, 5, 200).unsqueeze(1)
                 y = torch.sin(x) + (1 / cfg.noise_level) * torch.randn(x.size())
                 loss_val, std_val = nlsd_data(x, y, af=af, study_type='sine')
             elif afunc == 'trig':
@@ -31,18 +31,21 @@ def curve_fit(device, reset, exec):
                 std_deviation_collect.append(std_val)
             elif afunc == 'exp':
                 ################### EXP NOISE ##########################
+                x = torch.linspace(-5, 5, 200).unsqueeze(1)
                 y = torch.exp(-0.5*x) + (1 / cfg.noise_level) * torch.randn(x.size())
                 loss_val, std_val = nlsd_data(x, y, af=af, study_type='exp')
                 loss_collect.append(loss_val)
                 std_deviation_collect.append(std_val)
             elif afunc == 'hyp':
                 ################### HYP NOISE ##########################
+                x = torch.linspace(-5, 5, 200).unsqueeze(1)
                 y = torch.tanh(x) + (1 / cfg.noise_level) * torch.randn(x.size())
                 loss_val, std_val = nlsd_data(x, y, af=af, study_type='hyp')
                 loss_collect.append(loss_val)
                 std_deviation_collect.append(std_val)
             elif afunc == 'quad':
                 ################### QUAD NOISE ##########################
+                x = torch.linspace(-5, 5, 200).unsqueeze(1)
                 y = x**2 + (1 / cfg.noise_level) * torch.randn(x.size())
                 loss_val, std_val = nlsd_data(x, y, af=af, study_type='quad')
                 loss_collect.append(loss_val)
