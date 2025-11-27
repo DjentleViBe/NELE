@@ -11,36 +11,45 @@ class NELE(nn.Module):
 
         # Per-feature control points and weights
         # Shape: (num_features, num_points)
-        
-        self.middle_w = nn.Parameter(torch.tensor(1.0))
-        self.middle_x = nn.Parameter(torch.tensor(-0.5))
-        self.middle_y = nn.Parameter(torch.tensor(-1.0))
+        self.l = nn.Parameter(torch.tensor(-1.0))
+        self.w1 = nn.Parameter(torch.tensor(1.0))
+        self.w2 = nn.Parameter(torch.tensor(1.0))
+        self.y1 = nn.Parameter(torch.tensor(-0.1))
+        self.x1 = nn.Parameter(torch.tensor(-0.5))
+        self.y0 = nn.Parameter(torch.tensor(0.0))
 
     def forward(self, x):
+        mask = x > 0
         t = torch.linspace(0, 1, 200)
-        N0 = (1 - t)**2
-        N1 = 2 * t * (1 - t)
-        N2 = t**2
+        N0 = (1 - t)**3
+        N1 = 3 * t * (1 - t)**2
+        N2 = 3 * t**2 * (1 - t)
+        N3 = t**3
+
         device = x.device
-        cp0 = torch.tensor([-0.5, 0.0], device=device)
-        cp1 = torch.tensor([-0.5, 0.0], device=device)
-        cp2 = torch.tensor([1.0, 1.0], device=device)
-        middle_x = torch.clamp(self.middle_x, x.min(), x.max())
-        cp1[0] = middle_x
-        cp1[1] = self.middle_y
+        cp0 = torch.tensor([1.0, -0.1], device=device)
+        cp1 = torch.tensor([-0.5, -0.1], device=device)
+        cp2 = torch.tensor([-1.0, -1.0], device=device)
+        cp3 = torch.tensor([0.0, 0.0], device=device)
         cp0[0] = x.min()
-        cp2[0] = x.max()
-        cp2[1] = x.max()
-        control_points = torch.stack([cp0, cp1, cp2])  # shape (3, 2)
+        cp0[1] = self.y0
+        cp1[0] = self.x1
+        cp1[1] = self.y1
+        cp2[0] = self.l / 1.4142
+        cp2[1] = self.l / 1.4142
+        
+        control_points = torch.stack([cp0, cp1, cp2, cp3])  # shape (3, 2)
 
         # Weights
-        weights = torch.ones(3, device=self.middle_w.device)
-        weights[1] = self.middle_w      
+        weights = torch.ones(4, device=self.w1.device)
+        weights[1] = self.w1   
+        weights[2] = self.w2  
         # Numerator (weighted sum of control points)
         numerator = (N0[:, None] * weights[0] * control_points[0] +
                  N1[:, None] * weights[1] * control_points[1] +
-                 N2[:, None] * weights[2] * control_points[2])
-        denominator = (N0 * weights[0] + N1 * weights[1] + N2 * weights[2])[:, None]
+                 N2[:, None] * weights[2] * control_points[2] + 
+                 N3[:, None] * weights[3] * control_points[3])
+        denominator = (N0 * weights[0] + N1 * weights[1] + N2 * weights[2]  + N3 * weights[3])[:, None]
     
         curve_points = numerator / (denominator + 1e-6)
         # Linear interpolation in PyTorch
@@ -61,7 +70,7 @@ class NELE(nn.Module):
 
         slope = (y1 - y0) / (x1 - x0 + 1e-12)
         y_queries = y0 + slope * (t_queries_clamped - x0)
-        return y_queries
+        return torch.where(mask, x, y_queries)
     
 class Net(nn.Module):
     def __init__(self, input_dim, nurbs_points, degree):

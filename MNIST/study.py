@@ -143,18 +143,27 @@ def mnist_data(epochs, learn_rate, device, exec, activation_type='default'):
                 for data, target in test_loader:
                     data = data.to(device)
                     target = target.to(device)
+                    outputs = model(data)
+                    _, predicted = torch.max(outputs.data, 1)
+                    total_test += target.size(0)
+                    correct_test += (predicted == target).sum().item()
+            test_loss_0 = 100 * correct_test / max(total_test, 1)
+            correct_test, total_test = 0.0, 0.0
+            with torch.no_grad():
+                for data, target in test_loader:
+                    data = data.to(device)
+                    target = target.to(device)
                     noise = torch.empty_like(data).uniform_(-cfg.noise_level, cfg.noise_level)
                     x_noisy = data + noise
                     outputs = model(x_noisy)
                     _, predicted = torch.max(outputs.data, 1)
                     total_test += target.size(0)
                     correct_test += (predicted == target).sum().item()
-            test_loss = 100 * correct_test / max(total_test, 1)
-        test_collect.append(test_loss)
-            # print(f'Test Accuracy: {100 * correct / total:.2f}%')
+            test_loss_3 = 100 * correct_test / max(total_test, 1)
+        test_collect.append(test_loss_0)
         if (epoch + 1) % cfg.save_every  == 0:
-            save(model, optimizer, epoch_loss, activation_type, epoch, dir, test_loss)
-        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / max(total_test, 1):.4f}, lr : {lr:.5f}")
+            save(model, optimizer, epoch_loss, activation_type, epoch, dir, test_loss_0)
+        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc 0: {test_loss_0:.4f}, Test Acc 3: {test_loss_3:.4f}, lr : {lr:.5f}")
     
     # Evaluate
     
