@@ -11,6 +11,7 @@ from CIFAR10.NeuralNet import CIFAR10CNN, adjust_lr, prepare_datasets
 from csv_operations import csv_write2
 import time
 import pickle
+import sys
 
 torch.manual_seed(0)
 def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
@@ -95,7 +96,7 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
         )
         with open('RESULTS/CIFAR10/' + activation_type + '/split_indices.pkl', 'wb') as f:
             pickle.dump((train_indices, val_indices), f)
-    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=4, pin_memory=True)
+    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=2, pin_memory=True)
     val_loader = DataLoader(val_dataset, batch_size=128, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
         
@@ -109,6 +110,7 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
         epoch_loss = 0
         model.train()
         adjust_lr(optimizer, epoch)
+        total_batches = len(train_loader)
         for param_group in optimizer.param_groups:
             lr = param_group['lr']
         
@@ -122,10 +124,19 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
             optimizer.step()
             epoch_loss += loss.item() * x.size(0)
             end_epoch = time.time()
-            print(f"Batch : {i}, Time : {end_epoch - start_epoch:.2f} seconds")
+            batch_time = end_epoch - start_epoch
+            # Progress bar
+            bar_len = 30
+            filled_len = int(round(bar_len * (i + 1) / total_batches))
+            bar = '=' * filled_len + '-' * (bar_len - filled_len)
             
-        epoch_loss /= len(train_loader.dataset)
-        loss_collect.append(epoch_loss)
+            # Print progress bar in-place
+            sys.stdout.write(f'\rEpoch {epoch+1}/{epochs} |[{bar}]| '
+                            f'Batch {i+1}/{total_batches} | Loss: {loss.item():.4f} | Time: {batch_time:.2f}s')
+            sys.stdout.flush()
+                
+            epoch_loss /= len(train_loader.dataset)
+            loss_collect.append(epoch_loss)
         
         # Optional: validation
         val_acc = 0.0
@@ -153,7 +164,7 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
         test_collect.append(100 * correct_test / max(total_test, 1))
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch + 1, dir)    
-        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / max(total_test, 1):.4f}, lr : {lr:.5f}")
+        print(f"\nEpoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / max(total_test, 1):.4f}, lr : {lr:.5f}")
     
     loss_collect = torch.tensor(loss_collect)
     test_collect = torch.tensor(test_collect)
