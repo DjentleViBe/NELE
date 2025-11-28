@@ -87,7 +87,7 @@ def plot_only(x, study_type):
         s3 = curvature_smoothness(x_vals, y_preds)
         s4 = lipschitz_constant(x_vals, y_preds)
         s5 = frequency_smoothness(y_preds)
-        s3_collect.append(s4)
+        s3_collect.append(s3)
         # print(f'{act} & {round(s3, 2)} \\\\')
     # print("\n")
     # Plot
