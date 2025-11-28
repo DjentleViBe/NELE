@@ -96,9 +96,9 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
         )
         with open('RESULTS/CIFAR10/' + activation_type + '/split_indices.pkl', 'wb') as f:
             pickle.dump((train_indices, val_indices), f)
-    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=2, pin_memory=True)
-    val_loader = DataLoader(val_dataset, batch_size=128, shuffle=False)
-    test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True, num_workers=2, pin_memory=True)
+    val_loader = DataLoader(val_dataset, batch_size=cfg.batch_size, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=cfg.batch_size, shuffle=False)
         
     # -------------------------
     # Training loop skeleton
@@ -137,8 +137,8 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
                             f'Batch {i+1}/{total_batches} | Loss: {loss.item():.4f} | Time: {batch_time:.2f}s')
             sys.stdout.flush()
                 
-            epoch_loss /= len(train_loader.dataset)
-            loss_collect.append(epoch_loss)
+        epoch_loss /= len(train_loader.dataset)
+        loss_collect.append(epoch_loss)
         
         # Optional: validation
         val_acc = 0.0
