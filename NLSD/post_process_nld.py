@@ -87,7 +87,7 @@ def plot_only(x, study_type):
         s3 = curvature_smoothness(x_vals, y_preds)
         s4 = lipschitz_constant(x_vals, y_preds)
         s5 = frequency_smoothness(y_preds)
-        s3_collect.append(s3)
+        s3_collect.append(s4)
         # print(f'{act} & {round(s3, 2)} \\\\')
     # print("\n")
     # Plot
@@ -138,7 +138,7 @@ def process_nld(reset):
         print(f'\n\\texttt{{{cfg.AF_NLSD_PLOT[j]}}} & ', end='')
         for i in range(len(cfg.FUNC_NLSD)):
             if i == len(cfg.FUNC_NLSD) - 1:
-                print(f'{round(s3_print[i][j], 2)}', end=' \\\ ')
+                print(f'{round(s3_print[i][j], 2)}', end=' \\\\ ')
             else:
                 print(f'{round(s3_print[i][j], 2)}', end=' & ')
     print('\n')
