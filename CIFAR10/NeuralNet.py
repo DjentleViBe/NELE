@@ -89,7 +89,7 @@ class CIFAR10CNN(nn.Module):
         self.bn2 = nn.BatchNorm2d(96)
         self.conv3 = nn.Conv2d(96, 96, 3, padding=1)
         self.bn3 = nn.BatchNorm2d(96)
-        self.pool1 = nn.MaxPool2d(2, 2)
+        self.pool1 = nn.MaxPool2d(2)
         self.dropout1 = nn.Dropout(0.5)
         
         # Block 2
@@ -99,7 +99,7 @@ class CIFAR10CNN(nn.Module):
         self.bn5 = nn.BatchNorm2d(192)
         self.conv6 = nn.Conv2d(192, 192, 3, padding=1)
         self.bn6 = nn.BatchNorm2d(192)
-        self.pool2 = nn.MaxPool2d(2, 2)
+        self.pool2 = nn.MaxPool2d(2)
         self.dropout2 = nn.Dropout(0.5)
         
         # Block 3
@@ -112,6 +112,7 @@ class CIFAR10CNN(nn.Module):
         
         self.global_avg_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Linear(192, 10)
+        self.bn_fc = nn.BatchNorm1d(10)
         
     def forward(self, x):
         # Block 1
@@ -140,6 +141,7 @@ class CIFAR10CNN(nn.Module):
         x = self.global_avg_pool(x)
         x = torch.flatten(x, 1)
         x = self.fc(x)
+        x = self.bn_fc(x)
         return x
 
 def prepare_datasets(mode, val_ratio=0.1, data_root='./data'):
