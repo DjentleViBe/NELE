@@ -23,6 +23,8 @@ if __name__ == "__main__":
             curve_fit(args.device, args.reset, args.exec)
         elif args.mode == 'train_nele':
             curve_fit_nele(args.device, args.reset, args.exec)
+        elif args.mode == 'train_study':
+            curve_fit(args.device, args.reset, 1.0)
         elif args.mode == 'process':
             process_nld(args.reset)
     elif args.type == 'mnist':

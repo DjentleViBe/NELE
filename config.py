@@ -1,17 +1,29 @@
-epochs = 1000
-save_every = 1000
+epochs = 150
+save_every = 150
 learning_rate = 0.001
 ################### NLSD ######################
+learning_rate_array = [0.01, # tanh 
+                       0.01, #sigmoid
+                       0.01, # softplus
+                       0.01, # elu
+                       0.01, #silu
+                       0.01, #gelu
+                       0.01, #relu
+                       0.01, #lrelu
+                       0.01, # lelu
+                       0.01, #mish
+                       0.01 # nele
+                       ]
 
 AF_NLSD = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
      'leaky_relu', 
       'lelu', 'mish', 'nele']
 AF_NLSD_PLOT = ['Tanh', 'Sigmoid', 'Softplus',
            'ELU', 'SiLU', 'GELU', 'ReLU',
-       'Leaky_ReLU',  
+       'Leaky-ReLU',  
        'LeLU', 'Mish', 'NELE']
-"""
-AF_NLSD =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1', 
+
+AF_NLSD_STUDY =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1', 
        'sigmoid=1', 'leaky_relu=1', 'silu=1', 'lelu=1',
        'softplus=1', 'nele=1', 'mish=1',
        'tanh=2', 'relu=2', 'elu=2', 'gelu=2', 
@@ -34,18 +46,18 @@ AF_NLSD =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1',
        'softplus=7', 'nele=7', 'mish=7', 'lelu=7'
        ]
 AF_NLSD_PLOT =  AF_NLSD
-       """
+
 AF_NLSD_NELE = ['nele=1', 'nele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'nele=7']
-# ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
-FUNC_NLSD = ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
-FUNC_NLSD_NELE = ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
+FUNC_NLSD =  ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
+#FUNC_NLSD = ['exppoly']
+#FUNC_NLSD_NELE = ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
 ################### MNIST #####################
 input_size = 28 * 28
 hidden_size = 128
 num_hidden_layers = 8
 num_classes = 10
 batch_size = 128
-noise_level = 3.0
+noise_level = 5.0
 #AF = ['nele=0.002']
 #AF_plot = ['lr=0.002']
 """

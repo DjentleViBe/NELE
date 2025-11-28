@@ -12,8 +12,11 @@ def curve_fit(device, reset, exec):
         create_directory('./PICS/NLSD/')
     loss_collect = []
     std_deviation_collect = []
+    AF_NLSD = cfg.AF_NLSD
+    if exec == 1:
+        AF_NLSD = cfg.AF_NLSD_STUDY
     ################### SINE NOISE ##########################
-    for af in cfg.AF_NLSD:
+    for af in AF_NLSD:
         for afunc in cfg.FUNC_NLSD:
             create_directory('./PICS/NLSD/' + afunc + '/' + af)
             create_directory('./RESULTS/NLSD/' + afunc + '/' + af)
@@ -32,7 +35,8 @@ def curve_fit(device, reset, exec):
             elif afunc == 'exp':
                 ################### EXP NOISE ##########################
                 x = torch.linspace(-5, 5, 200).unsqueeze(1)
-                y = torch.exp(-0.5*x) + (1 / cfg.noise_level) * torch.randn(x.size())
+                x_range = x.max() - x.min()
+                y = torch.exp(-0.5*x) + (1 / cfg.noise_level) * 0.5 * x_range * torch.randn(x.size())
                 loss_val, std_val = nlsd_data(x, y, af=af, study_type='exp')
                 loss_collect.append(loss_val)
                 std_deviation_collect.append(std_val)
@@ -46,7 +50,8 @@ def curve_fit(device, reset, exec):
             elif afunc == 'quad':
                 ################### QUAD NOISE ##########################
                 x = torch.linspace(-5, 5, 200).unsqueeze(1)
-                y = x**2 + (1 / cfg.noise_level) * torch.randn(x.size())
+                x_range = x.max() - x.min()
+                y = x**2 + (1 / cfg.noise_level) * x_range * torch.randn(x.size())
                 loss_val, std_val = nlsd_data(x, y, af=af, study_type='quad')
                 loss_collect.append(loss_val)
                 std_deviation_collect.append(std_val)

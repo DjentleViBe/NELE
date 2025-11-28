@@ -29,7 +29,7 @@ def nlsd_data(x, y, af, device='cpu', study_type='default'):
     val_collect = []
     test_collect = []
     dir = 'RESULTS/NLSD/' + study_type + '/'
-    
+    learning_rate = cfg.learning_rate
     if '=' in af:
         base, param = af.split('=')
         param = float(param)  # convert parameter to float if needed
@@ -38,26 +38,37 @@ def nlsd_data(x, y, af, device='cpu', study_type='default'):
         param = None
     if base == 'relu':
         activation = nn.ReLU()
+        learning_rate = cfg.learning_rate_array[6]
     elif base == 'elu':
         activation = nn.ELU(alpha=1.0)
+        learning_rate = cfg.learning_rate_array[3]
     elif base == 'leaky_relu' :
         activation = nn.LeakyReLU(negative_slope=0.1)
+        learning_rate = cfg.learning_rate_array[7]
     elif base == 'gelu' :
         activation = nn.GELU()
+        learning_rate = cfg.learning_rate_array[5]
     elif base == 'mish' :
         activation = nn.Mish()
+        learning_rate = cfg.learning_rate_array[9]
     elif base == 'sigmoid' :
         activation = nn.Sigmoid()
+        learning_rate = cfg.learning_rate_array[1]
     elif base == 'silu' :
         activation = nn.SiLU()
+        learning_rate = cfg.learning_rate_array[4]
     elif base == 'softplus' :
         activation = nn.Softplus()
+        learning_rate = cfg.learning_rate_array[2]
     elif base == 'tanh':
         activation = nn.Tanh()
+        learning_rate = cfg.learning_rate_array[0]
     elif base == 'lelu' :
         activation = LELU()
+        learning_rate = cfg.learning_rate_array[8]
     elif base == 'nele' :
         activation = NELE(1, 3, 2)
+        learning_rate = cfg.learning_rate_array[10]
     else:
         raise ValueError("Invalid activation type")
     dir = dir + '/' + af
@@ -68,7 +79,7 @@ def nlsd_data(x, y, af, device='cpu', study_type='default'):
 
     # Define loss and optimizer
     criterion = nn.MSELoss()
-    optimizer = optim.Adam(model.parameters(), lr=cfg.learning_rate)
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     # Training loop
     loss_collect = []
