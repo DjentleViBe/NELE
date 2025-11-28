@@ -1,5 +1,5 @@
-epochs = 150
-save_every = 150
+epochs = 200
+save_every = 200
 learning_rate = 0.001
 ################### NLSD ######################
 learning_rate_array = [0.01, # tanh 
@@ -15,6 +15,10 @@ learning_rate_array = [0.01, # tanh
                        0.01 # nele
                        ]
 
+AF_NLSD_NELE = ['nele=1', 'nele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'nele=7']
+FUNC_NLSD =  ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
+#FUNC_NLSD = ['trig']
+# FUNC_NLSD_NELE = ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
 AF_NLSD = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
      'leaky_relu', 
       'lelu', 'mish', 'nele']
@@ -45,12 +49,8 @@ AF_NLSD_STUDY =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1',
        'sigmoid=7', 'leaky_relu=7', 'silu=7', 
        'softplus=7', 'nele=7', 'mish=7', 'lelu=7'
        ]
-AF_NLSD_PLOT =  AF_NLSD
+# AF_NLSD_PLOT =  AF_NLSD
 
-AF_NLSD_NELE = ['nele=1', 'nele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'nele=7']
-FUNC_NLSD =  ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
-#FUNC_NLSD = ['exppoly']
-#FUNC_NLSD_NELE = ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
 ################### MNIST #####################
 input_size = 28 * 28
 hidden_size = 128
