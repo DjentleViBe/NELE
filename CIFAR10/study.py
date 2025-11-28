@@ -111,6 +111,7 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
         model.train()
         adjust_lr(optimizer, epoch)
         total_batches = len(train_loader)
+        total_time = 0
         for param_group in optimizer.param_groups:
             lr = param_group['lr']
         
@@ -125,6 +126,7 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
             epoch_loss += loss.item() * x.size(0)
             end_epoch = time.time()
             batch_time = end_epoch - start_epoch
+            total_time += batch_time
             # Progress bar
             bar_len = 30
             filled_len = int(round(bar_len * (i + 1) / total_batches))
@@ -164,7 +166,7 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
         test_collect.append(100 * correct_test / max(total_test, 1))
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch + 1, dir)    
-        print(f"\nEpoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / max(total_test, 1):.4f}, lr : {lr:.5f}")
+        print(f"\nEpoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / max(total_test, 1):.4f}, lr : {lr:.5f}, Time : {total_time:.4f}")
     
     loss_collect = torch.tensor(loss_collect)
     test_collect = torch.tensor(test_collect)
