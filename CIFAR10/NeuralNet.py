@@ -79,7 +79,7 @@ def adjust_lr(optimizer, epoch, total_epochs=200):
 # 9-layer CNN
 # -------------------------
 class CIFAR10CNN(nn.Module):
-    def __init__(self, activation=F.relu):
+    def __init__(self, activation=F.gelu):
         super().__init__()
         self.activation = activation
         # Block 1
@@ -103,11 +103,11 @@ class CIFAR10CNN(nn.Module):
         self.dropout2 = nn.Dropout(0.5)
         
         # Block 3
-        self.conv7 = nn.Conv2d(192, 192, 3, padding=1)  # 3x3 conv without padding, 8x8 -> 6x6
+        self.conv7 = nn.Conv2d(192, 192, 3, padding=0)  # 3x3 conv without padding, 8x8 -> 6x6
         self.bn7 = nn.BatchNorm2d(192)
-        self.conv8 = nn.Conv2d(192, 192, 1, padding=1)
+        self.conv8 = nn.Conv2d(192, 192, 1, padding=0)
         self.bn8 = nn.BatchNorm2d(192)
-        self.conv9 = nn.Conv2d(192, 192, 1, padding=1)
+        self.conv9 = nn.Conv2d(192, 192, 1, padding=0)
         self.bn9 = nn.BatchNorm2d(192)
         
         self.global_avg_pool = nn.AdaptiveAvgPool2d(1)
@@ -139,6 +139,7 @@ class CIFAR10CNN(nn.Module):
         # Global average pooling
         x = self.global_avg_pool(x)
         x = torch.flatten(x, 1)
+        x = self.fc(x)
         return x
 
 def prepare_datasets(mode, val_ratio=0.1, data_root='./data'):
