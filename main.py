@@ -5,7 +5,7 @@ from MNIST.post_process_tsinm import process_mnist
 from MNIST.post_process_mnist_nele import mnist_nele
 from CIFAR10.post_process_cifar10 import process_cifar10
 from CIFAR10.post_process_cifar10_nele import process_cifar10_nele
-from CIFAR10.cifar import cifar10_train
+from CIFAR10.cifar import cifar10_train, cifar10_train_nele
 import argparse
 
 if __name__ == "__main__":
@@ -41,6 +41,8 @@ if __name__ == "__main__":
     elif args.type == 'cifar10':
         if args.mode == 'train':
             cifar10_train(args.device, args.reset, args.exec)
+        if args.mode == 'train_nele':
+            cifar10_train_nele(args.device, args.reset, args.exec)
         elif args.mode == 'process':
             process_cifar10()
         elif args.mode == 'process_nele':

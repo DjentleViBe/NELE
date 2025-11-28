@@ -117,6 +117,10 @@ AF_plot = ['Tanh', 'Sigmoid', 'Softplus',
 # AF = ['nele']
 # AF_plot = ['nele']
 ################# CIFAR-10 ####################
+AF_CIFAR10 = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
+     'leaky_relu', 
+      'lelu', 'mish', 'nele']
+AF_CIFAR10_NELE =  ['nele=1', 'nele=2', 'nele=3']
 val_ratio = 0.0
 ################# PLOTS #######################
 colors = ["#0072B2", "#56B4E9", 
