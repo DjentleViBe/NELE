@@ -59,6 +59,22 @@ python main.py --type=mnist --mode=process-nele
 ```
 This command can be used for processing different configurations with $NELE$. Plots will contain data for cases defined inside [```AF_plot```](./config.py) array.
 
+|Study|l|w1|w2|y1|x1|y0|
+|----|-----|-----|-----|-----|-----|-----|
+Exponential|-1.0|1.0|1.0|0.0|-0.1|0.0|
+Hyperbola|-1.0|1.0|1.0|-0.1|-0.1|0.0|
+Quadratic|-1.0|1.0|1.0|-0.1|-0.1|0.0|
+Sinusoidal|-1.0|1.0|1.0|-0.1|-0.1|0.0|
+Trigonometric|-1.0|1.0|1.0|-0.1|-0.1|0.0|
+Polynomial|-1.0|1.0|1.0|-0.1|-0.1|0.0|
+
+
+self.l = nn.Parameter(torch.tensor(-1.0))
+self.w1 = nn.Parameter(torch.tensor(1.0))
+self.w2 = nn.Parameter(torch.tensor(1.0))
+self.y1 = nn.Parameter(torch.tensor(-0.1))
+self.x1 = nn.Parameter(torch.tensor(-0.1))
+self.y0 = nn.Parameter(torch.tensor(0.0))
 ## config.py
 The ```config.py``` is divided into sections depending on the data used for the analysis.
 ### AF
