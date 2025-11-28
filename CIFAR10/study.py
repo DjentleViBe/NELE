@@ -4,7 +4,7 @@ import numpy as np
 import torch.nn as nn
 from file_operations import create_directory, getlatest
 from models.model_lelu import LELU
-from models.model_nele import NELE
+from models.model_nele import NELE_LUT
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 from CIFAR10.NeuralNet import CIFAR10CNN, adjust_lr, prepare_datasets
@@ -58,7 +58,7 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
     elif base == 'lelu' :
         activation = LELU()
     elif base == 'nele' :
-        activation = NELE(1, 3, 2)
+        activation = NELE_LUT()
     else:
         raise ValueError("Invalid activation type")
 
@@ -113,7 +113,7 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
             lr = param_group['lr']
         
         for i, (x, y) in enumerate(train_loader):
-            #start_epoch = time.time()
+            start_epoch = time.time()
             
             x, y = x.to(device), y.to(device)
             optimizer.zero_grad()
@@ -121,8 +121,8 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
             loss.backward()
             optimizer.step()
             epoch_loss += loss.item() * x.size(0)
-            #end_epoch = time.time()
-            #print(f"Batch : {i}, Time : {end_epoch - start_epoch:.2f} seconds")
+            end_epoch = time.time()
+            print(f"Batch : {i}, Time : {end_epoch - start_epoch:.2f} seconds")
             
         epoch_loss /= len(train_loader.dataset)
         loss_collect.append(epoch_loss)

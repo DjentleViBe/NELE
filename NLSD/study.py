@@ -1,15 +1,3 @@
-from non_linear.non_linear_tanh import tanh_net
-from non_linear.non_linear_relu import relu_net
-from non_linear.non_linear_elu import elu_net
-from non_linear.non_linear_gelu import gelu_net
-from non_linear.non_linear_sigmoid import sigmoid_net
-from non_linear.non_linear_lrelu import lrelu_net
-from non_linear.non_linear_silu import silu_net
-from non_linear.non_linear_softplus import softplus_net
-from non_linear.non_linear_belu import belu_net
-from non_linear.non_linear_lelu import lelu_net
-from non_linear.non_linear_nele import nele_net
-from non_linear.non_linear_mish import mish_net
 from plot_pred import plot_pred
 from plot_loss import plot_loss
 from matplotlib import pyplot as plt
