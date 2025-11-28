@@ -72,6 +72,7 @@ def plot_only(x, study_type):
 
     plt.figure(figsize=(5,3))
     plt.subplots_adjust(right = 0.65)
+    s3_collect = []
     for i, act in enumerate(cfg.AF_NLSD):
         y_preds_collect= []
         for j in range(1, 7):
@@ -86,8 +87,9 @@ def plot_only(x, study_type):
         s3 = curvature_smoothness(x_vals, y_preds)
         s4 = lipschitz_constant(x_vals, y_preds)
         s5 = frequency_smoothness(y_preds)
-        print(f'{act} & {round(s3, 2)} \\\\')
-    print("\n")
+        s3_collect.append(s3)
+        # print(f'{act} & {round(s3, 2)} \\\\')
+    # print("\n")
     # Plot
     plt.scatter(x, y, label='Data', color = 'k', s=10)
     # plt.scatter(x_vals, y_preds, s=10, alpha=0.5)  # optional: scatter for points
@@ -96,8 +98,10 @@ def plot_only(x, study_type):
     plt.legend(loc = 'lower right', bbox_to_anchor = (1.48, -0.13))
     plt.tight_layout()
     plt.savefig('PICS/NLSD/' + study_type + '/curve_fitting.pdf', transparent=False)
+    return s3_collect
 
 def process_nld(reset):
+    s3_print = np.zeros((len(cfg.FUNC_NLSD), len(cfg.AF_NLSD)))
     if reset == 1:
         reset_directory('./PICS/NLSD/')
         reset_directory('./PICS/NLSD/')
@@ -107,25 +111,34 @@ def process_nld(reset):
     x = torch.linspace(-5, 5, 200).unsqueeze(1)
     ################### EXP NOISE ##########################
     create_directory('./PICS/NLSD/' + 'exp')
-    plot_only(x, 'exp')
+    s3_print[0] = plot_only(x, 'exp')
 
     ################### HYP NOISE ##########################
     create_directory('./PICS/NLSD/' + 'hyp')
-    plot_only(x, 'hyp')
+    s3_print[1] =  plot_only(x, 'hyp')
 
     ################### QUAD NOISE ##########################
     create_directory('./PICS/NLSD/' + 'quad')
-    plot_only(x, 'quad')
+    s3_print[2] =  plot_only(x, 'quad')
 
     ################### SINE NOISE ##########################
     create_directory('./PICS/NLSD/' + 'sine')
-    plot_only(x, 'sine')
+    s3_print[3] = plot_only(x, 'sine')
 
     ################### TRIG NOISE ##########################
     create_directory('./PICS/NLSD/' + 'trig')
-    plot_only(x, 'trig')
+    s3_print[4] = plot_only(x, 'trig')
 
     ################### EXP-POLY NOISE ##########################
     x = torch.linspace(0, 10, 200).unsqueeze(1)
     create_directory('./PICS/NLSD/' + 'exppoly')
-    plot_only(x, 'exppoly')   
+    s3_print[5] = plot_only(x, 'exppoly') 
+
+    for j in range(len(cfg.AF_NLSD)):
+        print(f'\n\\texttt{{{cfg.AF_NLSD_PLOT[j]}}} & ', end='')
+        for i in range(len(cfg.FUNC_NLSD)):
+            if i == len(cfg.FUNC_NLSD) - 1:
+                print(f'{round(s3_print[i][j], 2)}', end=' \\\ ')
+            else:
+                print(f'{round(s3_print[i][j], 2)}', end=' & ')
+    print('\n')
