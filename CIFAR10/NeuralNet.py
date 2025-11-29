@@ -175,19 +175,22 @@ def prepare_datasets(mode, val_ratio=0.1, data_root='./data'):
         print('CIFAR10 dataset restoration completed')
         return full_train_dataset, dummy1, test_dataset, dummy3, dummy4
     else:
-        # Split train/validation
-        total_size = len(full_train_dataset)
-        val_size = int(total_size * val_ratio)
-        train_size = total_size - val_size
-        train_dataset, val_dataset = random_split(full_train_dataset, [train_size, val_size])
-        
-        # Validation dataset without noise
-        train_indices = train_dataset.indices
-        val_indices = val_dataset.indices
-        X_val_data = trainx_white[val_indices]
-        val_labels = labels_tensor[val_indices]
-        val_dataset = ZCADataset(X_val_data, val_labels, add_noise_sigma=0.0, training=False)
+        if val_ratio != 0.0:
+            # Split train/validation
+            total_size = len(full_train_dataset)
+            val_size = int(total_size * val_ratio)
+            train_size = total_size - val_size
+            train_dataset, val_dataset = random_split(full_train_dataset, [train_size, val_size])
+            
+            # Validation dataset without noise
+            train_indices = train_dataset.indices
+            val_indices = val_dataset.indices
+            X_val_data = trainx_white[val_indices]
+            val_labels = labels_tensor[val_indices]
+            val_dataset = ZCADataset(X_val_data, val_labels, add_noise_sigma=0.0, training=False)
 
-        #print(train_dataset.shape)
-        print('CIFAR10 dataset preparation completed')
-        return train_dataset, val_dataset, test_dataset, train_indices, val_indices
+            #print(train_dataset.shape)
+            print('CIFAR10 dataset preparation completed')
+            return train_dataset, val_dataset, test_dataset, train_indices, val_indices
+        else:
+            return train_dataset, None, test_dataset, train_indices, None

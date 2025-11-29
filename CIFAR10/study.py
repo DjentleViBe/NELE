@@ -85,7 +85,8 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
             mode = 1
         )
         train_dataset = torch.utils.data.Subset(full_train_set, train_indices)
-        val_dataset   = torch.utils.data.Subset(full_train_set, val_indices)
+        if cfg.val_ratio != 0.0:
+            val_dataset   = torch.utils.data.Subset(full_train_set, val_indices)
 
     # Step 2: Prepare datasets
     else:
@@ -97,7 +98,8 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
         with open('RESULTS/CIFAR10/' + activation_type + '/split_indices.pkl', 'wb') as f:
             pickle.dump((train_indices, val_indices), f)
     train_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True, num_workers=2, pin_memory=True)
-    val_loader = DataLoader(val_dataset, batch_size=cfg.batch_size, shuffle=False)
+    if cfg.val_ratio != 0.0:
+        val_loader = DataLoader(val_dataset, batch_size=cfg.batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=cfg.batch_size, shuffle=False)
         
     # -------------------------
