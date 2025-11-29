@@ -88,7 +88,7 @@ class CIFAR10CNN(nn.Module):
         self.bn2 = nn.BatchNorm2d(96)
         self.conv3 = nn.Conv2d(96, 96, 3, padding=1)
         self.bn3 = nn.BatchNorm2d(96)
-        self.pool1 = nn.MaxPool2d(2)
+        self.pool1 = nn.MaxPool2d(2, 2)
         self.dropout1 = nn.Dropout(0.5)
         
         # Block 2
@@ -98,7 +98,7 @@ class CIFAR10CNN(nn.Module):
         self.bn5 = nn.BatchNorm2d(192)
         self.conv6 = nn.Conv2d(192, 192, 3, padding=1)
         self.bn6 = nn.BatchNorm2d(192)
-        self.pool2 = nn.MaxPool2d(2)
+        self.pool2 = nn.MaxPool2d(2, 2)
         self.dropout2 = nn.Dropout(0.5)
         
         # Block 3
