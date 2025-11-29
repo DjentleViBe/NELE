@@ -193,4 +193,6 @@ def prepare_datasets(mode, val_ratio=0.1, data_root='./data'):
             print('CIFAR10 dataset preparation completed')
             return train_dataset, val_dataset, test_dataset, train_indices, val_indices
         else:
-            return train_dataset, None, test_dataset, train_indices, None
+            train_dataset = full_train_dataset
+            print('CIFAR10 dataset preparation completed')
+            return train_dataset, None, test_dataset, None, None

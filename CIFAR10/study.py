@@ -12,8 +12,8 @@ from csv_operations import csv_write2
 import time
 import pickle
 import sys
+import torch.nn.functional as F
 
-torch.manual_seed(0)
 def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
     torch.save({
     'epoch': epoch,
@@ -45,7 +45,7 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
     elif base == 'leaky_relu' :
         activation = nn.LeakyReLU(negative_slope=0.1)
     elif base == 'gelu' :
-        activation = nn.GELU()
+        activation = F.gelu
     elif base == 'mish' :
         activation = nn.Mish()
     elif base == 'sigmoid' :
@@ -157,15 +157,16 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
         val_collect.append(val_acc)
         if epoch % 5 == 0:
             model.eval()
+            correct_test, total_test = 0, 0
             with torch.no_grad():
                 for data, target in test_loader:
                     data = data.to(device)
                     target = target.to(device)
                     outputs = model(data)
-                    _, predicted = torch.max(outputs.data, 1)
+                    _, predicted = torch.max(outputs, 1)
                     total_test += target.size(0)
                     correct_test += (predicted == target).sum().item()
-        test_collect.append(100 * correct_test / max(total_test, 1))
+        test_collect.append(100 * correct_test / total_test)
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch + 1, dir)    
         print(f"\nEpoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / max(total_test, 1):.4f}, lr : {lr:.5f}, Time : {total_time:.4f}")
