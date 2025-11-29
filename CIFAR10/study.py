@@ -173,5 +173,5 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
     val_collect = torch.tensor(val_collect)
     csv_write2(dir + '/loss_history_' + activation_type + '.csv', 
               torch.linspace(1, cfg.epochs+1, cfg.epochs+1), 
-              loss_collect, 'epoch', 'loss', '', 'test', val_collect, test_collect, exec)
+              loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec)
     
