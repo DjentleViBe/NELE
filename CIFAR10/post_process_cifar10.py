@@ -17,18 +17,15 @@ def plot_only(study_type):
    
     ax1.set_yscale('log')
     ax1.set_xlabel('epochs')
-    ax3 = ax2.twinx()
-    ax4 = ax1.twiny()
-    ax5 = ax2.twiny()
-    ax3.set_ylabel('Test Accuracy (%)')
+    #ax3 = ax2.twinx()
+    #ax4 = ax1.twiny()
+    #ax5 = ax2.twiny()
+    #ax3.set_ylabel('Test Accuracy (%)')
     ax2.set_xlabel('epochs')
     for i, act in enumerate(activations_file):
-        epochs, losses_train, losses_val, losses_test = csv_read2('RESULTS/' + study_type  + '/' + act + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', '', 'test')
+        epochs, losses_train, losses_val, losses_test = csv_read2('RESULTS/' + study_type  + '/' + act + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', 'val', 'test')
         print(f'{act} : {round(max(losses_test), 2)}, index : {losses_test.index(max(losses_test))}')
-        if 'nele' in act or 'lelu' in act:
-            ax4.plot(epochs, losses_train, color = colors[i], label=activations[i], linewidth = 0.7)
-        else:
-            ax1.plot(epochs, losses_train, colors[i], label=activations[i], linewidth = 0.7)
+        ax1.plot(epochs, losses_train, colors[i], label=activations[i], linewidth = 0.7)
         selected_epochs = []
         selected_losses = []
 
@@ -38,27 +35,23 @@ def plot_only(study_type):
                 selected_losses.append(l)
         selected_epochs.append(epochs[-1])
         selected_losses.append(losses_test[-1])
-        if act == 'sigmoid' or act == 'softplus':
-            ax3.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
-        elif 'nele' in act or 'lelu' in act:
-            ax5.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
-        else:
-            ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
+        ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
     
-    ax1.set_xlim(1, 20)
-    ax2.set_xlim(1, 20)
-    ax3.set_xlim(1, 20)
-    ax4.set_xlim(1, int(max(epochs)))
-    ax5.set_xlim(1, int(max(epochs)))
-    ax1.set_xticks(range(1, 20, 5))
-    ax2.set_xticks(range(1, 20, 5))
-    ax3.set_xticks(range(1, 20, 5))
+    ax1.set_xlim(1, 200)
+    ax2.set_xlim(1, 200)
+    ax2.set_ylim(80, 100)
+    #ax3.set_xlim(1, 200)
+    #ax4.set_xlim(1, int(max(epochs)))
+    #ax5.set_xlim(1, int(max(epochs)))
+    ax1.set_xticks(range(1, 200, 50))
+    ax2.set_xticks(range(1, 200, 50))
+    #ax3.set_xticks(range(1, 200, 50))
     ax1.grid(True, linewidth = 0.1)
     ax2.grid(True, linewidth = 0.1)
     lines = []
     labels = []
 
-    for ax in [ax1, ax4]:
+    for ax in [ax1]:
         l, lab = ax.get_legend_handles_labels()
         lines += l
         labels += lab
