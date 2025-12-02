@@ -5,22 +5,24 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from MNIST.Neuralnet import DeepFCNet
 from file_operations import create_directory
-from csv_operations import csv_write
+from csv_operations import csv_write2
 import numpy as np
 from models.model_lelu import LELU
 from models.model_nele import NELE
 import config as cfg
+from torch.utils.data import random_split
 
-def save(model, optimizer, epoch_loss, activation_type, epoch, dir):
+def save(model, optimizer, epoch_loss, activation_type, epoch, dir, test_loss = 0.0):
     torch.save({
     'epoch': epoch,
     'model_state_dict': model.state_dict(),
     'optimizer_state_dict': optimizer.state_dict(),
-    'epoch_loss': epoch_loss
+    'epoch_loss': epoch_loss,
+    'test_loss': test_loss
     }, dir + activation_type + '_' + str(epoch) + '.pth')
 
 
-def mnist_data(epochs, learn_rate, device, activation_type='default'):
+def mnist_data(epochs, learn_rate, device, exec, activation_type='default'):
     activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', 'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
     colors = ["#1f77b4", "#aec7e8", 
             "#ff7f0e", "#ffbb78",
@@ -55,7 +57,7 @@ def mnist_data(epochs, learn_rate, device, activation_type='default'):
     elif base == 'silu' :
         activation = nn.SiLU()
     elif base == 'softplus' :
-        activation = nn.Softmax()
+        activation = nn.Softplus()
     elif base == 'tanh':
         activation = nn.Tanh()
     elif base == 'lelu' :
@@ -71,8 +73,20 @@ def mnist_data(epochs, learn_rate, device, activation_type='default'):
         transforms.Lambda(lambda x: x.view(-1))  # flatten
     ])
 
-    train_dataset = datasets.MNIST(root='./data', train=True, transform=transform, download=True)
+    train_dataset_full = datasets.MNIST(root='./data', train=True, transform=transform, download=True)
+    # Compute split sizes
+    n_total = len(train_dataset_full)
+    n_val = int(n_total * cfg.val_ratio)
+    n_train = n_total - n_val
+
+    # Split
+    train_dataset, val_dataset = random_split(
+        train_dataset_full,
+        [n_train, n_val]
+    )
+    
     train_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=cfg.batch_size, shuffle=False)
 
     test_dataset = datasets.MNIST(root='./data', train=False, transform=transform, download=True)
     test_loader = DataLoader(test_dataset, batch_size=cfg.batch_size, shuffle=False)
@@ -81,14 +95,20 @@ def mnist_data(epochs, learn_rate, device, activation_type='default'):
     device = device
     model = DeepFCNet(cfg.input_size, cfg.hidden_size, cfg.num_hidden_layers, cfg.num_classes, activation, activation_type).to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=learn_rate)
+    optimizer = optim.Adam(model.parameters(), lr=learn_rate)
     criterion = criterion.to(device)
 
     loss_collect = []
     val_collect = []
+    test_collect = []
     # Training loop
-    for epoch in range(cfg.epochs):
+    correct_val, total_val = 0, 0
+    correct_test, total_test = 0, 0
+    for epoch in range(epochs):
         epoch_loss = 0
+        model.train()
+        for param_group in optimizer.param_groups:
+            lr = param_group['lr']
         for batch_idx, (data, target) in enumerate(train_loader):
             data = data.to(device)
             target = target.to(device)
@@ -100,29 +120,57 @@ def mnist_data(epochs, learn_rate, device, activation_type='default'):
             epoch_loss += loss.item() * data.size(0)
         epoch_loss /= len(train_loader.dataset)
         loss_collect.append(epoch_loss)
-        if epoch % 5 == 0:
+
+        # Optional: validation
+        val_acc = 0.0
+        if cfg.val_ratio != 0:
             model.eval()
-            correct = 0
-            total = 0
+            with torch.no_grad():
+                for x, y in val_loader:
+                    x, y = x.to(device), y.to(device)
+                    outputs = model(x)
+                    _, predicted = outputs.max(1)
+                    total_val += y.size(0)
+                    correct_val += (predicted == y).sum().item()
+            val_acc = correct_val / total_val
+        val_collect.append(val_acc)
+        
+        if (epoch + 1) % 5 == 0 or epoch == 0:
+            # torch.manual_seed(1234)
+            correct_test, total_test = 0.0, 0.0
+            model.eval()
             with torch.no_grad():
                 for data, target in test_loader:
                     data = data.to(device)
                     target = target.to(device)
                     outputs = model(data)
                     _, predicted = torch.max(outputs.data, 1)
-                    total += target.size(0)
-                    correct += (predicted == target).sum().item()
-        val_collect.append(100 * correct / total)
-        
-            # print(f'Test Accuracy: {100 * correct / total:.2f}%')
+                    total_test += target.size(0)
+                    correct_test += (predicted == target).sum().item()
+            test_loss_0 = 100 * correct_test / max(total_test, 1)
+            correct_test, total_test = 0.0, 0.0
+            with torch.no_grad():
+                for data, target in test_loader:
+                    data = data.to(device)
+                    target = target.to(device)
+                    noise = torch.empty_like(data).uniform_(-cfg.noise_level, cfg.noise_level)
+                    x_noisy = data + noise
+                    outputs = model(x_noisy)
+                    _, predicted = torch.max(outputs.data, 1)
+                    total_test += target.size(0)
+                    correct_test += (predicted == target).sum().item()
+            test_loss_3 = 100 * correct_test / max(total_test, 1)
+        test_collect.append(test_loss_0)
         if (epoch + 1) % cfg.save_every  == 0:
-            save(model, optimizer, epoch_loss, activation_type, epoch, dir)
-        print(f'Epoch [{epoch+1}/{cfg.epochs}], Loss: {epoch_loss:.4f}, Test: {100 * correct / total:.2f}')
+            save(model, optimizer, epoch_loss, activation_type, epoch, dir, test_loss_0)
+        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, Test Acc 0: {test_loss_0:.4f}, Test Acc 3: {test_loss_3:.4f}, lr : {lr:.5f}")
     
     # Evaluate
     
-    
     loss_collect = torch.tensor(loss_collect)
+    test_collect = torch.tensor(test_collect)
     val_collect = torch.tensor(val_collect)
-    csv_write(dir + '/loss_history_' + activation_type + '.csv', torch.linspace(1, cfg.epochs, cfg.epochs), loss_collect, 'epoch', 'loss', '', val_collect)
+    csv_write2(dir + '/loss_history_' + activation_type + '.csv', 
+              torch.linspace(1, cfg.epochs+1, cfg.epochs+1), 
+              loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec)
     

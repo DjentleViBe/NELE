@@ -1,4 +1,4 @@
-from csv_operations import csv_read
+from csv_operations import csv_read2
 import torch 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,7 +12,7 @@ def plot_only(study_type):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize = (11, 3))
     fig.subplots_adjust(wspace = 0.2, right = 0.82, bottom=0.14) 
     # plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, , ecolor="#c7c7c7", error_kw={"elinewidth": 2})
-    ax1.set_ylabel('Training Loss')
+    ax1.set_ylabel('Loss')
     ax2.set_ylabel('Test Accuracy (%)')
    
     ax1.set_yscale('log')
@@ -23,12 +23,14 @@ def plot_only(study_type):
     ax3.set_ylabel('Test Accuracy (%)')
     ax2.set_xlabel('epochs')
     for i, act in enumerate(activations_file):
-        epochs, losses_train, losses_test = csv_read('RESULTS/' + study_type  + '/' + act + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', '')
+        epochs, losses_train, losses_val, losses_test = csv_read2('RESULTS/' + study_type  + '/' + act + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', '', 'test')
         print(f'{act} : {round(max(losses_test), 2)}, index : {losses_test.index(max(losses_test))}')
         if 'nele' in act or 'lelu' in act:
             ax4.plot(epochs, losses_train, color = colors[i], label=activations[i], linewidth = 0.7)
+            ax4.plot(epochs, losses_val, color = colors[i], linewidth = 0.7, linestyle = '--')
         else:
             ax1.plot(epochs, losses_train, colors[i], label=activations[i], linewidth = 0.7)
+            ax1.plot(epochs, losses_val, colors[i], linewidth = 0.7, linestyle = '--')
         selected_epochs = []
         selected_losses = []
 
@@ -58,17 +60,17 @@ def plot_only(study_type):
     lines = []
     labels = []
 
-    for ax in [ax1, ax4]:
+    for ax in [ax1]:
         l, lab = ax.get_legend_handles_labels()
         lines += l
         labels += lab
     
     fig.legend(lines, labels, loc='lower center', bbox_to_anchor = (0.945, 0.1))
     # fig.tight_layout()
-    plt.savefig('PICS/' + study_type + '/training_loss.pdf', transparent=False)
+    plt.savefig('PICS/' + study_type + '/training_loss_nele.pdf', transparent=False)
 
     plt.cla()
     plt.close()
 
-def process_mnist():
-    plot_only('MNIST')
+def process_cifar10_nele():
+    plot_only('CIFAR10')
