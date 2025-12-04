@@ -69,7 +69,6 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
     model = CIFAR10CNN(activation=activation).to(device)
     optimizer = Adam(model.parameters(), lr=learn_rate)
     criterion = nn.CrossEntropyLoss()
-    scaler = torch.amp.GradScaler(device=device)
 
     if exec == 1:
         # load the latest .pth file
@@ -101,7 +100,8 @@ def cifar10_data(epochs, learn_rate, device, exec, activation_type='default'):
     if cfg.val_ratio != 0.0:
         val_loader = DataLoader(val_dataset, batch_size=cfg.batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=cfg.batch_size, shuffle=False)
-        
+    
+     
     # -------------------------
     # Training loop skeleton
     # -------------------------

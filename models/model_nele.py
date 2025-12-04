@@ -103,39 +103,40 @@ class NELE_LUT(nn.Module):
         device = x.device
 
         # Control points
-        cp0 = torch.tensor([self.x_min, self.y0.item()], device=device)
-        cp1 = torch.tensor([self.x1.item(), self.y1.item()], device=device)
-        cp2 = torch.tensor([self.l.item() / 1.4142, self.l.item() / 1.4142], device=device)
-        cp3 = torch.tensor([self.x_max, 0.0], device=device)
-        control_points = torch.stack([cp0, cp1, cp2, cp3])  # (4,2)
+        cp0_x, cp0_y = self.x_min, self.y0
+        cp1_x, cp1_y = self.x1, self.y1
+        cp2_val = self.l / 1.4142
+        cp2_x, cp2_y = cp2_val, cp2_val
+        cp3_x, cp3_y = self.x_max, 0.0
 
         # Weights
-        weights = torch.tensor([1.0, self.w1.item(), self.w2.item(), 1.0], device=device)
-
+        w0, w1, w2, w3 = 1.0, self.w1, self.w2, 1.0
         # Compute Bézier curve
         N0, N1, N2, N3 = self.N0.to(device), self.N1.to(device), self.N2.to(device), self.N3.to(device)
         numerator = (
-            N0[:, None]*weights[0]*control_points[0] +
-            N1[:, None]*weights[1]*control_points[1] +
-            N2[:, None]*weights[2]*control_points[2] +
-            N3[:, None]*weights[3]*control_points[3]
+            N0[:, None]*w0*cp0_y +
+            N1[:, None]*w1*cp1_y +
+            N2[:, None]*w2*cp2_y +
+            N3[:, None]*w3*cp3_y
         )
-        denominator = (N0*weights[0] + N1*weights[1] + N2*weights[2] + N3*weights[3])[:, None]
-        curve = numerator / (denominator + 1e-12)
+        # Denominator: scalar sum
+        denominator = N0 * w0 + N1 * w1 + N2 * w2 + N3 * w3 + 1e-12
 
-        # LUT: evenly spaced x values
-        x_lut = torch.linspace(self.x_min, self.x_max, self.num_points, device=device)
-        y_lut = curve[:, 1]
+        # LUT y values
+        y_lut = numerator / denominator
 
-        # Vectorized linear interpolation
+        # Linear interpolation
         scale = (self.num_points - 1) / (self.x_max - self.x_min)
         indices = ((x - self.x_min) * scale).clamp(0, self.num_points - 2)
         idx_lower = indices.floor().long()
         idx_upper = idx_lower + 1
         alpha = indices - idx_lower.float()
 
-        y_lower = y_lut[idx_lower]
-        y_upper = y_lut[idx_upper]
+        y_lower = torch.take(y_lut, idx_lower)
+        y_upper = torch.take(y_lut, idx_upper)
         y_out = y_lower + alpha * (y_upper - y_lower)
 
-        return torch.where(mask, x, y_out)
+        # Preserve x>0 values
+        y_out = torch.where(mask, x, y_out)
+
+        return y_out
