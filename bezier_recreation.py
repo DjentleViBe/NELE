@@ -94,11 +94,11 @@ print("Optimized Weights:\n", opt_w)
 
 opt_ctrl_mnist = np.array([
     [-3, 0],
-    [-0.2/np.sqrt(2), -0.2/np.sqrt(2)],
-    [-0.35, -0.45],
+    [-0.1, -0.1],
+    [-1/2**0.5, -1/2**0.5],
     [0, 0]
 ])
-opt_w_mnist = np.array([1.0, 0.5, 0.6, 1.0])
+opt_w_mnist = np.array([1.0, 1.0, 1.0, 1.0])
 linear = np.array([[0, 0], [4, 4]])
 # ---------------------------
 # Plot results
@@ -114,7 +114,7 @@ plt.scatter(opt_ctrl_mnist[:, 0], opt_ctrl_mnist[:, 1], label="Control Points MN
 plt.plot(linear[:, 0], linear[:, 1], label="Piecewise +x", color = 'k', linewidth=0.7)
 
 plt.legend()
-plt.grid(True)
+plt.grid(True, linewidth = 0.2)
 plt.title("Optimized Cubic NURBS Approximation of GELU")
 plt.xlabel("x")
 plt.ylabel("f(x)")
