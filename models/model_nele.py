@@ -76,7 +76,7 @@ import torch
 import torch.nn as nn
 
 class NELE_LUT(nn.Module):
-    def __init__(self, num_points=48, x_min=-1.0, x_max=0.0):
+    def __init__(self, num_points=16, x_min=-1.0, x_max=0.0):
         super().__init__()
         self.num_points = num_points
         self.x_min = x_min
@@ -99,33 +99,28 @@ class NELE_LUT(nn.Module):
         self.register_buffer('N3', t**3)
 
     def forward(self, x):
-        mask = x > 0
         mask = x <= 0
         x_neg = x[mask]
-        device = x.device
         
         # Control points
         cp0_x, cp0_y = self.x_min, self.y0
         cp1_x, cp1_y = self.x1, self.y1
         cp2_val = self.l / 1.4142
         cp2_x, cp2_y = cp2_val, cp2_val
-        cp3_x, cp3_y = self.x_max, 0.0
 
         # Weights
         w0, w1, w2, w3 = 1.0, self.w1, self.w2, 1.0
         # Compute Bézier curve
-        N0, N1, N2, N3 = self.N0.to(device), self.N1.to(device), self.N2.to(device), self.N3.to(device)
+        N0, N1, N2, N3 = self.N0, self.N1, self.N2, self.N3
         numerator_y = (
             N0*w0*cp0_y +
             N1*w1*cp1_y +
-            N2*w2*cp2_y +
-            N3*w3*cp3_y
+            N2*w2*cp2_y
         )
         numerator_x = (
             N0*w0*cp0_x +
             N1*w1*cp1_x +
-            N2*w2*cp2_x +
-            N3*w3*cp3_x
+            N2*w2*cp2_x
         )
         # Denominator: scalar sum
         denominator = N0 * w0 + N1 * w1 + N2 * w2 + N3 * w3 + 1e-12
