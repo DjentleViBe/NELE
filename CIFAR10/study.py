@@ -4,7 +4,7 @@ import numpy as np
 import torch.nn as nn
 from file_operations import create_directory, getlatest
 from models.model_lelu import LELU
-from models.model_nele import NELE_LUT
+from models.model_nele import NELE_LUT_PARAM, NELE_LUT
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 from CIFAR10.NeuralNet import CIFAR10CNN, adjust_lr, prepare_datasets
