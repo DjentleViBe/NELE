@@ -76,7 +76,7 @@ import torch
 import torch.nn as nn
 
 class NELE_LUT(nn.Module):
-    def __init__(self, num_points=1024, x_min=-1.0, x_max=1.0):
+    def __init__(self, num_points=48, x_min=-1.0, x_max=0.0):
         super().__init__()
         self.num_points = num_points
         self.x_min = x_min
@@ -100,6 +100,8 @@ class NELE_LUT(nn.Module):
 
     def forward(self, x):
         mask = x > 0
+        mask = x <= 0
+        x_neg = x[mask]
         device = x.device
         
         # Control points
@@ -138,13 +140,16 @@ class NELE_LUT(nn.Module):
         x_max_val = x_lut[-1]  # scalar tensor
         
         scale = (self.num_points - 1) / (x_max_val - x_min_val)
-        indices = ((x - x_min_val) * scale).clamp(0, self.num_points - 2)
+        indices = ((x_neg - x_min_val) * scale).clamp(0, self.num_points - 2)
         idx_lower = indices.floor().long()
         idx_upper = idx_lower + 1
         alpha = indices - idx_lower.float()
 
         y_lower = y_lut[idx_lower]
         y_upper = y_lut[idx_upper]
-        y_out = y_lower + alpha * (y_upper - y_lower)
+        y_neg = y_lower + alpha * (y_upper - y_lower)
+        # Scatter back
+        y_out = x.clone()
+        y_out[mask] = y_neg
 
-        return torch.where(mask, x, y_out)
+        return y_out
