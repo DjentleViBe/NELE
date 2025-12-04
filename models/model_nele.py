@@ -71,12 +71,9 @@ class NELE(nn.Module):
         slope = (y1 - y0) / (x1 - x0 + 1e-12)
         y_queries = y0 + slope * (t_queries_clamped - x0)
         return torch.where(mask, x, y_queries)
-    
-import torch
-import torch.nn as nn
 
 class NELE_LUT(nn.Module):
-    def __init__(self, num_points=1024, x_min=-1.0, x_max=1.0):
+    def __init__(self, num_points=12, x_min=-1.0, x_max=1.0):
         super().__init__()
         self.num_points = num_points
         self.x_min = x_min
@@ -100,15 +97,14 @@ class NELE_LUT(nn.Module):
 
     def forward(self, x):
         mask = x > 0
-
         numerator = (
             self.N0*-0.1 +
-            self.N1*self.w1.item()*self.y1.item() +
-            self.N2*self.w2.item()*self.l.item() / 1.4142 +
+            self.N1*self.w1*self.y1.item() +
+            self.N2*self.w2*self.l.item() / 1.4142 +
             self.N3*0.0
         )
-        denominator = (self.N0 + self.N1*self.w1.item() + self.N2*self.w2.item() + self.N3)
-        y_lut = numerator / (denominator + 1e-12)
+        denominator = (self.N0 + self.N1*self.w1 + self.N2*self.w2.item() + self.N3)
+        y_lut = numerator / (denominator + 1e-6)
         # Vectorized linear interpolation
         scale = (self.num_points - 1) / (self.x_max - self.x_min)
         indices = ((x - self.x_min) * scale).clamp(0, self.num_points - 2)
