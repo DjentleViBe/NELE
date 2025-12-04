@@ -101,7 +101,7 @@ class NELE_LUT(nn.Module):
     def forward(self, x):
         mask = x > 0
         device = x.device
-
+        
         # Control points
         cp0_x, cp0_y = self.x_min, self.y0
         cp1_x, cp1_y = self.x1, self.y1
@@ -113,30 +113,38 @@ class NELE_LUT(nn.Module):
         w0, w1, w2, w3 = 1.0, self.w1, self.w2, 1.0
         # Compute Bézier curve
         N0, N1, N2, N3 = self.N0.to(device), self.N1.to(device), self.N2.to(device), self.N3.to(device)
-        numerator = (
-            N0[:, None]*w0*cp0_y +
-            N1[:, None]*w1*cp1_y +
-            N2[:, None]*w2*cp2_y +
-            N3[:, None]*w3*cp3_y
+        numerator_y = (
+            N0*w0*cp0_y +
+            N1*w1*cp1_y +
+            N2*w2*cp2_y +
+            N3*w3*cp3_y
+        )
+        numerator_x = (
+            N0*w0*cp0_x +
+            N1*w1*cp1_x +
+            N2*w2*cp2_x +
+            N3*w3*cp3_x
         )
         # Denominator: scalar sum
         denominator = N0 * w0 + N1 * w1 + N2 * w2 + N3 * w3 + 1e-12
 
         # LUT y values
-        y_lut = numerator / denominator
-
+        x_lut = numerator_x / denominator
+        y_lut = numerator_y / denominator
         # Linear interpolation
-        scale = (self.num_points - 1) / (self.x_max - self.x_min)
-        indices = ((x - self.x_min) * scale).clamp(0, self.num_points - 2)
+        # Vectorized linear interpolation
+        # print(x_lut.shape)
+        x_min_val = x_lut[0]  # scalar tensor
+        x_max_val = x_lut[-1]  # scalar tensor
+        
+        scale = (self.num_points - 1) / (x_max_val - x_min_val)
+        indices = ((x - x_min_val) * scale).clamp(0, self.num_points - 2)
         idx_lower = indices.floor().long()
         idx_upper = idx_lower + 1
         alpha = indices - idx_lower.float()
 
-        y_lower = torch.take(y_lut, idx_lower)
-        y_upper = torch.take(y_lut, idx_upper)
+        y_lower = y_lut[idx_lower]
+        y_upper = y_lut[idx_upper]
         y_out = y_lower + alpha * (y_upper - y_lower)
 
-        # Preserve x>0 values
-        y_out = torch.where(mask, x, y_out)
-
-        return y_out
+        return torch.where(mask, x, y_out)
