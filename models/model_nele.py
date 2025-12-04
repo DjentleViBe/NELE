@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from scipy.interpolate import interp1d
+import config as cfg
 
 class NELE(nn.Module):
     def __init__(self, num_features=64, num_points=3, degree=2):
@@ -28,16 +28,15 @@ class NELE(nn.Module):
         N3 = t**3
 
         cp0 = torch.tensor([1.0, -0.1], device=device)
-        cp1 = torch.tensor([-0.5, -0.1], device=device)
-        cp2 = torch.tensor([-1.0, -1.0], device=device)
-        cp3 = torch.tensor([0.0, 0.0], device=device)
         cp0[0] = x.min()
         cp0[1] = self.y0
+        cp1 = torch.tensor([-0.5, -0.1], device=device)
         cp1[0] = self.x1
         cp1[1] = self.y1
+        cp2 = torch.tensor([-1.0, -1.0], device=device)
         cp2[0] = self.l / 1.4142
         cp2[1] = self.l / 1.4142
-        
+        cp3 = torch.tensor([0.0, 0.0], device=device)
         control_points = torch.stack([cp0, cp1, cp2, cp3])  # shape (3, 2)
 
         # Weights
@@ -71,9 +70,6 @@ class NELE(nn.Module):
         slope = (y1 - y0) / (x1 - x0 + 1e-12)
         y_queries = y0 + slope * (t_queries_clamped - x0)
         return torch.where(mask, x, y_queries)
-    
-import torch
-import torch.nn as nn
 
 class NELE_LUT(nn.Module):
     def __init__(self, num_points=16, x_min=-1.0, x_max=0.0):
@@ -148,3 +144,52 @@ class NELE_LUT(nn.Module):
         y_out[mask] = y_neg
 
         return y_out
+    
+class NELE_LUT_PARAM(nn.Module):
+    def __init__(self, device):
+        super().__init__()
+        self.cp0 = torch.tensor(cfg.cp0, device=device)
+        self.cp1 = torch.tensor(cfg.cp1, device=device)
+        self.cp2 = torch.tensor(cfg.cp2, device=device)
+        self.cp3 = torch.tensor(cfg.cp3, device=device)
+        self.w0 = torch.tensor(cfg.w0, device=device)
+        self.w1 = torch.tensor(cfg.w1, device=device)
+        self.w2 = torch.tensor(cfg.w2, device=device)
+        self.w3 = torch.tensor(cfg.w3, device=device)
+
+    def forward(self, x):
+        mask = (x > 0) | (x <= cfg.cp0[0])
+        device = x.device
+        t = torch.linspace(0, 1, 200).to(device)
+        N0 = (1 - t)**3
+        N1 = 3 * t * (1 - t)**2
+        N2 = 3 * t**2 * (1 - t)
+        N3 = t**3
+        
+        # Numerator (weighted sum of control points)
+        numerator = (N0[:, None] * self.w0 * self.cp0 +
+                 N1[:, None] * self.w1 * self.cp1 +
+                 N2[:, None] * self.w2 * self.cp2 + 
+                 N3[:, None] * self.w3 * self.cp3)
+        denominator = (N0 * self.w0 + N1 * self.w1 + N2 * self.w2  + N3 * self.w3)[:, None]
+    
+        curve_points = numerator / (denominator + 1e-6)
+        # Linear interpolation in PyTorch
+        x_vals = curve_points[:, 0]
+        y_vals = curve_points[:, 1]
+
+        # Ensure t_queries within the x range
+        t_queries_clamped = torch.clamp(x, x_vals.min(), x_vals.max())
+
+        # Get indices for linear interpolation
+        idx = torch.searchsorted(x_vals.contiguous(), t_queries_clamped)
+        idx = torch.clamp(idx, 1, len(x_vals)-1)
+
+        x0 = x_vals[idx-1]
+        x1 = x_vals[idx]
+        y0 = y_vals[idx-1]
+        y1 = y_vals[idx]
+
+        slope = (y1 - y0) / (x1 - x0 + 1e-12)
+        y_queries = y0 + slope * (t_queries_clamped - x0)
+        return torch.where(mask, x, y_queries)

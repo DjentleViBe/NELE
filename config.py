@@ -1,5 +1,5 @@
-epochs = 200
-save_every = 200
+epochs = 50
+save_every = 50
 learning_rate = 0.001
 ################### NLSD ######################
 learning_rate_array = [0.01, # tanh 
@@ -58,6 +58,14 @@ num_hidden_layers = 8
 num_classes = 10
 batch_size = 128
 noise_level = 5.0
+w0 = 1.0
+w1 = 0.5
+w2 = 0.6
+w3 = 1.0
+cp0 = [-3.0, 0.0]
+cp1 = [-0.2/2**0.5, -0.2/2**0.5]
+cp2 = [-0.35, -0.45]
+cp3 = [0.0, 0.0]
 #AF = ['nele=0.002']
 #AF_plot = ['lr=0.002']
 """
