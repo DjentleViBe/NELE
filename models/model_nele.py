@@ -100,33 +100,15 @@ class NELE_LUT(nn.Module):
 
     def forward(self, x):
         mask = x > 0
-        device = x.device
 
-        # Control points
-        cp0 = torch.tensor([self.x_min, self.y0.item()], device=device)
-        cp1 = torch.tensor([self.x1.item(), self.y1.item()], device=device)
-        cp2 = torch.tensor([self.l.item() / 1.4142, self.l.item() / 1.4142], device=device)
-        cp3 = torch.tensor([self.x_max, 0.0], device=device)
-        control_points = torch.stack([cp0, cp1, cp2, cp3])  # (4,2)
-
-        # Weights
-        weights = torch.tensor([1.0, self.w1.item(), self.w2.item(), 1.0], device=device)
-
-        # Compute Bézier curve
-        N0, N1, N2, N3 = self.N0.to(device), self.N1.to(device), self.N2.to(device), self.N3.to(device)
         numerator = (
-            N0[:, None]*weights[0]*control_points[0] +
-            N1[:, None]*weights[1]*control_points[1] +
-            N2[:, None]*weights[2]*control_points[2] +
-            N3[:, None]*weights[3]*control_points[3]
+            self.N0*-0.1 +
+            self.N1*self.w1.item()*self.y1.item() +
+            self.N2*self.w2.item()*self.l.item() / 1.4142 +
+            self.N3*0.0
         )
-        denominator = (N0*weights[0] + N1*weights[1] + N2*weights[2] + N3*weights[3])[:, None]
-        curve = numerator / (denominator + 1e-12)
-
-        # LUT: evenly spaced x values
-        x_lut = torch.linspace(self.x_min, self.x_max, self.num_points, device=device)
-        y_lut = curve[:, 1]
-
+        denominator = (self.N0 + self.N1*self.w1.item() + self.N2*self.w2.item() + self.N3)
+        y_lut = numerator / (denominator + 1e-12)
         # Vectorized linear interpolation
         scale = (self.num_points - 1) / (self.x_max - self.x_min)
         indices = ((x - self.x_min) * scale).clamp(0, self.num_points - 2)
