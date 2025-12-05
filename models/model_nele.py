@@ -156,9 +156,7 @@ class NELE_LUT_PARAM(nn.Module):
         self.register_buffer('N3', t**3)
 
     def forward(self, x):
-        mask = (x > 0) | (x <= cfg.cp0[0])
         device = x.device
-       
         cp0 = torch.tensor(cfg.cp0, device=device)
         cp0[0] = x.min()
         # Numerator (weighted sum of control points)
@@ -185,6 +183,7 @@ class NELE_LUT_PARAM(nn.Module):
         y0 = y_vals[idx-1]
         y1 = y_vals[idx]
 
-        slope = (y1 - y0) / (x1 - x0 + 1e-12)
+        slope = (y1 - y0) / (x1 - x0 + 1e-6)
         y_queries = y0 + slope * (t_queries_clamped - x0)
-        return torch.where(mask, x, y_queries)
+        return torch.where(x > 0, x,
+                       torch.where(x < cp0[0], torch.zeros_like(x), y_queries))
