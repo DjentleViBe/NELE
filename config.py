@@ -1,5 +1,5 @@
-epochs = 50
-save_every = 50
+epochs = 75
+save_every = 75
 learning_rate = 0.001
 ################### NLSD ######################
 learning_rate_array = [0.01, # tanh 
@@ -57,14 +57,14 @@ hidden_size = 128
 num_hidden_layers = 8
 num_classes = 10
 batch_size = 128
-noise_level = 5.0
+noise_level = 3.0
 w0 = 1.0
-w1 = 0.5
-w2 = 0.6
+w1 = 1.0
+w2 = 1.0
 w3 = 1.0
-cp0 = [-3.0, 0.0]
-cp1 = [-0.2/2**0.5, -0.2/2**0.5]
-cp2 = [-0.35, -0.45]
+cp0 = [-1.0, 0.0]
+cp1 = [-0.1, -0.1]
+cp2 = [-1.0/2**0.5, -1.0/2**0.5]
 cp3 = [0.0, 0.0]
 #AF = ['nele=0.002']
 #AF_plot = ['lr=0.002']
@@ -113,7 +113,7 @@ AF_plot =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1',
        'sigmoid=7', 'leaky_relu=7', 'silu=7', 
        'softplus=7', 'nele=7', 'mish=7']
        """
-AF_nele =  ['nele=1', 'nele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'nele=7']
+AF_nele =  ['lelu=1', 'lelu=2', 'lelu=3', 'lelu=4', 'lelu=5', 'lelu=6', 'lelu=7']
 AF_plot_nele =  ['nele', 'nele', 'nele', 'nele', 'nele', 'nele', 'nele']
 AF = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
      'leaky_relu', 
