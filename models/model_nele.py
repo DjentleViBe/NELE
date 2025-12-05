@@ -135,7 +135,8 @@ class NELE_LUT(nn.Module):
         y_out = x.clone()
         y_out[mask] = y_neg
 
-        return y_out
+        return torch.where(x > 0, x,
+                       torch.where(x < cfg.cp0[0], torch.zeros_like(x), y_out))
     
 class NELE_LUT_PARAM(nn.Module):
     def __init__(self, device, num_points = 200):
