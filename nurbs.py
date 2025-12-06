@@ -55,11 +55,11 @@ curve_points_w1 = np.array([nurbs_curve(ctrlpts, weights_1, degree, u) for u in 
 curve_points_w0 = np.array([nurbs_curve(ctrlpts, weights_0, degree, u) for u in u_vals])
 # Plotting
 plt.figure(figsize=(5, 4))
-plt.plot(curve_points_w2[:,0], curve_points_w2[:,1], label='w = 0.3', color='k', linestyle = '-.')
-plt.plot(curve_points_w1[:,0], curve_points_w1[:,1], label='w = 1.0', color='k')
-plt.plot(curve_points_w0[:,0], curve_points_w0[:,1], label='w = 5.0', color='k', linestyle = ':')
+plt.plot(curve_points_w2[:,0], curve_points_w2[:,1], label='w = 0.3', color='k', linestyle = '-.', linewidth = 1.0)
+plt.plot(curve_points_w1[:,0], curve_points_w1[:,1], label='w = 1.0', color='k', linewidth = 1.0)
+plt.plot(curve_points_w0[:,0], curve_points_w0[:,1], label='w = 5.0', color='k', linestyle = ':', linewidth = 1.0)
 
-plt.plot(*zip(*ctrlpts), label='Control points', color='red', linestyle = '--', marker ='o')
+plt.plot(*zip(*ctrlpts), label='Control points', color='red', linestyle = '--', marker ='o', linewidth = 1.0)
 plt.xlabel("X")
 plt.ylabel("Y")
 plt.legend()
