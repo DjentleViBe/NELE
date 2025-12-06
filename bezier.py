@@ -34,7 +34,7 @@ curve = bezier_curve(control_points)
 
 # Plot
 plt.figure(figsize=(7, 5))
-plt.plot(curve[:, 0], curve[:, 1], 'b-', label='Bézier curve')
+plt.plot(curve[:, 0], curve[:, 1], 'b-', label='Bézier curve', linewidth = 1.0)
 plt.plot(control_points[:, 0], control_points[:, 1], 'ro--', label='Control points')
 plt.title(f'{len(control_points)-1}-degree Bézier curve')
 plt.legend()
