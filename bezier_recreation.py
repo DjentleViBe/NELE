@@ -93,30 +93,33 @@ print("Optimized Control Points:\n", opt_ctrl)
 print("Optimized Weights:\n", opt_w)
 
 opt_ctrl_mnist = np.array([
-    [-3, 0],
+    [-1, 0],
     [-0.1, -0.1],
     [-1/2**0.5, -1/2**0.5],
     [0, 0]
 ])
 opt_w_mnist = np.array([1.0, 1.0, 1.0, 1.0])
 linear = np.array([[0, 0], [4, 4]])
+linear_2 = np.array([[-1, 0], [-4, 0]])
 # ---------------------------
 # Plot results
 # ---------------------------
 curve = nurbs_gen(opt_ctrl, opt_w, t)
 curve_mnist = nurbs_gen(opt_ctrl_mnist, opt_w_mnist, t)
-plt.figure(figsize=(7, 5))
+plt.figure(figsize=(5, 4))
 plt.plot(np.concatenate([x_target, x_extra]), np.concatenate([y_target, y_extra]), '--', label="GELU", color = 'red')
-plt.plot(curve[:, 0], curve[:, 1], label="Optimized NURBS", color = 'k', linewidth=0.7)
-plt.plot(curve_mnist[:, 0], curve_mnist[:, 1], label="NURBS MNIST", color = 'blue', linewidth=0.7)
-plt.scatter(opt_ctrl[:, 0], opt_ctrl[:, 1], label="Control Points", color = 'k', s=3)
-plt.scatter(opt_ctrl_mnist[:, 0], opt_ctrl_mnist[:, 1], label="Control Points MNIST", color = 'blue', marker = '+')
-plt.plot(linear[:, 0], linear[:, 1], label="Piecewise +x", color = 'k', linewidth=0.7)
+plt.plot(curve[:, 0], curve[:, 1], label = 'GELU approximation', color = 'k', linewidth=0.7)
+plt.plot(curve_mnist[:, 0], curve_mnist[:, 1], label="NURBS MNIST", color = 'green', linewidth=1.0)
+plt.scatter(opt_ctrl[:, 0], opt_ctrl[:, 1], label="Control Points NURBS", color = 'k', s=3)
+plt.scatter(opt_ctrl_mnist[:, 0], opt_ctrl_mnist[:, 1], label="Control Points MNIST", color = 'green', marker = '+')
+plt.plot(linear[:, 0], linear[:, 1], color = 'green', linewidth=1.0)
+plt.plot(linear_2[:, 0], linear_2[:, 1], color = 'green', linewidth=1.0)
 
 plt.legend()
 plt.grid(True, linewidth = 0.2)
-plt.title("Optimized Cubic NURBS Approximation of GELU")
+#plt.title("Optimized Cubic NURBS Approximation of GELU")
 plt.xlabel("x")
 plt.ylabel("f(x)")
-
-plt.savefig('Approx.pdf')
+plt.tight_layout()
+plt.axis('equal')
+plt.savefig('./PICS/Approx.pdf')
