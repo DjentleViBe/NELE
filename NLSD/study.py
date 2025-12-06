@@ -5,7 +5,7 @@ from file_operations import create_directory
 import numpy as np
 import config as cfg
 from models.model_lelu import LELU
-from models.model_nele import NELE
+from models.model_nele import NELE_LUT_PARAM
 import torch.nn as nn
 import torch
 from csv_operations import csv_write
@@ -55,7 +55,7 @@ def nlsd_data(x, y, af, device='cpu', study_type='default'):
         activation = LELU()
         learning_rate = cfg.learning_rate_array[8]
     elif base == 'nele' :
-        activation = NELE(1, 3, 2)
+        activation = NELE_LUT_PARAM(device=device)
         learning_rate = cfg.learning_rate_array[10]
     else:
         raise ValueError("Invalid activation type")
