@@ -1,13 +1,13 @@
 epochs = 300
 save_every = 300
-learning_rate = 0.9
+learning_rate = 0.01
 #################### NURBS #####################
 w0 = 1.0
 w1 = 1.0
 w2 = 1.0
 w3 = 1.0
-cp0 = [-0.04, 0.0]
-cp1 = [-0.05, -0.05]
+cp0 = [-1.0, -0.5]
+cp1 = [-0.5, -0.5]
 cp2 = [-1.0/1.4142, -1.0/1.4142]
 cp3 = [0.0, 0.0]
 ################### NLSD ######################
@@ -22,12 +22,12 @@ learning_rate_array = [0.01, # tanh
                        0.01, # lelu
                        0.01, #mish
                        0.01] # nele
-TYPE = 2 # 0: NELE, 1: NELE_PARAM, 2: NELE_LEARN
+TYPE = 1 # 0: NELE, 1: NELE_PARAM, 2: NELE_LEARN
 AF_NLSD_NELE = ['nele=1', 'nele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'nele=7']
 FUNC_NLSD =  ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
 #FUNC_NLSD = ['exp']
 FUNC_NLSD_PLOT = ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
-FUNC_NLSD_NELE = ['exppoly']
+FUNC_NLSD_NELE = ['sine']
 AF_NLSD = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
      'leaky_relu', 
       'lelu', 'mish', 'nele']
