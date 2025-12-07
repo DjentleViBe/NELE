@@ -39,7 +39,7 @@ def plot_only(study_type):
     
     ax1.set_xlim(1, 200)
     ax2.set_xlim(101, 200)
-    ax2.set_ylim(5, 15)
+    ax2.set_ylim(8, 15)
     # ax2.set_yscale('log')
     #ax3.set_xlim(1, 200)
     #ax4.set_xlim(1, int(max(epochs)))
