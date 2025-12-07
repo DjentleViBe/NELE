@@ -188,3 +188,67 @@ class NELE_LUT_PARAM(nn.Module):
         y_queries = y0 + slope * (t_queries_clamped - x0)
         return torch.where(x > 0, x,
                        torch.where(x < cp0[0], torch.zeros_like(x), y_queries))
+    
+class NELE_LUT_LEARN(nn.Module):
+    def __init__(self, device, num_points = 200):
+        super().__init__()
+        
+        
+        self.w0 = torch.tensor(cfg.w0, device=device)
+        self.w3 = torch.tensor(cfg.w3, device=device)
+        self.l = nn.Parameter(torch.tensor(-1.0))
+        self.w1 = nn.Parameter(torch.tensor(1.0))
+        self.w2 = nn.Parameter(torch.tensor(1.0))
+        self.y1 = nn.Parameter(torch.tensor(-0.1))
+        self.x1 = nn.Parameter(torch.tensor(-0.1))
+        self.y0 = nn.Parameter(torch.tensor(0.0))
+        t = torch.linspace(0, 1, num_points)
+        self.register_buffer('t', t)
+        self.register_buffer('N0', (1 - t)**3)
+        self.register_buffer('N1', 3 * t * (1 - t)**2)
+        self.register_buffer('N2', 3 * t**2 * (1 - t))
+        self.register_buffer('N3', t**3)
+
+    def forward(self, x):
+        device = x.device
+        cp0 = torch.tensor(cfg.cp0, device=device)
+        cp1 = torch.tensor(cfg.cp1, device=device)
+        cp2 = torch.tensor(cfg.cp2, device=device)
+        cp3 = torch.tensor(cfg.cp3, device=device)
+
+        cp0[0] = x.min()
+        cp0[1] = self.y0
+        cp1[0] = self.x1
+        cp1[1] = self.y1
+        cp2[0] = self.l / 1.4142
+        cp2[1] = self.l / 1.4142
+        cp3 = torch.tensor([0.0, 0.0], device=device)
+
+        # Numerator (weighted sum of control points)
+        numerator = (self.N0[:, None] * self.w0 * cp0 +
+                 self.N1[:, None] * self.w1 * cp1 +
+                 self.N2[:, None] * self.w2 * cp2 + 
+                 self.N3[:, None] * self.w3 * cp3)
+        denominator = (self.N0 * self.w0 + self.N1 * self.w1 + self.N2 * self.w2  + self.N3 * self.w3)[:, None]
+    
+        curve_points = numerator / (denominator + 1e-6)
+        # Linear interpolation in PyTorch
+        x_vals = curve_points[:, 0]
+        y_vals = curve_points[:, 1]
+
+        # Ensure t_queries within the x range
+        t_queries_clamped = torch.clamp(x, x_vals.min(), x_vals.max())
+
+        # Get indices for linear interpolation
+        idx = torch.searchsorted(x_vals.contiguous(), t_queries_clamped)
+        idx = torch.clamp(idx, 1, len(x_vals)-1)
+
+        x0 = x_vals[idx-1]
+        x1 = x_vals[idx]
+        y0 = y_vals[idx-1]
+        y1 = y_vals[idx]
+
+        slope = (y1 - y0) / (x1 - x0 + 1e-6)
+        y_queries = y0 + slope * (t_queries_clamped - x0)
+        return torch.where(x > 0, x,
+                        y_queries)
