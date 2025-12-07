@@ -30,21 +30,22 @@ def plot_only(study_type):
         selected_losses = []
 
         for e, l in zip(epochs, losses_test):
-            if (e - 1) % 5 == 0:   # 1,6,11,...
+            if e % 5 == 0:   # 1,6,11,...
                 selected_epochs.append(e)
-                selected_losses.append(l)
+                selected_losses.append(100 - l)
         selected_epochs.append(epochs[-1])
         selected_losses.append(losses_test[-1])
         ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
     
     ax1.set_xlim(1, 200)
-    ax2.set_xlim(1, 200)
-    ax2.set_ylim(80, 100)
+    ax2.set_xlim(101, 200)
+    ax2.set_ylim(5, 15)
+    # ax2.set_yscale('log')
     #ax3.set_xlim(1, 200)
     #ax4.set_xlim(1, int(max(epochs)))
     #ax5.set_xlim(1, int(max(epochs)))
     ax1.set_xticks(range(1, 200, 50))
-    ax2.set_xticks(range(1, 200, 50))
+    ax2.set_xticks(range(101, 200, 50))
     #ax3.set_xticks(range(1, 200, 50))
     ax1.grid(True, linewidth = 0.1)
     ax2.grid(True, linewidth = 0.1)
@@ -59,7 +60,7 @@ def plot_only(study_type):
     fig.legend(lines, labels, loc='lower center', bbox_to_anchor = (0.945, 0.1))
     # fig.tight_layout()
     plt.savefig('PICS/' + study_type + '/training_loss.pdf', transparent=False)
-
+    plt.tight_layout()
     plt.cla()
     plt.close()
 
