@@ -56,7 +56,7 @@ def nlsd_data(x, y, af, device='cpu', study_type='default'):
         learning_rate = cfg.learning_rate_array[8]
     elif base == 'nele' :
         if cfg.TYPE == 0:
-            activation = NELE(device=device, num_points=200)
+            activation = NELE()
             learning_rate = cfg.learning_rate_array[10]
         elif cfg.TYPE == 2:
             activation = NELE_LUT_LEARN(device=device, num_points=200)
