@@ -63,9 +63,10 @@ def nlsd_data(x, y, af, device='cpu', study_type='default'):
             learning_rate = cfg.learning_rate_array[10]
         elif cfg.TYPE == 1:
             activation = NELE_LUT_PARAM(device=device, num_points=200)
+            learning_rate = cfg.learning_rate_array[10]
         else: 
             activation = NELE_LUT()
-        learning_rate = cfg.learning_rate_array[10]
+            learning_rate = cfg.learning_rate_array[10]
     else:
         raise ValueError("Invalid activation type")
     dir = dir + '/' + af
