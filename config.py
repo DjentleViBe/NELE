@@ -1,13 +1,13 @@
-epochs = 300
-save_every = 300
+epochs = 200
+save_every = 200
 learning_rate = 0.01
 #################### NURBS #####################
 w0 = 1.0
 w1 = 1.0
 w2 = 1.0
 w3 = 1.0
-cp0 = [-1.0, -0.5]
-cp1 = [-0.5, -0.5]
+cp0 = [-4.0, 0.0]
+cp1 = [-0.1, -0.1]
 cp2 = [-1.0/1.4142, -1.0/1.4142]
 cp3 = [0.0, 0.0]
 ################### NLSD ######################
@@ -129,7 +129,7 @@ AF_plot = ['Tanh', 'Sigmoid', 'Softplus',
 AF_CIFAR10 = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
      'leaky_relu', 
       'lelu', 'mish', 'nele']
-AF_CIFAR10_NELE =  ['nele=1', 'nele=2', 'nele=3']
+AF_CIFAR10_NELE =  ['nele=0']
 val_ratio = 0.0
 ################# PLOTS #######################
 colors = ["#0072B2", "#56B4E9", 
