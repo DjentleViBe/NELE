@@ -1,5 +1,5 @@
-epochs = 250
-save_every = 250
+epochs = 2
+save_every = 2
 learning_rate = 0.001
 #################### NURBS #####################
 w0 = 1.0
@@ -35,31 +35,7 @@ AF_NLSD_PLOT = ['Tanh', 'Sigmoid', 'Softplus',
            'ELU', 'SiLU', 'GELU', 'ReLU',
        'Leaky-ReLU',  
        'LeLU', 'Mish', 'NELE']
-
-AF_NLSD_STUDY =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1', 
-       'sigmoid=1', 'leaky_relu=1', 'silu=1', 'lelu=1',
-       'softplus=1', 'nele=1', 'mish=1',
-       'tanh=2', 'relu=2', 'elu=2', 'gelu=2', 
-       'sigmoid=2', 'leaky_relu=2', 'silu=2', 
-       'softplus=2', 'nele=2', 'mish=2', 'lelu=2',
-       'tanh=3', 'relu=3', 'elu=3', 'gelu=3', 
-       'sigmoid=3', 'leaky_relu=3', 'silu=3', 
-       'softplus=3', 'nele=3', 'mish=3', 'lelu=3',
-       'tanh=4', 'relu=4', 'elu=4', 'gelu=4', 
-       'sigmoid=4', 'leaky_relu=4', 'silu=4', 
-       'softplus=4', 'nele=4', 'mish=4', 'lelu=4',
-       'tanh=5', 'relu=5', 'elu=5', 'gelu=5', 
-       'sigmoid=5', 'leaky_relu=5', 'silu=5', 
-       'softplus=5', 'nele=5', 'mish=5', 'lelu=5',
-       'tanh=6', 'relu=6', 'elu=6', 'gelu=6', 
-       'sigmoid=6', 'leaky_relu=6', 'silu=6', 
-       'softplus=6', 'nele=6', 'mish=6', 'lelu=6',
-       'tanh=7', 'relu=7', 'elu=7', 'gelu=7', 
-       'sigmoid=7', 'leaky_relu=7', 'silu=7', 
-       'softplus=7', 'nele=7', 'mish=7', 'lelu=7'
-       ]
 # AF_NLSD_PLOT =  AF_NLSD
-
 ################### MNIST #####################
 input_size = 28 * 28
 hidden_size = 128
@@ -67,51 +43,6 @@ num_hidden_layers = 8
 num_classes = 10
 batch_size = 128
 noise_level = 3.0
-"""
-AF =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1', 
-       'sigmoid=1', 'leaky_relu=1', 'silu=1', 
-       'softplus=1', 'nele=1', 'mish=1', 'nele=4',
-       'tanh=2', 'relu=2', 'elu=2', 'gelu=2', 
-       'sigmoid=2', 'leaky_relu=2', 'silu=2', 
-       'softplus=2', 'nele=2', 'mish=2', 'nele=5',
-       'tanh=3', 'relu=3', 'elu=3', 'gelu=3', 
-       'sigmoid=3', 'leaky_relu=3', 'silu=3', 
-       'softplus=3', 'nele=3', 'mish=3', 'nele=6',
-       'tanh=4', 'relu=4', 'elu=4', 'gelu=4', 
-       'sigmoid=4', 'leaky_relu=4', 'silu=4', 
-       'softplus=4', 'nele=4', 'mish=4', 'nele=7',
-       'tanh=5', 'relu=5', 'elu=5', 'gelu=5', 
-       'sigmoid=5', 'leaky_relu=5', 'silu=5', 
-       'softplus=5', 'nele=5', 'mish=5', 
-       'tanh=6', 'relu=6', 'elu=6', 'gelu=6', 
-       'sigmoid=6', 'leaky_relu=6', 'silu=6', 
-       'softplus=6', 'nele=6', 'mish=6', 
-       'tanh=7', 'relu=7', 'elu=7', 'gelu=7', 
-       'sigmoid=7', 'leaky_relu=7', 'silu=7', 
-       'softplus=7', 'nele=7', 'mish=7'
-       ]
-AF_plot =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1', 
-       'sigmoid=1', 'leaky_relu=1', 'silu=1', 
-       'softplus=1', 'nele=1', 'mish=1', 'nele=4',
-       'tanh=2', 'relu=2', 'elu=2', 'gelu=2', 
-       'sigmoid=2', 'leaky_relu=2', 'silu=2', 
-       'softplus=2', 'nele=2', 'mish=2', 'nele=5',
-       'tanh=3', 'relu=3', 'elu=3', 'gelu=3', 
-       'sigmoid=3', 'leaky_relu=3', 'silu=3', 
-       'softplus=3', 'nele=3', 'mish=3', 'nele=6',
-       'tanh=4', 'relu=4', 'elu=4', 'gelu=4', 
-       'sigmoid=4', 'leaky_relu=4', 'silu=4', 
-       'softplus=4', 'nele=4', 'mish=4', 'nele=7',
-       'tanh=5', 'relu=5', 'elu=5', 'gelu=5', 
-       'sigmoid=5', 'leaky_relu=5', 'silu=5', 
-       'softplus=5', 'nele=5', 'mish=5', 
-       'tanh=6', 'relu=6', 'elu=6', 'gelu=6', 
-       'sigmoid=6', 'leaky_relu=6', 'silu=6', 
-       'softplus=6', 'nele=6', 'mish=6', 
-       'tanh=7', 'relu=7', 'elu=7', 'gelu=7', 
-       'sigmoid=7', 'leaky_relu=7', 'silu=7', 
-       'softplus=7', 'nele=7', 'mish=7']
-       """
 AF_nele =  ['lelu=1', 'lelu=2', 'lelu=3', 'lelu=4', 'lelu=5', 'lelu=6', 'lelu=7']
 AF_plot_nele =  ['nele', 'nele', 'nele', 'nele', 'nele', 'nele', 'nele']
 AF = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
@@ -139,3 +70,25 @@ colors = ["#0072B2", "#56B4E9",
             ]
 curve_recreation = ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU',  
       'LeLU', 'Mish']
+NLSD_STUDY =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1', 
+       'sigmoid=1', 'leaky_relu=1', 'silu=1', 'lelu=1',
+       'softplus=1', 'nele=1', 'mish=1',
+       'tanh=2', 'relu=2', 'elu=2', 'gelu=2', 
+       'sigmoid=2', 'leaky_relu=2', 'silu=2', 
+       'softplus=2', 'nele=2', 'mish=2', 'lelu=2',
+       'tanh=3', 'relu=3', 'elu=3', 'gelu=3', 
+       'sigmoid=3', 'leaky_relu=3', 'silu=3', 
+       'softplus=3', 'nele=3', 'mish=3', 'lelu=3',
+       'tanh=4', 'relu=4', 'elu=4', 'gelu=4', 
+       'sigmoid=4', 'leaky_relu=4', 'silu=4', 
+       'softplus=4', 'nele=4', 'mish=4', 'lelu=4',
+       'tanh=5', 'relu=5', 'elu=5', 'gelu=5', 
+       'sigmoid=5', 'leaky_relu=5', 'silu=5', 
+       'softplus=5', 'nele=5', 'mish=5', 'lelu=5',
+       'tanh=6', 'relu=6', 'elu=6', 'gelu=6', 
+       'sigmoid=6', 'leaky_relu=6', 'silu=6', 
+       'softplus=6', 'nele=6', 'mish=6', 'lelu=6',
+       'tanh=7', 'relu=7', 'elu=7', 'gelu=7', 
+       'sigmoid=7', 'leaky_relu=7', 'silu=7', 
+       'softplus=7', 'nele=7', 'mish=7', 'lelu=7'
+       ]

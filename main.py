@@ -1,6 +1,6 @@
 from NLSD.curve_fit import curve_fit, curve_fit_nele
 from MNIST.mnist import mnist_train, mnist_eval, mnist_train_nele
-from MNIST_ENC.mnist_enc import mnist_enc_train, mnist_enc_eval, mnist_enc_train_nele
+from MNIST_ENC.mnist_enc import mnist_enc_train, mnist_enc_eval, mnist_enc_train_nele, mnist_enc_train_study
 from NLSD.post_process_nld import process_nld
 from MNIST.post_process_tsinm import process_mnist
 from MNIST_ENC.post_process_tsinm import process_mnist_enc
@@ -44,6 +44,8 @@ if __name__ == "__main__":
     elif args.type == 'mnistenc':
         if args.mode == 'train':
             mnist_enc_train(args.device, args.reset, args.exec)
+        if args.mode == 'train_study':
+            mnist_enc_train_study(args.device, args.reset, args.exec)
         elif args.mode == 'train_nele':
             mnist_enc_train_nele(args.device, args.reset, args.exec)
         elif args.mode == 'eval':
