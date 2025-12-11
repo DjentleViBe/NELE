@@ -32,9 +32,9 @@ def mnist_enc_data(epochs, learn_rate, device, exec, activation_type='default'):
             '#000000']
     loss_collect = np.zeros(len(activations))
     std_deviation_collect = np.zeros(len(activations))
-    dir = 'RESULTS/MNIST/' + activation_type + '/'
-    create_directory('RESULTS/MNIST/' + activation_type + '/')
-    create_directory('PICS/MNIST/' + activation_type + '/')
+    dir = 'RESULTS/MNIST_ENC/' + activation_type + '/'
+    create_directory('RESULTS/MNIST_ENC/' + activation_type + '/')
+    create_directory('PICS/MNIST_ENC/' + activation_type + '/')
     # Activation function selection
     if '=' in activation_type:
         base, param = activation_type.split('=')
