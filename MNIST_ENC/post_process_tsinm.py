@@ -121,4 +121,4 @@ def plot_only(study_type):
     plt.close()
 
 def process_mnist_enc():
-    plot_only('MNIST')
+    plot_only('MNIST_ENC')

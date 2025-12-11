@@ -51,7 +51,7 @@ def mnist_enc_validation(epochs, device, noise_level, activation_type='default')
     test_collect = []
     for i in range(1, 8):
         torch.manual_seed(1234)
-        checkpoint = torch.load('RESULTS/MNIST/' + activation_type + '=' + str(i) + '/' + activation_type + '=' + str(i) + '_' + str(epochs - 1) + '.pth',
+        checkpoint = torch.load('RESULTS/MNIST_ENC/' + activation_type + '=' + str(i) + '/' + activation_type + '=' + str(i) + '_' + str(epochs - 1) + '.pth',
                             map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         epoch = checkpoint['epoch']
