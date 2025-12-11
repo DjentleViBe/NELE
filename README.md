@@ -40,6 +40,15 @@ The follwing plots are generated:
 - Curve fitting different AF to data
 - Standard deviation and test loss against data
 
+|Study|l|w1|w2|y1|x1|y0|Learnable|w|cp0|cp1|cp2|cp3|
+|----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+Exponential|-1.0|1.0|1.0|0.0|-0.1|0.0|Yes|[1,1,1,1]|[-1.0, 0.0]|[-0.1, -0.1]| [-1.0/1.4142, -1.0/1.4142]|[0.0, 0.0]
+Hyperbola|-1.0|1.0|1.0|-0.1|-0.1|0.0|No|[1,1,1,1]|[-1.0, 0.0]|[-0.1, -0.1]| [-1.0/1.4142, -1.0/1.4142]|[0.0, 0.0]
+Quadratic|-1.0|1.0|1.0|-0.1|-0.1|0.0|Yes|[1,1,1,1]|[-1.0, 0.0]|[-0.1, -0.1]| [-1.0/1.4142, -1.0/1.4142]|[0.0, 0.0]
+Sinusoidal|-|-|-|-|-|-|No|[1,1,1,1]|[-4.0, 0.0]|[-0.1, -0.1]| [-1.0/1.4142, -1.0/1.4142]|[0.0, 0.0]
+Trigonometric|-1.0|1.0|1.0|-0.1|-0.1|0.0|Yes|[1,1,1,1]|[-1.0, 0.0]|[-0.1, -0.1]| [-1.0/1.4142, -1.0/1.4142]|[0.0, 0.0]
+Polynomial|-1.0|1.0|1.0|-0.1|-0.1|0.0|Yes|[1,1,1,1]|[-1.0, 0.0]|[-0.1, -0.1]| [-1.0/1.4142, -1.0/1.4142]|[0.0, 0.0]
+
 ## MNIST
 To run the training :
 ```
@@ -58,16 +67,6 @@ To run sensitivity analysis :
 python main.py --type=mnist --mode=process-nele
 ```
 This command can be used for processing different configurations with $NELE$. Plots will contain data for cases defined inside [```AF_plot```](./config.py) array.
-
-|Study|l|w1|w2|y1|x1|y0|
-|----|-----|-----|-----|-----|-----|-----|
-Exponential|-1.0|1.0|1.0|0.0|-0.1|0.0|
-Hyperbola|-1.0|1.0|1.0|-0.1|-0.1|0.0|
-Quadratic|-1.0|1.0|1.0|-0.1|-0.1|0.0|
-Sinusoidal|-1.0|1.0|1.0|-0.1|-0.1|0.0|
-Trigonometric|-1.0|1.0|1.0|-0.1|-0.1|0.0|
-Polynomial|-1.0|1.0|1.0|-0.1|-0.1|0.0|
-
 
 self.l = nn.Parameter(torch.tensor(-1.0))
 self.w1 = nn.Parameter(torch.tensor(1.0))

@@ -14,7 +14,7 @@ class LELU(nn.Module):
         # x <= 0: custom exponential branch
         neg = torch.where(
             x <= 0,
-            x * torch.exp((1 - self.beta) * x) - 1 + self.beta * x,
+            torch.exp((1 - self.beta) * x) - 1 + self.beta * x,
             torch.zeros_like(x)
         )
         return pos + neg

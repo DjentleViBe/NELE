@@ -1,6 +1,15 @@
 epochs = 200
 save_every = 200
-learning_rate = 0.001
+learning_rate = 0.01
+#################### NURBS #####################
+w0 = 1.0
+w1 = 1.0
+w2 = 1.0
+w3 = 1.0
+cp0 = [-4.0, 0.0]
+cp1 = [-0.1, -0.1]
+cp2 = [-1.0/1.4142, -1.0/1.4142]
+cp3 = [0.0, 0.0]
 ################### NLSD ######################
 learning_rate_array = [0.01, # tanh 
                        0.01, #sigmoid
@@ -12,13 +21,13 @@ learning_rate_array = [0.01, # tanh
                        0.01, #lrelu
                        0.01, # lelu
                        0.01, #mish
-                       0.01 # nele
-                       ]
-
+                       0.01] # nele
+TYPE = 1 # 0: NELE, 1: NELE_PARAM, 2: NELE_LEARN
 AF_NLSD_NELE = ['nele=1', 'nele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'nele=7']
 FUNC_NLSD =  ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
-#FUNC_NLSD = ['trig']
-# FUNC_NLSD_NELE = ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
+#FUNC_NLSD = ['exp']
+FUNC_NLSD_PLOT = ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
+FUNC_NLSD_NELE = ['sine']
 AF_NLSD = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
      'leaky_relu', 
       'lelu', 'mish', 'nele']
@@ -57,7 +66,7 @@ hidden_size = 128
 num_hidden_layers = 8
 num_classes = 10
 batch_size = 128
-noise_level = 5.0
+noise_level = 3.0
 #AF = ['nele=0.002']
 #AF_plot = ['lr=0.002']
 """
@@ -105,7 +114,7 @@ AF_plot =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1',
        'sigmoid=7', 'leaky_relu=7', 'silu=7', 
        'softplus=7', 'nele=7', 'mish=7']
        """
-AF_nele =  ['nele=1', 'nele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'nele=7']
+AF_nele =  ['lelu=1', 'lelu=2', 'lelu=3', 'lelu=4', 'lelu=5', 'lelu=6', 'lelu=7']
 AF_plot_nele =  ['nele', 'nele', 'nele', 'nele', 'nele', 'nele', 'nele']
 AF = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
      'leaky_relu', 
@@ -120,7 +129,7 @@ AF_plot = ['Tanh', 'Sigmoid', 'Softplus',
 AF_CIFAR10 = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
      'leaky_relu', 
       'lelu', 'mish', 'nele']
-AF_CIFAR10_NELE =  ['nele=1', 'nele=2', 'nele=3']
+AF_CIFAR10_NELE =  ['nele=0']
 val_ratio = 0.0
 ################# PLOTS #######################
 colors = ["#0072B2", "#56B4E9", 

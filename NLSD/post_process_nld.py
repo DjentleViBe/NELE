@@ -101,7 +101,7 @@ def plot_only(x, study_type):
     return s3_collect
 
 def process_nld(reset):
-    s3_print = np.zeros((len(cfg.FUNC_NLSD), len(cfg.AF_NLSD)))
+    s3_print = np.zeros((len(cfg.FUNC_NLSD_PLOT), len(cfg.AF_NLSD)))
     if reset == 1:
         reset_directory('./PICS/NLSD/')
         reset_directory('./PICS/NLSD/')
@@ -136,8 +136,8 @@ def process_nld(reset):
 
     for j in range(len(cfg.AF_NLSD)):
         print(f'\n\\texttt{{{cfg.AF_NLSD_PLOT[j]}}} & ', end='')
-        for i in range(len(cfg.FUNC_NLSD)):
-            if i == len(cfg.FUNC_NLSD) - 1:
+        for i in range(len(cfg.FUNC_NLSD_PLOT)):
+            if i == len(cfg.FUNC_NLSD_PLOT) - 1:
                 print(f'{round(s3_print[i][j], 2)}', end=' \\\\ ')
             else:
                 print(f'{round(s3_print[i][j], 2)}', end=' & ')

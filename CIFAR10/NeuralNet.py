@@ -109,6 +109,7 @@ class CIFAR10CNN(nn.Module):
         self.conv9 = nn.Conv2d(192, 192, 1)
         self.bn9 = nn.BatchNorm2d(192)
         
+        self.bn_final = nn.BatchNorm1d(192)
         self.global_avg_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Linear(192, 10)
         
@@ -138,6 +139,7 @@ class CIFAR10CNN(nn.Module):
         # Global average pooling
         x = self.global_avg_pool(x)
         x = x.view(x.size(0), -1)
+        x = self.bn_final(x)  # This makes it identical to the second architecture
         x = self.fc(x)
         return x
 
