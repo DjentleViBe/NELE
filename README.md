@@ -16,6 +16,7 @@ pip install -r requirements.txt
 There are 3 types of analysis that can be performed:
 - **Non-linear Synthetic Dataset (NLSD)**
 - **MNIST**
+- **MNIST autoencoder**
 - **CIFAR-10**
 
 The details for each simulation can be set inside [config.py](./config.py)
@@ -62,18 +63,59 @@ To run post-processing :
 ```
 python main.py --type=mnist --mode=process
 ```
+To run post-processing on study (median of 7 runs) :
+```
+python main.py --type=mnistenc --mode=process_study
+```
 To run sensitivity analysis :
 ```
 python main.py --type=mnist --mode=process-nele
 ```
 This command can be used for processing different configurations with $NELE$. Plots will contain data for cases defined inside [```AF_plot```](./config.py) array.
 
-self.l = nn.Parameter(torch.tensor(-1.0))
-self.w1 = nn.Parameter(torch.tensor(1.0))
-self.w2 = nn.Parameter(torch.tensor(1.0))
-self.y1 = nn.Parameter(torch.tensor(-0.1))
-self.x1 = nn.Parameter(torch.tensor(-0.1))
-self.y0 = nn.Parameter(torch.tensor(0.0))
+## MNIST autoencoder
+To run the training :
+```
+python main.py --type=mnistenc --mode=train
+```
+To run the validation :
+```
+python main.py --type=mnistenc --mode=eval
+```
+To run post-processing :
+```
+python main.py --type=mnistenc --mode=process
+```
+To run post-processing on study (median of 7 runs):
+```
+python main.py --type=mnistenc --mode=process_study
+```
+To run sensitivity analysis :
+```
+python main.py --type=mnistenc --mode=process-nele
+```
+# CIFAR10
+To run the training :
+```
+python main.py --type=cifar10 --mode=train
+```
+To run the validation :
+```
+python main.py --type=cifar10 --mode=eval
+```
+To run post-processing :
+```
+python main.py --type=cifar10 --mode=process
+```
+To run post-processing on study (median of 7 runs):
+```
+python main.py --type=cifar10 --mode=process_study
+```
+To run sensitivity analysis :
+```
+python main.py --type=cifar10 --mode=process-nele
+```
+
 ## config.py
 The ```config.py``` is divided into sections depending on the data used for the analysis.
 ### AF
@@ -92,6 +134,6 @@ lelu|LeLU
 mish |Mish 
 nele|NELE
 
-To facilitate running studies with different configurations, the variables can be appended with additional text followed by ```=``` such as ```nele=0.001```. ```AF_plot``` array also needs to be updated accordingly if the cases need to be post-processed.
+To facilitate running studies with custom configurations, the variables can be appended with additional text followed by ```=``` such as ```nele=0.001```. ```AF_plot``` array also needs to be updated accordingly if the cases need to be post-processed.
 A folder with this name is created inside ```RESULTS```, which holds the simulation raw files and inside ```PICS```, which contains any post-processing files.
 
