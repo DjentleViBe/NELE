@@ -1,6 +1,6 @@
-epochs = 200
-save_every = 200
-learning_rate = 0.01
+epochs = 250
+save_every = 250
+learning_rate = 0.001
 #################### NURBS #####################
 w0 = 1.0
 w1 = 1.0
@@ -67,8 +67,6 @@ num_hidden_layers = 8
 num_classes = 10
 batch_size = 128
 noise_level = 3.0
-#AF = ['nele=0.002']
-#AF_plot = ['lr=0.002']
 """
 AF =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1', 
        'sigmoid=1', 'leaky_relu=1', 'silu=1', 
@@ -123,8 +121,8 @@ AF_plot = ['Tanh', 'Sigmoid', 'Softplus',
            'ELU', 'SiLU', 'GELU', 'ReLU',
        'Leaky_ReLU',  
        'LeLU', 'Mish', 'NELE']
-# AF = ['nele']
-# AF_plot = ['nele']
+################### MNIST AUTO ENC #####################
+batch_size_autoenc = 64
 ################# CIFAR-10 ####################
 AF_CIFAR10 = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
      'leaky_relu', 
