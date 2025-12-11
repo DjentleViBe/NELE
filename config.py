@@ -139,3 +139,5 @@ colors = ["#0072B2", "#56B4E9",
             "#8E6B55", "#C7B2A8",
             '#000000'
             ]
+curve_recreation = ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU',  
+      'LeLU', 'Mish']
