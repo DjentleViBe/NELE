@@ -141,7 +141,7 @@ def mnist_enc_data(epochs, learn_rate, device, exec, activation_type='default'):
                 outputs = model(x)
                 test_loss_clean += criterion(outputs, x).item() * x.size(0)
         test_loss_clean /= len(test_loader.dataset)
-
+        
         # Test with noise
         with torch.no_grad():
             for x, _ in test_loader:
@@ -151,6 +151,7 @@ def mnist_enc_data(epochs, learn_rate, device, exec, activation_type='default'):
                 outputs = model(x_noisy)
                 test_loss_noisy += criterion(outputs, x).item() * x.size(0)
         test_loss_noisy /= len(test_loader.dataset)
+        test_collect.append(test_loss_clean)
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch, dir, test_loss_clean)
         print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_loss:.4f}, Test Acc 0: {test_loss_clean:.4f}, Test Acc 3: {test_loss_noisy:.4f}, lr : {lr:.5f}")
