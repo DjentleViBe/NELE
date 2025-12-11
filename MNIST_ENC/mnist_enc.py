@@ -5,36 +5,36 @@ from MNIST_ENC.noise import noise_eval
 import config as cfg
 
 def mnist_enc_train(device, reset, exec):
-    print("Starting MNIST")
+    print("Starting MNIST autoencoder")
     if reset == 1:
-        reset_directory('./RESULTS/MNIST')
-        reset_directory('./PICS/MNIST')
+        reset_directory('./RESULTS/MNIST_ENC')
+        reset_directory('./PICS/MNIST_ENC')
     else:
-        create_directory('./RESULTS/MNIST')
-        create_directory('./PICS/MNIST')
+        create_directory('./RESULTS/MNIST_ENC')
+        create_directory('./PICS/MNIST_ENC')
     for af in cfg.AF:
         print(f'Activation : {af}')
         mnist_enc_data(cfg.epochs, cfg.learning_rate, device, exec, af)
     
 def mnist_enc_train_nele(device, reset, exec):
-    print("Starting MNIST")
+    print("Starting MNIST autoencoder")
     if reset == 1:
-        reset_directory('./RESULTS/MNIST')
-        reset_directory('./PICS/MNIST')
+        reset_directory('./RESULTS/MNIST_ENC')
+        reset_directory('./PICS/MNIST_ENC')
     else:
-        create_directory('./RESULTS/MNIST')
-        create_directory('./PICS/MNIST')
+        create_directory('./RESULTS/MNIST_ENC')
+        create_directory('./PICS/MNIST_ENC')
     for af in cfg.AF_nele:
         print(f'Activation : {af}')
         mnist_enc_data(cfg.epochs, cfg.learning_rate, device, exec, af)
 
 def mnist_enc_eval(device, reset):
     if reset == 1:
-        reset_directory('./RESULTS/MNIST')
-        reset_directory('./PICS/MNIST')
+        reset_directory('./RESULTS/MNIST_ENC')
+        reset_directory('./PICS/MNIST_ENC')
     else:
-        create_directory('./RESULTS/MNIST')
-        create_directory('./PICS/MNIST')
+        create_directory('./RESULTS/MNIST_ENC')
+        create_directory('./PICS/MNIST_ENC')
     for i, af in enumerate(cfg.AF):
         # print(f'Activation : {af}')
         # mnist_validation(cfg.epochs, device, cfg.noise_level, af)
