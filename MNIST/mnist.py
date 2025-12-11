@@ -39,3 +39,16 @@ def mnist_eval(device, reset):
         # print(f'Activation : {af}')
         # mnist_validation(cfg.epochs, device, cfg.noise_level, af)
         noise_eval(device, af, i)
+
+def mnist_train_study(device, reset, exec):
+    print("Starting MNIST autoencoder")
+    if reset == 1:
+        reset_directory('./RESULTS/MNIST_ENC')
+        reset_directory('./PICS/MNIST_ENC')
+    else:
+        create_directory('./RESULTS/MNIST_ENC')
+        create_directory('./PICS/MNIST_ENC')
+    for af in cfg.STUDY:
+        print(f'Activation : {af}')
+        mnist_data(cfg.epochs, cfg.learning_rate, device, exec, af)
+    
