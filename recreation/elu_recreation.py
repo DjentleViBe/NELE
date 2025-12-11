@@ -29,15 +29,15 @@ def nurbs_gen(control_points, weights, t):
 # ---------------------------
 # GELU
 # ---------------------------
-def tanh(x):
-    return np.tanh(x)
+def elu(x):
+    return np.where(x >= 0, x, np.exp(x) - 1)
 
 # target segment
 x_target = np.linspace(-4, 0, 200)
-y_target = tanh(x_target)
+y_target = elu(x_target)
 
 x_extra = np.linspace(0, 4, 200)
-y_extra = tanh(x_extra)
+y_extra = elu(x_extra)
 
 # reparameterize into t ∈ [0, 1]
 t = (x_target - x_target.min()) / (x_target.max() - x_target.min())
@@ -107,8 +107,8 @@ linear_2 = np.array([[-1, 0], [-4, 0]])
 curve = nurbs_gen(opt_ctrl, opt_w, t)
 curve_mnist = nurbs_gen(opt_ctrl_mnist, opt_w_mnist, t)
 plt.figure(figsize=(5, 4))
-plt.plot(np.concatenate([x_target, x_extra]), np.concatenate([y_target, y_extra]), '--', label="Tanh", color = 'red')
-plt.plot(curve[:, 0], curve[:, 1], label = 'Tanh approximation', color = 'k', linewidth=0.7)
+plt.plot(np.concatenate([x_target, x_extra]), np.concatenate([y_target, y_extra]), '--', label="elu", color = 'red')
+plt.plot(curve[:, 0], curve[:, 1], label = 'elu approximation', color = 'k', linewidth=0.7)
 #plt.plot(curve_mnist[:, 0], curve_mnist[:, 1], label="NURBS MNIST", color = 'green', linewidth=1.0)
 plt.scatter(opt_ctrl[:, 0], opt_ctrl[:, 1], label="Control Points NURBS", color = 'k', s=3)
 #plt.scatter(opt_ctrl_mnist[:, 0], opt_ctrl_mnist[:, 1], label="Control Points MNIST", color = 'green', marker = '+')
@@ -122,4 +122,4 @@ plt.xlabel("x")
 plt.ylabel("f(x)")
 plt.tight_layout()
 plt.axis('equal')
-plt.savefig('./PICS/Approx_tanh.pdf')
+plt.savefig('./PICS/Approx_elu.pdf')
