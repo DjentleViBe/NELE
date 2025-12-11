@@ -1,5 +1,5 @@
-epochs = 2
-save_every = 2
+epochs = 250
+save_every = 250
 learning_rate = 0.001
 #################### NURBS #####################
 w0 = 1.0
@@ -70,7 +70,7 @@ colors = ["#0072B2", "#56B4E9",
             ]
 curve_recreation = ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU',  
       'LeLU', 'Mish']
-NLSD_STUDY =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1', 
+STUDY =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1', 
        'sigmoid=1', 'leaky_relu=1', 'silu=1', 'lelu=1',
        'softplus=1', 'nele=1', 'mish=1',
        'tanh=2', 'relu=2', 'elu=2', 'gelu=2', 

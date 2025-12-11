@@ -48,7 +48,7 @@ def mnist_enc_train_study(device, reset, exec):
     else:
         create_directory('./RESULTS/MNIST_ENC')
         create_directory('./PICS/MNIST_ENC')
-    for af in cfg.NLSD_STUDY:
+    for af in cfg.STUDY:
         print(f'Activation : {af}')
         mnist_enc_data(cfg.epochs, cfg.learning_rate, device, exec, af)
     
