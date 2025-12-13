@@ -130,7 +130,7 @@ class CIFAR100CNN(nn.Module):
 def prepare_datasets(mode, val_ratio=0.1, data_root='./data'):
     """Prepare training, validation and test datasets"""
     # Load raw training data
-    train_dataset_raw = datasets.CIFAR10(root=data_root, train=True, download=True, 
+    train_dataset_raw = datasets.CIFAR100(root=data_root, train=True, download=True, 
                                          transform=transforms.ToTensor())
     
     X_train = np.array([np.array(img) for img, _ in train_dataset_raw], dtype=np.float32)
@@ -145,7 +145,7 @@ def prepare_datasets(mode, val_ratio=0.1, data_root='./data'):
     full_train_dataset = ZCADataset(X_train, labels_tensor, add_noise_sigma=0.0, training=True)
     
     # Test dataset
-    test_dataset_raw = datasets.CIFAR10(root=data_root, train=False, download=True,
+    test_dataset_raw = datasets.CIFAR100(root=data_root, train=False, download=True,
                                         transform=transforms.ToTensor())
     X_test = np.array([np.array(img) for img, _ in test_dataset_raw], dtype=np.float32)
     labels_test = np.array([label for _, label in test_dataset_raw])

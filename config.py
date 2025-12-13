@@ -1,6 +1,6 @@
-epochs = 250
-save_every = 250
-learning_rate = 0.001
+epochs = 50
+save_every = 50
+learning_rate = 0.01
 #################### NURBS #####################
 w0 = 1.0
 w1 = 1.0
