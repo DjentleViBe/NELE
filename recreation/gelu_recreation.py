@@ -107,11 +107,15 @@ linear_2 = np.array([[-1, 0], [-4, 0]])
 curve = nurbs_gen(opt_ctrl, opt_w, t)
 curve_mnist = nurbs_gen(opt_ctrl_mnist, opt_w_mnist, t)
 plt.figure(figsize=(5, 4))
-plt.plot(np.concatenate([x_target, x_extra]), np.concatenate([y_target, y_extra]), '--', label="GELU", color = 'red')
-plt.plot(curve[:, 0], curve[:, 1], label = 'GELU approximation', color = 'k', linewidth=0.7)
-plt.plot(curve_mnist[:, 0], curve_mnist[:, 1], label="NURBS MNIST", color = 'green', linewidth=1.0)
-plt.scatter(opt_ctrl[:, 0], opt_ctrl[:, 1], label="Control Points NURBS", color = 'k', s=3)
+plt.rcParams['text.usetex'] = True
+plt.plot(np.concatenate([x_target, x_extra]), np.concatenate([y_target, y_extra]), '--', label=r'$\texttt{GELU}$', color = 'red')
+plt.plot(curve[:, 0], curve[:, 1], label = r'$\texttt{GELU}$ approximation', color = 'k', linewidth=0.7)
+plt.plot(curve_mnist[:, 0], curve_mnist[:, 1], label=r'$\texttt{NELE}$ MNIST', color = 'green', linewidth=1.0)
+plt.scatter(opt_ctrl[:, 0], opt_ctrl[:, 1], label=r'Control Points $\texttt{NELE}$', color = 'k', s=3)
 plt.scatter(opt_ctrl_mnist[:, 0], opt_ctrl_mnist[:, 1], label="Control Points MNIST", color = 'green', marker = '+')
+# Label each point p0, p1, p2, p3
+for i, (x, y) in enumerate(opt_ctrl_mnist):
+    plt.annotate(f"p{i}", (x, y), textcoords="offset points", xytext=(5, -4), fontsize=6, color='green')
 plt.plot(linear[:, 0], linear[:, 1], color = 'green', linewidth=1.0)
 plt.plot(linear_2[:, 0], linear_2[:, 1], color = 'green', linewidth=1.0)
 

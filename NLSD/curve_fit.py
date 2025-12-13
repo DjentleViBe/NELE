@@ -14,7 +14,7 @@ def curve_fit(device, reset, exec):
     std_deviation_collect = []
     AF_NLSD = cfg.AF_NLSD
     if exec == 1:
-        AF_NLSD = cfg.AF_NLSD_STUDY
+        AF_NLSD = cfg.STUDY
     ################### SINE NOISE ##########################
     for af in AF_NLSD:
         for afunc in cfg.FUNC_NLSD:

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # ---------------------------
 # NURBS generator (cubic, 4 ctrl pts)
 # ---------------------------
-def nurbs_gen_lelu(control_points, weights, t):
+def nurbs_gen_softplus(control_points, weights, t):
     cp = control_points.reshape(4, 2)
     w = weights
 
@@ -29,16 +29,15 @@ def nurbs_gen_lelu(control_points, weights, t):
 # ---------------------------
 # GELU
 # ---------------------------
-def lelu(x, beta=0.1):
-    mask = x >= 0
-    return np.where(mask, x, np.exp((1 - beta) * x) - 1 + beta * x)
+def softplus(x):
+    return np.log1p(np.exp(x))
 
 # target segment
 x_target = np.linspace(-4, 0, 200)
-y_target = lelu(x_target)
+y_target = softplus(x_target)
 
 x_extra = np.linspace(0, 4, 200)
-y_extra = lelu(x_extra)
+y_extra = softplus(x_extra)
 
 # reparameterize into t ∈ [0, 1]
 t = (x_target - x_target.min()) / (x_target.max() - x_target.min())
@@ -46,12 +45,12 @@ t = (x_target - x_target.min()) / (x_target.max() - x_target.min())
 # ---------------------------
 # Optimization objective
 # ---------------------------
-def loss_lelu(params):
+def loss_softplus(params):
     # params = 4 ctrl points * 2 coords + 4 weights = 12 values
     ctrl = params[:8].reshape(4, 2)
     w = params[8:]
 
-    curve = nurbs_gen_lelu(ctrl, w, t)
+    curve = nurbs_gen_softplus(ctrl, w, t)
 
     # match x and y separately
     x_cur, y_cur = curve[:, 0], curve[:, 1]
