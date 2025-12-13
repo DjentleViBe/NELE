@@ -28,9 +28,9 @@ def cifar100_data(epochs, learn_rate, device, exec, activation_type='default'):
     loss_collect = []
     val_collect = []
     test_collect = []
-    dir = 'RESULTS/CIFAR10/' + activation_type + '/'
-    create_directory('RESULTS/CIFAR10/' + activation_type + '/')
-    create_directory('PICS/CIFAR10/' + activation_type + '/')
+    dir = 'RESULTS/CIFAR100/' + activation_type + '/'
+    create_directory('RESULTS/CIFAR100/' + activation_type + '/')
+    create_directory('PICS/CIFAR100/' + activation_type + '/')
 
     if '=' in activation_type:
         base, param = activation_type.split('=')
@@ -76,12 +76,12 @@ def cifar100_data(epochs, learn_rate, device, exec, activation_type='default'):
     )
     if exec == 1:
         # load the latest .pth file
-        checkpoint_path = getlatest('RESULTS/CIFAR10/' + activation_type + '/')
+        checkpoint_path = getlatest('RESULTS/CIFAR100/' + activation_type + '/')
         checkpoint = torch.load(checkpoint_path, map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         start_epoch = checkpoint['epoch'] - 1
-        with open('RESULTS/CIFAR10/' + activation_type + '/split_indices.pkl', 'rb') as f:
+        with open('RESULTS/CIFAR100/' + activation_type + '/split_indices.pkl', 'rb') as f:
             train_indices, val_indices = pickle.load(f)
         full_train_set, _,test_dataset, _, _ = prepare_datasets(
             val_ratio=cfg.val_ratio,
@@ -98,7 +98,7 @@ def cifar100_data(epochs, learn_rate, device, exec, activation_type='default'):
             val_ratio=cfg.val_ratio,
             mode = 0
         )
-        with open('RESULTS/CIFAR10/' + activation_type + '/split_indices.pkl', 'wb') as f:
+        with open('RESULTS/CIFAR100/' + activation_type + '/split_indices.pkl', 'wb') as f:
             pickle.dump((train_indices, val_indices), f)
     train_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True, num_workers=2, pin_memory=True)
     if cfg.val_ratio != 0.0:
