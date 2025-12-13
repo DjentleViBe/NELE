@@ -44,7 +44,7 @@ def mnist_enc_validation(epochs, device, noise_level, activation_type='default')
     transform = transforms.ToTensor()
     test_dataset = datasets.MNIST(root='./data', train=False, transform=transform, download=True)
     test_loader = DataLoader(test_dataset, batch_size=batch_size_autoenc, shuffle=False)
-    model = DeepAutoencoder(activation)
+    model = DeepAutoencoder(activation).to(device)
     test_collect = []
     criterion = nn.MSELoss()
     for i in range(1, 2):
@@ -61,9 +61,10 @@ def mnist_enc_validation(epochs, device, noise_level, activation_type='default')
 
         with torch.no_grad():
             for data, _ in test_loader:
-                noise = torch.empty_like(data).uniform_(-noise_level, noise_level)
+                data = data.to(device)
+                noise = torch.empty_like(data).uniform_(-noise_level, noise_level).to(device)
                 x_noisy = data + noise
-                outputs = model(x_noisy)
+                outputs = model(x_noisy).to(device)
                 test_loss_noisy += criterion(outputs, data).item() * data.size(0)
         test_loss_noisy /= len(test_loader.dataset)
         test_collect.append(test_loss_noisy)
