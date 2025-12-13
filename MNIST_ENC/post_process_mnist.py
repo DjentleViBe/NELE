@@ -56,7 +56,7 @@ def plot_only(study_type):
             limit = cfg.epochs
         else:
             limit = cfg.epochs
-        epochs, losses_train, losses_test = csv_read('RESULTS/' + study_type  + '/' + act + '=1/loss_history_' + act + '=1.csv', 'epoch', 'loss', 'test')
+        epochs, losses_train, losses_test = csv_read('RESULTS/' + study_type  + '/' + act + '/loss_history_' + act + '.csv', 'epoch', 'loss', 'test')
         
         max_test_loss = round(np.max(losses_test), 2)
         max_test_index = np.argmax(losses_test)
