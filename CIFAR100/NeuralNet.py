@@ -80,10 +80,10 @@ class WideResBlock(nn.Module):
     def __init__(self, in_ch, out_ch, stride=1, activation=nn.ReLU, drop_p=0.3):
         super().__init__()
         self.conv1 = nn.Conv2d(in_ch, out_ch, 3, stride, 1, bias=False)
-        self.act1 = activation()
+        self.act1 = activation
         self.drop = nn.Dropout(p=drop_p)
         self.conv2 = nn.Conv2d(out_ch, out_ch, 3, 1, 1, bias=False)
-        self.act2 = activation()
+        self.act2 = activation
         self.bn = nn.BatchNorm2d(out_ch)
 
         self.shortcut = (

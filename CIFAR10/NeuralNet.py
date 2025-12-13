@@ -6,6 +6,7 @@ from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
 from scipy import linalg
 import config as cfg
+
 class ZCADataset(torch.utils.data.Dataset):
     def __init__(self, data, labels, add_noise_sigma=0.15, training=True):
         self.data = data

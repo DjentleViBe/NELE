@@ -7,7 +7,7 @@ from models.model_lelu import LELU
 from models.model_nele import NELE_LUT_PARAM_DIR, NELE_LUT_LEARN
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from CIFAR10.NeuralNet import CIFAR100CNN, prepare_datasets
+from CIFAR100.NeuralNet import CIFAR100CNN, prepare_datasets
 from csv_operations import csv_write2
 import time
 import pickle
