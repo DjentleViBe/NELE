@@ -10,6 +10,9 @@ from MNIST_ENC.post_process_mnist_nele import mnist_enc_nele
 from CIFAR10.post_process_cifar10 import process_cifar10
 from CIFAR10.post_process_cifar10_nele import process_cifar10_nele
 from CIFAR10.cifar import cifar10_train, cifar10_train_nele
+from CIFAR100.post_process_cifar100 import process_cifar100
+from CIFAR100.post_process_cifar100_nele import process_cifar100_nele
+from CIFAR100.cifar import cifar100_train, cifar100_train_nele
 import argparse
 
 if __name__ == "__main__":
@@ -67,5 +70,14 @@ if __name__ == "__main__":
         elif args.mode == 'process':
             process_cifar10()
         elif args.mode == 'process_nele':
-           process_cifar10_nele()
+            process_cifar10_nele()
+    elif args.type == 'cifar100':
+        if args.mode == 'train':
+            cifar100_train(args.device, args.reset, args.exec)
+        if args.mode == 'train_nele':
+            cifar100_train_nele(args.device, args.reset, args.exec)
+        elif args.mode == 'process':
+            process_cifar100()
+        elif args.mode == 'process_nele':
+            process_cifar100_nele()
     print("Analysis completed")
