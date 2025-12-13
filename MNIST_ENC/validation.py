@@ -70,5 +70,5 @@ def mnist_enc_validation(epochs, device, noise_level, activation_type='default')
         test_collect.append(test_loss_noisy)
     #test_collect = np.asarray(test_collect)
     test_acc_med = np.median(test_collect)
-    print(f'{activation_type}, Test Accuracy: {test_acc_med:.2f}%')
+    print(f'{activation_type}, Test Error: {test_acc_med:.4f}')
     return test_acc_med

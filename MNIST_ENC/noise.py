@@ -13,7 +13,7 @@ def noise_eval(device, af, i):
         test_acc.append(test_acc_med)
     plt.plot(x, test_acc, label = afplot[i], color = colors[i])
     plt.xlabel('Noise strength')
-    plt.ylabel('Test accuracy (%)')
+    plt.ylabel('Test error')
     plt.legend()
     plt.xticks(np.arange(0, 4, 1))
     plt.tight_layout()
