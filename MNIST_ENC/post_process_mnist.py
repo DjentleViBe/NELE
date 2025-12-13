@@ -71,9 +71,9 @@ def plot_only(study_type):
         for e, l in zip(epochs, losses_test):
             if (e - 1) % 5 == 0:   # 1,6,11,...
                 selected_epochs.append(e)
-                selected_losses.append(100-l)
+                selected_losses.append(l)
         selected_epochs.append(epochs[-1])
-        selected_losses.append(100 - losses_test[-1])
+        selected_losses.append(losses_test[-1])
         ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
     
     ax1.set_xlim(1, cfg.epochs)
