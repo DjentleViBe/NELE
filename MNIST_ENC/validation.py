@@ -47,7 +47,7 @@ def mnist_enc_validation(epochs, device, noise_level, activation_type='default')
     ])
     test_dataset = datasets.MNIST(root='./data', train=False, transform=transform, download=True)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-    model = DeepAutoencoder(input_size, hidden_size, num_hidden_layers, num_classes, activation, activation_type)
+    model = DeepAutoencoder(activation)
     test_collect = []
     for i in range(1, 8):
         torch.manual_seed(1234)
