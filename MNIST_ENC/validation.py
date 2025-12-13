@@ -1,6 +1,6 @@
 import torch.nn as nn
 import torch
-from config import input_size, hidden_size, num_hidden_layers, num_classes, batch_size
+from config import input_size, hidden_size, num_hidden_layers, num_classes, batch_size_autoenc
 from MNIST_ENC.Neuralnet import DeepAutoencoder
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
@@ -41,37 +41,33 @@ def mnist_enc_validation(epochs, device, noise_level, activation_type='default')
     else:
         raise ValueError("Invalid activation type")
     # Load MNIST
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Lambda(lambda x: x.view(-1))  # flatten
-    ])
+    transform = transforms.ToTensor()
     test_dataset = datasets.MNIST(root='./data', train=False, transform=transform, download=True)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size_autoenc, shuffle=False)
     model = DeepAutoencoder(activation)
     test_collect = []
-    for i in range(1, 8):
+    criterion = nn.MSELoss()
+    for i in range(1, 2):
         torch.manual_seed(1234)
-        checkpoint = torch.load('RESULTS/MNIST_ENC/' + activation_type + '=' + str(i) + '/' + activation_type + '=' + str(i) + '_' + str(epochs - 1) + '.pth',
+        checkpoint = torch.load('RESULTS/MNIST_ENC/' + activation_type + '/' + activation_type + '_' + str(epochs - 1) + '.pth',
                             map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         epoch = checkpoint['epoch']
         epoch_loss = checkpoint['epoch_loss']
         # test_loss = checkpoint['test_loss']
         model.eval()
-        correct = 0.0
+        test_loss_noisy = 0.0
         total = 0.0
 
         with torch.no_grad():
-            for data, target in test_loader:
+            for data, _ in test_loader:
                 noise = torch.empty_like(data).uniform_(-noise_level, noise_level)
                 x_noisy = data + noise
                 outputs = model(x_noisy)
-                _, predicted = torch.max(outputs.data, 1)
-                total += target.size(0)
-                correct += (predicted == target).sum().item()
-        test_acc = 100 * correct / total
-        test_collect.append(test_acc)
-    test_collect = np.asarray(test_collect)
+                test_loss_noisy += criterion(outputs, data).item() * data.size(0)
+        test_loss_noisy /= len(test_loader.dataset)
+        test_collect.append(test_loss_noisy)
+    #test_collect = np.asarray(test_collect)
     test_acc_med = np.median(test_collect)
     print(f'{activation_type}, Test Accuracy: {test_acc_med:.2f}%')
     return test_acc_med
