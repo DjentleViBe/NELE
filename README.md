@@ -13,7 +13,7 @@ pip install -r requirements.txt
 ```
 
 # Studies
-There are 3 types of analysis that can be performed:
+There are 4 types of analysis that can be performed:
 - **Non-linear Synthetic Dataset (NLSD)**
 - **MNIST**
 - **MNIST autoencoder**
