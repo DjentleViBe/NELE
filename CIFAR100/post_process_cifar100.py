@@ -13,7 +13,7 @@ def plot_only(study_type):
     fig.subplots_adjust(wspace = 0.2, right = 0.82, bottom=0.14) 
     # plt.bar(activations, std_deviation_collect, yerr=loss_collect, capsize=5, , ecolor="#c7c7c7", error_kw={"elinewidth": 2})
     ax1.set_ylabel('Training Loss')
-    ax2.set_ylabel('Test Accuracy (%)')
+    ax2.set_ylabel('Test Error (%)')
    
     ax1.set_yscale('log')
     ax1.set_xlabel('epochs')
@@ -24,7 +24,7 @@ def plot_only(study_type):
     ax2.set_xlabel('epochs')
     for i, act in enumerate(activations_file):
         epochs, losses_train, losses_val, losses_test = csv_read2('RESULTS/' + study_type  + '/' + act + '/loss_history_' + activations_file[i] + '.csv', 'epoch', 'loss', 'val', 'test')
-        print(f'{act} : {round(max(losses_test), 2)}, index : {losses_test.index(max(losses_test))}')
+        print(f'{act} : {round(100 - max(losses_test), 2)}, index : {losses_test.index(max(losses_test))}')
         ax1.plot(epochs, losses_train, colors[i], label=activations[i], linewidth = 0.7)
         selected_epochs = []
         selected_losses = []
@@ -37,15 +37,15 @@ def plot_only(study_type):
         selected_losses.append(losses_test[-1])
         ax2.plot(selected_epochs, selected_losses, color = colors[i], label=activations[i], linewidth = 0.7)
     
-    ax1.set_xlim(1, 200)
-    ax2.set_xlim(101, 200)
-    ax2.set_ylim(8, 15)
+    ax1.set_xlim(1, 50)
+    ax2.set_xlim(1, 50)
+    ax2.set_ylim(20, 60)
     # ax2.set_yscale('log')
     #ax3.set_xlim(1, 200)
     #ax4.set_xlim(1, int(max(epochs)))
     #ax5.set_xlim(1, int(max(epochs)))
-    ax1.set_xticks(range(1, 200, 50))
-    ax2.set_xticks(range(101, 200, 50))
+    ax1.set_xticks(range(1, 50, 10))
+    ax2.set_xticks(range(1, 50, 10))
     #ax3.set_xticks(range(1, 200, 50))
     ax1.grid(True, linewidth = 0.1)
     ax2.grid(True, linewidth = 0.1)
