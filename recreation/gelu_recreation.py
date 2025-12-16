@@ -93,14 +93,14 @@ print("Optimized Control Points:\n", opt_ctrl)
 print("Optimized Weights:\n", opt_w)
 
 opt_ctrl_mnist = np.array([
-    [-1, 0],
+    [-4, 0],
     [-0.1, -0.1],
     [-1/2**0.5, -1/2**0.5],
     [0, 0]
 ])
 opt_w_mnist = np.array([1.0, 1.0, 1.0, 1.0])
 linear = np.array([[0, 0], [4, 4]])
-linear_2 = np.array([[-1, 0], [-4, 0]])
+linear_2 = np.array([[-8, 0], [-4, 0]])
 # ---------------------------
 # Plot results
 # ---------------------------
@@ -125,5 +125,6 @@ plt.grid(True, linewidth = 0.2)
 plt.xlabel("x")
 plt.ylabel("f(x)")
 plt.tight_layout()
-plt.axis('equal')
+plt.xlim([-5,5])
+# plt.axis('equal')
 plt.savefig('./PICS/Approx_gelu.pdf')
