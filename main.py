@@ -7,22 +7,22 @@ main file
 import argparse
 from NLSD.curve_fit import curve_fit, curve_fit_nele
 from NLSD.post_process_nld import process_nld
-from MNIST.mnist import mnist_train, mnist_eval, mnist_train_nele, mnist_train_study
-from MNIST.post_process_mnist_nele import mnist_nele
-from MNIST.post_process_tsinm import process_mnist
-from MNIST_ENC.mnist_enc import mnist_enc_train, \
+from mnist.mnist import mnist_train, mnist_eval, mnist_train_nele, mnist_train_study
+from mnist.post_process_mnist_nele import mnist_nele
+from mnist.post_process_tsinm import process_mnist
+from mnist_enc.mnist_enc import mnist_enc_train, \
                                 mnist_enc_eval, \
                                 mnist_enc_train_nele, \
                                 mnist_enc_train_study
-from MNIST_ENC.post_process_tsinm import process_mnist_enc_study
-from MNIST_ENC.post_process_mnist import process_mnist_enc
-from MNIST_ENC.post_process_mnist_nele import mnist_enc_nele
-from CIFAR10.post_process_cifar10 import process_cifar10
-from CIFAR10.post_process_cifar10_nele import process_cifar10_nele
-from CIFAR10.cifar import cifar10_train, cifar10_train_nele
-from CIFAR100.post_process_cifar100 import process_cifar100
-from CIFAR100.post_process_cifar100_nele import process_cifar100_nele
-from CIFAR100.cifar import cifar100_train, cifar100_train_nele
+from mnist_enc.post_process_tsinm import process_mnist_enc_study
+from mnist_enc.post_process_mnist import process_mnist_enc
+from mnist_enc.post_process_mnist_nele import mnist_enc_nele
+from cifar10.post_process_cifar10 import process_cifar10
+from cifar10.post_process_cifar10_nele import process_cifar10_nele
+from cifar10.cifar import cifar10_train, cifar10_train_nele
+from cifar100.post_process_cifar100 import process_cifar100
+from cifar100.post_process_cifar100_nele import process_cifar100_nele
+from cifar100.cifar import cifar100_train, cifar100_train_nele
 
 if __name__ == "__main__":
     print("Begin Analysis")
@@ -55,7 +55,7 @@ if __name__ == "__main__":
         elif args.mode == 'process':
             process_mnist()
         elif args.mode == 'process_nele':
-            mnist_nele(args.device, args.reset)
+            mnist_nele(args.device)
     elif args.type == 'mnistenc':
         if args.mode == 'train':
             mnist_enc_train(args.device, args.reset, args.exec)
@@ -70,7 +70,7 @@ if __name__ == "__main__":
         elif args.mode == 'process':
             process_mnist_enc()
         elif args.mode == 'process_nele':
-            mnist_enc_nele(args.device, args.reset)
+            mnist_enc_nele(args.device)
     elif args.type == 'cifar10':
         if args.mode == 'train':
             cifar10_train(args.device, args.reset, args.exec)
