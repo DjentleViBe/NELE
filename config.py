@@ -1,3 +1,4 @@
+# pylint: skip-file
 """
 Contains various parameters used for running the simulation
 """
