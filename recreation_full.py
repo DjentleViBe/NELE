@@ -1,4 +1,13 @@
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
+# pylint: disable=too-many-locals
+"""
+Activation function revreation with NELE
+"""
 import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import minimize
+import config as cfg
 from recreation.elu_recreation import nurbs_gen_elu, elu, loss_elu
 from recreation.silu_recreation import nurbs_gen_silu, silu, loss_silu
 from recreation.lelu_recreation import nurbs_gen_lelu, lelu, loss_lelu
@@ -6,12 +15,10 @@ from recreation.mish_recreation import nurbs_gen_mish, mish, loss_mish
 from recreation.sigmoid_recreation import nurbs_gen_sigmoid, sigmoid, loss_sigmoid
 from recreation.tanh_recreation import nurbs_gen_tanh, tanh, loss_tanh
 from recreation.softplus_recreation import nurbs_gen_softplus, softplus, loss_softplus
-from scipy.optimize import minimize
-import matplotlib.pyplot as plt
-import config as cfg
+
 
 typearray = cfg.curve_recreation
-type = 'ELU'
+STUDY_TYPE = 'ELU'
 np.set_printoptions(precision=4, suppress=True)
 initial_ctrl = np.array([
     [-4, 0],
@@ -52,9 +59,9 @@ target_functions = {
     'softplus': softplus,
     # add more…
 }
-for type in typearray:
-    loss_fn = loss_functions[type.lower()]
-    target_fn = target_functions[type.lower()]
+for studytype in typearray:
+    loss_fn = loss_functions[studytype.lower()]
+    target_fn = target_functions[studytype.lower()]
     res = minimize(
         loss_fn,
         init_params,
@@ -75,22 +82,29 @@ for type in typearray:
     opt_ctrl = opt_params[:8].reshape(4, 2)
     opt_w = opt_params[8:]
 
-    cur = curve_functions[type.lower()]
+    cur = curve_functions[studytype.lower()]
     curve = cur(opt_ctrl, opt_w, t)
     plt.figure(figsize=(5, 4))
-    plt.plot(np.concatenate([x_target, x_extra]), np.concatenate([y_target, y_extra]), '--', label=r"$\texttt{ELU}$", color = 'red')
+    plt.plot(np.concatenate([x_target, x_extra]), \
+             np.concatenate([y_target, y_extra]), '--', \
+                label=r"$\texttt{ELU}$", color = 'red')
     plt.rcParams['text.usetex'] = True
-    plt.plot(curve[:, 0], curve[:, 1], label = r'$\texttt{ELU}$ approximation', color = 'k', linewidth=0.7)
-    plt.scatter(opt_ctrl[:, 0], opt_ctrl[:, 1], label=r'Control Points $\texttt{NELE}$', color = 'k', s=3)
-    print(f'\\texttt{{{type}}} & [{round(opt_ctrl[0][0], 3)}, {round(opt_ctrl[0][1], 3)}] &\
+    plt.plot(curve[:, 0], curve[:, 1],\
+             label = r'$\texttt{ELU}$ approximation', \
+                color = 'k', linewidth=0.7)
+    plt.scatter(opt_ctrl[:, 0], opt_ctrl[:, 1], \
+                label=r'Control Points $\texttt{NELE}$', \
+                color = 'k', s=3)
+    print(f'\\texttt{{{studytype}}} & [{round(opt_ctrl[0][0], 3)}, {round(opt_ctrl[0][1], 3)}] &\
     [{round(opt_ctrl[1][0], 3)}, {round(opt_ctrl[1][1], 3)}] &\
     [{round(opt_ctrl[2][0], 3)}, {round(opt_ctrl[2][1], 3)}] &\
     [{round(opt_ctrl[3][0], 3)}, {round(opt_ctrl[3][1], 3)}] &\
-    [{round(opt_w[0], 3)} , {round(opt_w[1], 3)} , {round(opt_w[2], 3)} , {round(opt_w[3], 3)}]\\\\')
+    [{round(opt_w[0], 3)} , {round(opt_w[1], 3)} ,\
+          {round(opt_w[2], 3)} , {round(opt_w[3], 3)}]\\\\')
     plt.legend()
     plt.grid(True, linewidth = 0.2)
     plt.xlabel("x")
     plt.ylabel("f(x)")
     plt.tight_layout()
     plt.axis('equal')
-    plt.savefig('./PICS/Approx'+ type +'.pdf')
+    plt.savefig('./PICS/Approx'+ studytype +'.pdf')
