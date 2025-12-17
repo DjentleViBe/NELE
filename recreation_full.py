@@ -8,14 +8,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 import config as cfg
-from recreation.elu_recreation import nurbs_gen_elu, elu, loss_elu
-from recreation.silu_recreation import nurbs_gen_silu, silu, loss_silu
-from recreation.lelu_recreation import nurbs_gen_lelu, lelu, loss_lelu
-from recreation.mish_recreation import nurbs_gen_mish, mish, loss_mish
-from recreation.sigmoid_recreation import nurbs_gen_sigmoid, sigmoid, loss_sigmoid
-from recreation.tanh_recreation import nurbs_gen_tanh, tanh, loss_tanh
-from recreation.softplus_recreation import nurbs_gen_softplus, softplus, loss_softplus
-
+from recreation.nurbs_gen import nurbs_gen
+from recreation.elu_recreation import elu
+from recreation.silu_recreation import silu
+from recreation.lelu_recreation import lelu
+from recreation.mish_recreation import mish
+from recreation.sigmoid_recreation import sigmoid
+from recreation.tanh_recreation import tanh
+from recreation.softplus_recreation import softplus
+from recreation.gen_loss import loss_af
+from recreation.gelu_recreation import gelu_special
 
 typearray = cfg.curve_recreation
 STUDY_TYPE = 'ELU'
@@ -30,23 +32,23 @@ initial_ctrl = np.array([
 initial_weights = np.array([1.0, 0.9, 0.7, 1.0])
 init_params = np.concatenate([initial_ctrl, initial_weights])
 loss_functions = {
-    'elu': loss_elu,
-    'silu': loss_silu,
-    'lelu': loss_lelu,
-    'mish': loss_mish,
-    'sigmoid': loss_sigmoid,
-    'tanh': loss_tanh,
-    'softplus': loss_softplus,
+    'elu': loss_af,
+    'silu': loss_af,
+    'lelu': loss_af,
+    'mish': loss_af,
+    'sigmoid': loss_af,
+    'tanh': loss_af,
+    'softplus': loss_af,
     # add more…
 }
 curve_functions = {
-    'elu': nurbs_gen_elu,
-    'silu': nurbs_gen_silu,
-    'lelu': nurbs_gen_lelu,
-    'mish': nurbs_gen_mish,
-    'sigmoid': nurbs_gen_sigmoid,
-    'tanh': nurbs_gen_tanh,
-    'softplus': nurbs_gen_softplus,
+    'elu': nurbs_gen,
+    'silu': nurbs_gen,
+    'lelu': nurbs_gen,
+    'mish': nurbs_gen,
+    'sigmoid': nurbs_gen,
+    'tanh': nurbs_gen,
+    'softplus': nurbs_gen,
     # add more…
 }
 target_functions = {
@@ -59,12 +61,17 @@ target_functions = {
     'softplus': softplus,
     # add more…
 }
+x_target = np.linspace(-4, 0, 200)
+
 for studytype in typearray:
     loss_fn = loss_functions[studytype.lower()]
     target_fn = target_functions[studytype.lower()]
+    y_target = target_functions[studytype.lower()](x_target)
+    t_val = (x_target - x_target.min()) / (x_target.max() - x_target.min())
     res = minimize(
         loss_fn,
         init_params,
+        args=(t_val, x_target, y_target),
         method='L-BFGS-B',
         options={'maxiter': 500}
     )
@@ -107,4 +114,6 @@ for studytype in typearray:
     plt.ylabel("f(x)")
     plt.tight_layout()
     plt.axis('equal')
-    plt.savefig('./PICS/Approx'+ studytype +'.pdf')
+    plt.savefig('./PICS/Approx_'+ studytype.lower() +'.pdf')
+
+gelu_special()
