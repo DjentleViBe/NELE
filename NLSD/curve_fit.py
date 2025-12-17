@@ -16,7 +16,7 @@ def curve_fit(device, reset, exec_study):
     
     :param device: device name
     :param reset: reset==1 deletes the diretory contents
-    :param exec: exec==1 uses cfg.STUDY for af_nlsd
+    :param exec: exec==1 uses cfg.STUDY for af_nlsd (7 runs in total)
     """
     print(f'Device : {device}')
     if reset == 1:
