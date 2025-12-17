@@ -1,11 +1,11 @@
 import torch.nn as nn
 import torch
 from config import input_size, hidden_size, num_hidden_layers, num_classes, batch_size
-from MNIST.Neuralnet import DeepFCNet
+from MNIST.neuralnet import DeepFCNet
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from models.model_lelu import LELU
-from models.model_nele import NELE, NELE_LUT_PARAM
+from models.model_nele import NELE, NeleLutParam
 import config as cfg
 import numpy as np
 
@@ -37,7 +37,7 @@ def mnist_validation(epochs, device, noise_level, activation_type='default'):
     elif base == 'lelu' :
         activation = LELU()
     elif base == 'nele' :
-        activation = NELE_LUT_PARAM(device)
+        activation = NeleLutParam(device)
     else:
         raise ValueError("Invalid activation type")
     # Load MNIST

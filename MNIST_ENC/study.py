@@ -8,7 +8,7 @@ from file_operations import create_directory
 from csv_operations import csv_write2
 import numpy as np
 from models.model_lelu import LELU
-from models.model_nele import NELE, NELE_LUT_PARAM
+from models.model_nele import NELE, NeleLutParam
 import config as cfg
 from torch.utils.data import random_split
 
@@ -63,7 +63,7 @@ def mnist_enc_data(epochs, learn_rate, device, exec, activation_type='default'):
     elif base == 'lelu' :
         activation = LELU()
     elif base == 'nele' :
-        activation = NELE_LUT_PARAM(device)
+        activation = NeleLutParam(device)
     else:
         raise ValueError("Invalid activation type")
 

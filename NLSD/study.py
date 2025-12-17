@@ -11,7 +11,7 @@ from torch import nn
 from torch import optim
 import config as cfg
 from models.model_lelu import LELU
-from models.model_nele import NELE_LUT, NELE, NELE_LUT_PARAM, NELE_LUT_LEARN
+from models.model_nele import NeleLut, NELE, NeleLutParam, NeleLutLearn
 from csv_operations import csv_write
 from file_operations import create_directory
 from NLSD.neuralnet import Net
@@ -55,13 +55,13 @@ def nlsd_data(x, y, af, device='cpu', study_type='default'):
             activation = NELE()
             learning_rate = cfg.learning_rate_array[10]
         elif cfg.TYPE == 2:
-            activation = NELE_LUT_LEARN(device=device, num_points=200)
+            activation = NeleLutLearn(device=device, num_points=200)
             learning_rate = cfg.learning_rate_array[10]
         elif cfg.TYPE == 1:
-            activation = NELE_LUT_PARAM(device=device, num_points=200)
+            activation = NeleLutParam(device=device, num_points=200)
             learning_rate = cfg.learning_rate_array[10]
         else:
-            activation = NELE_LUT()
+            activation = NeleLut()
             learning_rate = cfg.learning_rate_array[10]
     else:
         raise ValueError("Invalid activation type")
