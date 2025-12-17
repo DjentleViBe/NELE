@@ -1,3 +1,6 @@
+"""
+To calculate smoothness of curves
+"""
 import numpy as np
 
 def smoothness_derivative_energy(x, y, order=1):
@@ -9,12 +12,12 @@ def smoothness_derivative_energy(x, y, order=1):
     if order == 1:
         dy = np.diff(y) / np.diff(x)
         return np.sum(dy**2)
-    elif order == 2:
+    if order == 2:
         dy = np.diff(y, 2) / np.diff(x[:-1])**2
         return np.sum(dy**2)
-    else:
-        raise ValueError("order must be 1 or 2")
-    
+
+    raise ValueError("order must be 1 or 2")
+
 def curvature_smoothness(x, y):
     """
     Returns total curvature as a smoothness measure.
@@ -25,7 +28,7 @@ def curvature_smoothness(x, y):
     dy = np.gradient(y)
     ddx = np.gradient(dx)
     ddy = np.gradient(dy)
-    
+
     curvature = np.abs(dx*ddy - dy*ddx) / (dx**2 + dy**2)**1.5
     return np.sum(curvature)  # total curvature
 

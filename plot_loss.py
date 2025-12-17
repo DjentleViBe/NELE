@@ -1,8 +1,21 @@
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
+# pylint: disable=too-many-locals
+"""
+Plot loss values
+"""
 import matplotlib.pyplot as plt
 from csv_operations import csv_read
 
 def plot_loss(lossfiles, labels, study_type='default'):
-    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', 
+    """
+    Docstring for plot_loss
+    
+    :param lossfiles: location of file
+    :param labels: lables for x axis
+    :param study_type: analysis type
+    """
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c',
               '#d62728', '#9467bd', '#8c564b', 
               '#e377c2', '#7f7f7f', '#17becf',
               '#bcbd22', '#000000'

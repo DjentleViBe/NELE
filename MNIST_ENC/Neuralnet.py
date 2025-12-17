@@ -1,8 +1,11 @@
+"""
+Contains the neural network architecture for MNIST
+"""
 import torch.nn as nn
 # Fully connected deep neural network
 class DeepAutoencoder(nn.Module):
     def __init__(self, activation):
-        super(DeepAutoencoder, self).__init__()
+        super().__init__()
         self.act = activation
         # Encoder
         self.encoder = nn.Sequential(

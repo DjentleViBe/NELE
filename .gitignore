@@ -21,3 +21,4 @@ data
 *.bcf
 *.xml
 *SAVE-ERROR
+*.pylintrc

@@ -1,11 +1,21 @@
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
+# pylint: disable=too-many-locals
+"""
+main file
+"""
+import argparse
 from NLSD.curve_fit import curve_fit, curve_fit_nele
-from MNIST.mnist import mnist_train, mnist_eval, mnist_train_nele, mnist_train_study
-from MNIST_ENC.mnist_enc import mnist_enc_train, mnist_enc_eval, mnist_enc_train_nele, mnist_enc_train_study
 from NLSD.post_process_nld import process_nld
+from MNIST.mnist import mnist_train, mnist_eval, mnist_train_nele, mnist_train_study
+from MNIST.post_process_mnist_nele import mnist_nele
 from MNIST.post_process_tsinm import process_mnist
+from MNIST_ENC.mnist_enc import mnist_enc_train, \
+                                mnist_enc_eval, \
+                                mnist_enc_train_nele, \
+                                mnist_enc_train_study
 from MNIST_ENC.post_process_tsinm import process_mnist_enc_study
 from MNIST_ENC.post_process_mnist import process_mnist_enc
-from MNIST.post_process_mnist_nele import mnist_nele
 from MNIST_ENC.post_process_mnist_nele import mnist_enc_nele
 from CIFAR10.post_process_cifar10 import process_cifar10
 from CIFAR10.post_process_cifar10_nele import process_cifar10_nele
@@ -13,7 +23,6 @@ from CIFAR10.cifar import cifar10_train, cifar10_train_nele
 from CIFAR100.post_process_cifar100 import process_cifar100
 from CIFAR100.post_process_cifar100_nele import process_cifar100_nele
 from CIFAR100.cifar import cifar100_train, cifar100_train_nele
-import argparse
 
 if __name__ == "__main__":
     print("Begin Analysis")
@@ -23,13 +32,13 @@ if __name__ == "__main__":
     parser.add_argument("--device", type=str, default='cpu')
     parser.add_argument("--reset", type=int, default=0)
     parser.add_argument("--exec", type=int, default=0)
-    
+
     args = parser.parse_args()
     if args.type == 'nlsd':
         if args.mode == 'train':
             curve_fit(args.device, args.reset, args.exec)
         elif args.mode == 'train_nele':
-            curve_fit_nele(args.device, args.reset, args.exec)
+            curve_fit_nele(args.reset)
         elif args.mode == 'train_study':
             curve_fit(args.device, args.reset, 1.0)
         elif args.mode == 'process':

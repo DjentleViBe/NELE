@@ -1,3 +1,9 @@
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
+# pylint: disable=too-many-locals
+"""
+Operations involving files
+"""
 import os
 import shutil
 import re
@@ -20,9 +26,17 @@ def reset_directory(path):
         os.makedirs(path, exist_ok=True)
 
 def create_directory(path):
+    """
+    Create a new directory
+    """
     os.makedirs(path, exist_ok=True)
 
 def getlatest(folder):
+    """
+    Docstring for getlatest
+    
+    :param folder: Folder path
+    """
     files = [f for f in os.listdir(folder) if f.endswith(".pth")]
     # Sort by number
     files_sorted = sorted(files, key=extract_number, reverse=True)
@@ -32,7 +46,11 @@ def getlatest(folder):
 
     return folder + latest_file
 
-# Extract number from filename
 def extract_number(filename):
+    """
+    Extract number from filename
+    
+    :param filename: location of filenames
+    """
     match = re.search(r"_(\d+)\.pth$", filename)
     return int(match.group(1)) if match else -1
