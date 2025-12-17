@@ -7,6 +7,7 @@ Docstring for CIFAR10.post_process_cifar10
 import matplotlib.pyplot as plt
 from csv_operations import csv_read2
 import config as cfg
+from cifar10.utils import getselectedlosses
 activations =  cfg.AF_plot
 activations_file =  cfg.AF
 colors = cfg.colors
@@ -31,18 +32,10 @@ def plot_only(study_type):
                                             'loss', 'val', 'test')
         print(f'{act} : {round(max(losses_test), 2)}, \
               index : {losses_test.index(max(losses_test))}')
-        ax1.plot(epochs, losses_train, colors[i], label=act, linewidth = 0.7)
-        selected_epochs = []
-        selected_losses = []
-
-        for e, l in zip(epochs, losses_test):
-            if e % 5 == 0:   # 1,6,11,...
-                selected_epochs.append(e)
-                selected_losses.append(100 - l)
-        selected_epochs.append(epochs[-1])
-        selected_losses.append(losses_test[-1])
+        ax1.plot(epochs, losses_train, colors[i], label=activations[i], linewidth = 0.7)
+        selected_epochs, selected_losses = getselectedlosses(epochs, losses_test)
         ax2.plot(selected_epochs, selected_losses, color = colors[i],\
-                  label=act, linewidth = 0.7)
+                  label=activations[i], linewidth = 0.7)
 
     ax1.set_xlim(1, 200)
     ax2.set_xlim(101, 200)

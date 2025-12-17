@@ -25,20 +25,12 @@ def plot_only(study_type):
     ax2.set_ylabel('Test Error (%)')
 
     ax1.set_yscale('log')
-    #ax2.set_yscale('log')
     ax1.set_xlabel('epochs')
-    #ax3 = ax2.twinx()
-    #ax4 = ax1.twiny()
-    #ax5 = ax2.twiny()
-    #ax3.set_ylabel('Test Accuracy (%)')
     ax2.set_xlabel('epochs')
 
     for i, act in enumerate(activations_file):
         act = act.split('=')[0]
-        if act == 'lelu':
-            limit = cfg.epochs
-        else:
-            limit = cfg.epochs
+        limit = cfg.epochs
         epochs, losses_train1, losses_test1 = csv_read('RESULTS/' \
                                             + study_type  + '/' + act \
                                             + '=1/loss_history_' + act \
@@ -91,18 +83,14 @@ def plot_only(study_type):
 
         ax1.plot(epochs[:limit], losses_train[:limit], colors[i], \
                  label=activations[i], linewidth = 0.7)
-        selected_losses, selected_epochs = getselectedlosses(epochs, losses_test)
+        selected_epochs, selected_losses = getselectedlosses(epochs, losses_test)
         ax2.plot(selected_epochs, selected_losses, color = colors[i], \
                  label=activations[i], linewidth = 0.7)
 
     ax1.set_xlim(1, cfg.epochs)
     ax2.set_xlim(1, cfg.epochs)
-    #ax3.set_xlim(1, cfg.epochs)
-    #ax4.set_xlim(1, int(max(epochs)))
-    #ax5.set_xlim(1, int(max(epochs)))
     ax1.set_xticks(range(1, cfg.epochs, 10))
     ax2.set_xticks(range(1, cfg.epochs, 10))
-    #ax3.set_xticks(range(1, cfg.epochs, 10))
     ax1.grid(True, linewidth = 0.1)
     ax2.grid(True, linewidth = 0.1)
     lines = []

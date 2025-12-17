@@ -28,14 +28,14 @@ def plot_only(study_type):
     ax2.set_xlabel('epochs')
     for i, act in enumerate(activations_file):
         epochs, losses_train, _, losses_test = csv_read2('RESULTS/' +\
-                                                        study_type  + '/' + act +\
-                                                        'loss_history_' + \
+                                                        study_type  + '/' + act + \
+                                                        '/loss_history_' + \
                                                         act + \
                                                         '.csv', 'epoch', \
                                                         'loss', 'val', 'test')
         print(f'{act} : {round(100 - max(losses_test), 2)}, \
               index : {losses_test.index(max(losses_test))}')
-        ax1.plot(epochs, losses_train, colors[i], label=act, linewidth = 0.7)
+        ax1.plot(epochs, losses_train, colors[i], label=activations[i], linewidth = 0.7)
         selected_epochs , selected_losses =  getselectedlosses(epochs, losses_test)
         ax2.plot(selected_epochs, selected_losses, color = colors[i], \
                  label=act, linewidth = 0.7)

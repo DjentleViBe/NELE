@@ -34,7 +34,7 @@ def plot_only(study_type):
         epochs, losses_train, losses_val, losses_test = csv_read2('RESULTS/' \
                                                         + study_type  + '/' + \
                                                         act + '/loss_history_' + \
-                                                        activations_file[i] \
+                                                        act \
                                                         + '.csv', 'epoch', \
                                                         'loss', '', 'test')
         print(f'{act} : {round(max(losses_test), 2)}, \
