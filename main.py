@@ -17,12 +17,12 @@ from mnist_enc.mnist_enc import mnist_enc_train, \
 from mnist_enc.post_process_tsinm import process_mnist_enc_study
 from mnist_enc.post_process_mnist import process_mnist_enc
 from mnist_enc.post_process_mnist_nele import mnist_enc_nele
-from CIFAR10.post_process_cifar10 import process_cifar10
-from CIFAR10.post_process_cifar10_nele import process_cifar10_nele
-from CIFAR10.cifar import cifar10_train, cifar10_train_nele
-from CIFAR100.post_process_cifar100 import process_cifar100
-from CIFAR100.post_process_cifar100_nele import process_cifar100_nele
-from CIFAR100.cifar import cifar100_train, cifar100_train_nele
+from cifar10.post_process_cifar10 import process_cifar10
+from cifar10.post_process_cifar10_nele import process_cifar10_nele
+from cifar10.cifar import cifar10_train, cifar10_train_nele
+from cifar100.post_process_cifar100 import process_cifar100
+from cifar100.post_process_cifar100_nele import process_cifar100_nele
+from cifar100.cifar import cifar100_train, cifar100_train_nele
 
 if __name__ == "__main__":
     print("Begin Analysis")
