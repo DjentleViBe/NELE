@@ -663,6 +663,28 @@ curves over seven runs as shown in Figure~\ref{fig:cifar100loss}.
   \end{center}
   \Description{CIFAR100 results}
 \end{figure}
+
+\section{Conclusions}
+\texttt{NELE} exhibits a combination of properties that make it particularly 
+well suited for functional approximation tasks. 
+Its inherent smoothness ensures that gradients are well behaved, 
+facilitating stable optimization during training, 
+while local control allows for fine grained adjustments in specific 
+regions of the input space without affecting the entire function. 
+In addition, geometric interpretability provides insight into 
+how the function behaves across different regions and its capacity to 
+represent both polynomial and non-polynomial shapes with a relatively 
+small number of control points makes it highly efficient. 
+Due to its theoretical universality, \texttt{NELE} can, in principle, 
+approximate any continuous function to arbitrary accuracy, 
+making it a flexible candidate for general-purpose activation in neural networks. 
+To evaluate its practical performance, \texttt{NELE} was tested across multiple 
+state of the art benchmark datasets spanning diverse machine 
+learning tasks. The empirical results consistently demonstrate that 
+\texttt{NELE} achieves superior performance relative to existing activation 
+function methods, both in terms of convergence speed and predictive accuracy, 
+highlighting its potential as a universal activation function capable of 
+capturing complex functional relationships
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
