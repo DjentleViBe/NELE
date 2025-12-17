@@ -17,3 +17,7 @@ data
 *.pkl
 *.ods*
 *.png
+*.cut
+*.bcf
+*.xml
+*SAVE-ERROR

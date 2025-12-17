@@ -1,6 +1,6 @@
-epochs = 250
-save_every = 250
-learning_rate = 0.001
+epochs = 50
+save_every = 50
+learning_rate = 0.01
 #################### NURBS #####################
 w0 = 1.0
 w1 = 1.0
@@ -60,6 +60,11 @@ AF_CIFAR10 = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
       'lelu', 'mish', 'nele']
 AF_CIFAR10_NELE =  ['nele=0']
 val_ratio = 0.0
+################# CIFAR-100 ####################
+AF_CIFAR100 = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
+     'leaky_relu', 
+      'lelu', 'mish', 'nele']
+AF_CIFAR100_NELE =  ['nele=0']
 ################# PLOTS #######################
 colors = ["#0072B2", "#56B4E9", 
             "#E69F00", "#F0B775",

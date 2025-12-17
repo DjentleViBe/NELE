@@ -75,99 +75,82 @@ def adjust_lr(optimizer, epoch, total_epochs=200):
         lr = cfg.learning_rate * (total_epochs - epoch) / 100
         for param_group in optimizer.param_groups:
             param_group['lr'] = lr
+
+class WideResBlock(nn.Module):
+    def __init__(self, in_ch, out_ch, stride=1, activation=nn.ReLU, drop_p=0.3):
+        super().__init__()
+        self.conv1 = nn.Conv2d(in_ch, out_ch, 3, stride, 1, bias=False)
+        self.act1 = activation
+        self.drop = nn.Dropout(p=drop_p)
+        self.conv2 = nn.Conv2d(out_ch, out_ch, 3, 1, 1, bias=False)
+        self.act2 = activation
+        self.bn = nn.BatchNorm2d(out_ch)
+
+        self.shortcut = (
+            nn.Conv2d(in_ch, out_ch, 1, stride, bias=False)
+            if in_ch != out_ch or stride != 1 else nn.Identity()
+        )
+
+    def forward(self, x):
+        out = self.act1(self.conv1(x))
+        out = self.drop(out)
+        out = self.conv2(out)
+        out = self.act2(out)
+        out = self.bn(out)
+        return out + self.shortcut(x)
 # -------------------------
 # 9-layer CNN
 # -------------------------
-class CIFAR10CNN(nn.Module):
-    def __init__(self, activation=F.gelu):
+class CIFAR100CNN(nn.Module):
+    def __init__(self, activation=nn.ReLU, num_classes=100):
         super().__init__()
-        self.activation = activation
-        # Block 1
-        self.conv1 = nn.Conv2d(3, 96, 3, padding=1)
-        self.bn1 = nn.BatchNorm2d(96)
-        self.conv2 = nn.Conv2d(96, 96, 3, padding=1)
-        self.bn2 = nn.BatchNorm2d(96)
-        self.conv3 = nn.Conv2d(96, 96, 3, padding=1)
-        self.bn3 = nn.BatchNorm2d(96)
-        self.pool1 = nn.MaxPool2d(2, 2)
-        self.dropout1 = nn.Dropout(0.5)
-        
-        # Block 2
-        self.conv4 = nn.Conv2d(96, 192, 3, padding=1)
-        self.bn4 = nn.BatchNorm2d(192)
-        self.conv5 = nn.Conv2d(192, 192, 3, padding=1)
-        self.bn5 = nn.BatchNorm2d(192)
-        self.conv6 = nn.Conv2d(192, 192, 3, padding=1)
-        self.bn6 = nn.BatchNorm2d(192)
-        self.pool2 = nn.MaxPool2d(2, 2)
-        self.dropout2 = nn.Dropout(0.5)
-        
-        # Block 3
-        self.conv7 = nn.Conv2d(192, 192, 3)  # 3x3 conv without padding, 8x8 -> 6x6
-        self.bn7 = nn.BatchNorm2d(192)
-        self.conv8 = nn.Conv2d(192, 192, 1)
-        self.bn8 = nn.BatchNorm2d(192)
-        self.conv9 = nn.Conv2d(192, 192, 1)
-        self.bn9 = nn.BatchNorm2d(192)
-        
-        self.bn_final = nn.BatchNorm1d(192)
-        self.global_avg_pool = nn.AdaptiveAvgPool2d(1)
-        self.fc = nn.Linear(192, 10)
-        
+        self.init_conv = nn.Conv2d(3, 16, 3, 1, 1, bias=False)
+
+        self.block1 = self._make_layer(16, 64, 6, stride=1, activation=activation)
+        self.block2 = self._make_layer(64, 128, 6, stride=2, activation=activation)
+        self.block3 = self._make_layer(128, 256, 6, stride=2, activation=activation)
+
+        self.pool = nn.AdaptiveAvgPool2d(1)
+        self.fc = nn.Linear(256, num_classes)
+
+    def _make_layer(self, in_ch, out_ch, n, stride, activation):
+        layers = [WideResBlock(in_ch, out_ch, stride, activation)]
+        for _ in range(n - 1):
+            layers.append(WideResBlock(out_ch, out_ch, 1, activation))
+        return nn.Sequential(*layers)
+
     def forward(self, x):
-        # Block 1
-        act = self.activation  # shortcut
-
-        # Block 1
-        x = act(self.bn1(self.conv1(x)))
-        x = act(self.bn2(self.conv2(x)))
-        x = act(self.bn3(self.conv3(x)))
-        x = self.pool1(x)
-        x = self.dropout1(x)
-
-        # Block 2
-        x = act(self.bn4(self.conv4(x)))
-        x = act(self.bn5(self.conv5(x)))
-        x = act(self.bn6(self.conv6(x)))
-        x = self.pool2(x)
-        x = self.dropout2(x)
-
-        # Block 3
-        x = act(self.bn7(self.conv7(x)))
-        x = act(self.bn8(self.conv8(x)))
-        x = act(self.bn9(self.conv9(x)))
-
-        # Global average pooling
-        x = self.global_avg_pool(x)
-        x = x.view(x.size(0), -1)
-        x = self.bn_final(x)  # This makes it identical to the second architecture
-        x = self.fc(x)
-        return x
+        x = self.init_conv(x)
+        x = self.block1(x)
+        x = self.block2(x)
+        x = self.block3(x)
+        x = self.pool(x).flatten(1)
+        return self.fc(x)
 
 def prepare_datasets(mode, val_ratio=0.1, data_root='./data'):
     """Prepare training, validation and test datasets"""
     # Load raw training data
-    train_dataset_raw = datasets.CIFAR10(root=data_root, train=True, download=True, 
+    train_dataset_raw = datasets.CIFAR100(root=data_root, train=True, download=True, 
                                          transform=transforms.ToTensor())
     
     X_train = np.array([np.array(img) for img, _ in train_dataset_raw], dtype=np.float32)
     labels = np.array([label for _, label in train_dataset_raw])
     # Fit ZCA
-    whitener = ZCA(x=X_train)
-    trainx_white = whitener.apply(X_train)
+    #whitener = ZCA(x=X_train)
+    #trainx_white = whitener.apply(X_train)
     #print(trainx_white.shape)
     labels_tensor = torch.tensor(labels, dtype=torch.long)
     
     # Create full dataset
-    full_train_dataset = ZCADataset(trainx_white, labels_tensor, add_noise_sigma=0.15, training=True)
+    full_train_dataset = ZCADataset(X_train, labels_tensor, add_noise_sigma=0.0, training=True)
     
     # Test dataset
-    test_dataset_raw = datasets.CIFAR10(root=data_root, train=False, download=True,
+    test_dataset_raw = datasets.CIFAR100(root=data_root, train=False, download=True,
                                         transform=transforms.ToTensor())
     X_test = np.array([np.array(img) for img, _ in test_dataset_raw], dtype=np.float32)
     labels_test = np.array([label for _, label in test_dataset_raw])
-    testx_white = whitener.apply(X_test)
-    test_dataset = ZCADataset(testx_white, torch.tensor(labels_test, dtype=torch.long),
+    #testx_white = whitener.apply(X_test)
+    test_dataset = ZCADataset(X_test, torch.tensor(labels_test, dtype=torch.long),
                             add_noise_sigma=0.0, training=False)
     
     dummy1 = None
@@ -175,7 +158,7 @@ def prepare_datasets(mode, val_ratio=0.1, data_root='./data'):
     dummy3 = None
     dummy4 = None
     if mode == 1:
-        print('CIFAR10 dataset restoration completed')
+        print('CIFAR100 dataset restoration completed')
         return full_train_dataset, dummy1, test_dataset, dummy3, dummy4
     else:
         if val_ratio != 0.0:
@@ -188,14 +171,14 @@ def prepare_datasets(mode, val_ratio=0.1, data_root='./data'):
             # Validation dataset without noise
             train_indices = train_dataset.indices
             val_indices = val_dataset.indices
-            X_val_data = trainx_white[val_indices]
+            X_val_data = X_train[val_indices]
             val_labels = labels_tensor[val_indices]
             val_dataset = ZCADataset(X_val_data, val_labels, add_noise_sigma=0.0, training=False)
 
             #print(train_dataset.shape)
-            print('CIFAR10 dataset preparation completed')
+            print('CIFAR100 dataset preparation completed')
             return train_dataset, val_dataset, test_dataset, train_indices, val_indices
         else:
             train_dataset = full_train_dataset
-            print('CIFAR10 dataset preparation completed')
+            print('CIFAR100 dataset preparation completed')
             return train_dataset, None, test_dataset, None, None
