@@ -62,7 +62,7 @@ def plot_only(x, study_type):
         plt.plot(epochs, losses, cfg.colors[i], label=cfg.AF_NLSD_PLOT[i], linewidth = 0.8)
     # Plot
     plt.yscale('log')
-    plt.legend(loc = 'lower right', bbox_to_anchor = (1.47, -0.04))
+    plt.legend(loc = 'lower right', bbox_to_anchor = (1.6, -0.04))
     plt.grid(True, linewidth=0.1)
     plt.tight_layout()
     plt.savefig('PICS/NLSD/' + study_type + '/training_loss.pdf', transparent=False)
