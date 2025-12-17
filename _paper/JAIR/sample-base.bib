@@ -1,0 +1,519 @@
+% Journals
+
+% First the Full Name is given, then the abbreviation used in the AMS Math
+% Reviews, with an indication if it could not be found there.
+% Note the 2nd overwrites the 1st, so swap them if you want the full name.
+
+ %{AMS}
+ @String{AMSTrans = "American Mathematical Society Translations" }
+ @String{AMSTrans = "Amer. Math. Soc. Transl." }
+ @String{BullAMS = "Bulletin of the American Mathematical Society" }
+ @String{BullAMS = "Bull. Amer. Math. Soc." }
+ @String{ProcAMS = "Proceedings of the American Mathematical Society" }
+ @String{ProcAMS = "Proc. Amer. Math. Soc." }
+ @String{TransAMS = "Transactions of the American Mathematical Society" }
+ @String{TransAMS = "Trans. Amer. Math. Soc." }
+
+ %ACM
+ @String{CACM = "Communications of the {ACM}" }
+ @String{CACM = "Commun. {ACM}" }
+ @String{CompServ = "Comput. Surveys" }
+ @String{JACM = "J. ACM" }
+ @String{ACMMathSoft = "{ACM} Transactions on Mathematical Software" }
+ @String{ACMMathSoft = "{ACM} Trans. Math. Software" }
+ @String{SIGNUM = "{ACM} {SIGNUM} Newsletter" }
+ @String{SIGNUM = "{ACM} {SIGNUM} Newslett." }
+
+ @String{AmerSocio = "American Journal of Sociology" }
+ @String{AmerStatAssoc = "Journal of the American Statistical Association" }
+ @String{AmerStatAssoc = "J. Amer. Statist. Assoc." }
+ @String{ApplMathComp = "Applied Mathematics and Computation" }
+ @String{ApplMathComp = "Appl. Math. Comput." }
+ @String{AmerMathMonthly = "American Mathematical Monthly" }
+ @String{AmerMathMonthly = "Amer. Math. Monthly" }
+ @String{BIT = "{BIT}" }
+ @String{BritStatPsych = "British Journal of Mathematical and Statistical
+          Psychology" }
+ @String{BritStatPsych = "Brit. J. Math. Statist. Psych." }
+ @String{CanMathBull = "Canadian Mathematical Bulletin" }
+ @String{CanMathBull = "Canad. Math. Bull." }
+ @String{CompApplMath = "Journal of Computational and Applied Mathematics" }
+ @String{CompApplMath = "J. Comput. Appl. Math." }
+ @String{CompPhys = "Journal of Computational Physics" }
+ @String{CompPhys = "J. Comput. Phys." }
+ @String{CompStruct = "Computers and Structures" }
+ @String{CompStruct = "Comput. \& Structures" }
+ @String{CompJour = "The Computer Journal" }
+ @String{CompJour = "Comput. J." }
+ @String{CompSysSci = "Journal of Computer and System Sciences" }
+ @String{CompSysSci = "J. Comput. System Sci." }
+ @String{Computing = "Computing" }
+ @String{ContempMath = "Contemporary Mathematics" }
+ @String{ContempMath = "Contemp. Math." }
+ @String{Crelle = "Crelle's Journal" }
+ @String{GiornaleMath = "Giornale di Mathematiche" }
+ @String{GiornaleMath = "Giorn. Mat." } % didn't find in AMS MR., ibid.
+
+ %IEEE
+ @String{Computer = "{IEEE} Computer" }
+ @String{IEEETransComp = "{IEEE} Transactions on Computers" }
+ @String{IEEETransComp = "{IEEE} Trans. Comput." }
+ @String{IEEETransAC = "{IEEE} Transactions on Automatic Control" }
+ @String{IEEETransAC = "{IEEE} Trans. Automat. Control" }
+ @String{IEEESpec = "{IEEE} Spectrum" } % didn't find in AMS MR
+ @String{ProcIEEE = "Proceedings of the {IEEE}" }
+ @String{ProcIEEE = "Proc. {IEEE}" } % didn't find in AMS MR
+ @String{IEEETransAeroElec = "{IEEE} Transactions on Aerospace and Electronic
+     Systems" }
+ @String{IEEETransAeroElec = "{IEEE} Trans. Aerospace Electron. Systems" }
+
+ @String{IMANumerAna = "{IMA} Journal of Numerical Analysis" }
+ @String{IMANumerAna = "{IMA} J. Numer. Anal." }
+ @String{InfProcLet = "Information Processing Letters" }
+ @String{InfProcLet = "Inform. Process. Lett." }
+ @String{InstMathApp = "Journal of the Institute of Mathematics and
+     its Applications" }
+ @String{InstMathApp = "J. Inst. Math. Appl." }
+ @String{IntControl = "International Journal of Control" }
+ @String{IntControl = "Internat. J. Control" }
+ @String{IntNumerEng = "International Journal for Numerical Methods in
+     Engineering" }
+ @String{IntNumerEng = "Internat. J. Numer. Methods Engrg." }
+ @String{IntSuper = "International Journal of Supercomputing Applications" }
+ @String{IntSuper = "Internat. J. Supercomputing Applic." } % didn't find
+%% in AMS MR
+ @String{Kibernetika = "Kibernetika" }
+ @String{JResNatBurStand = "Journal of Research of the National Bureau
+     of Standards" }
+ @String{JResNatBurStand = "J. Res. Nat. Bur. Standards" }
+ @String{LinAlgApp = "Linear Algebra and its Applications" }
+ @String{LinAlgApp = "Linear Algebra Appl." }
+ @String{MathAnaAppl = "Journal of Mathematical Analysis and Applications" }
+ @String{MathAnaAppl = "J. Math. Anal. Appl." }
+ @String{MathAnnalen = "Mathematische Annalen" }
+ @String{MathAnnalen = "Math. Ann." }
+ @String{MathPhys = "Journal of Mathematical Physics" }
+ @String{MathPhys = "J. Math. Phys." }
+ @String{MathComp = "Mathematics of Computation" }
+ @String{MathComp = "Math. Comp." }
+ @String{MathScand = "Mathematica Scandinavica" }
+ @String{MathScand = "Math. Scand." }
+ @String{TablesAidsComp = "Mathematical Tables and Other Aids to Computation" }
+ @String{TablesAidsComp = "Math. Tables Aids Comput." }
+ @String{NumerMath = "Numerische Mathematik" }
+ @String{NumerMath = "Numer. Math." }
+ @String{PacificMath = "Pacific Journal of Mathematics" }
+ @String{PacificMath = "Pacific J. Math." }
+ @String{ParDistComp = "Journal of Parallel and Distributed Computing" }
+ @String{ParDistComp = "J. Parallel and Distrib. Comput." } % didn't find
+%% in AMS MR
+ @String{ParComputing = "Parallel Computing" }
+ @String{ParComputing = "Parallel Comput." }
+ @String{PhilMag = "Philosophical Magazine" }
+ @String{PhilMag = "Philos. Mag." }
+ @String{ProcNAS = "Proceedings of the National Academy of Sciences
+                    of the USA" }
+ @String{ProcNAS = "Proc. Nat. Acad. Sci. U. S. A." }
+ @String{Psychometrika = "Psychometrika" }
+ @String{QuartMath = "Quarterly Journal of Mathematics, Oxford, Series (2)" }
+ @String{QuartMath = "Quart. J. Math. Oxford Ser. (2)" }
+ @String{QuartApplMath = "Quarterly of Applied Mathematics" }
+ @String{QuartApplMath = "Quart. Appl. Math." }
+ @String{RevueInstStat = "Review of the International Statisical Institute" }
+ @String{RevueInstStat = "Rev. Inst. Internat. Statist." }
+
+ %SIAM
+ @String{JSIAM = "Journal of the Society for Industrial and Applied
+     Mathematics" }
+ @String{JSIAM = "J. Soc. Indust. Appl. Math." }
+ @String{JSIAMB = "Journal of the Society for Industrial and Applied
+     Mathematics, Series B, Numerical Analysis" }
+ @String{JSIAMB = "J. Soc. Indust. Appl. Math. Ser. B Numer. Anal." }
+ @String{SIAMAlgMeth = "{SIAM} Journal on Algebraic and Discrete Methods" }
+ @String{SIAMAlgMeth = "{SIAM} J. Algebraic Discrete Methods" }
+ @String{SIAMAppMath = "{SIAM} Journal on Applied Mathematics" }
+ @String{SIAMAppMath = "{SIAM} J. Appl. Math." }
+ @String{SIAMComp = "{SIAM} Journal on Computing" }
+ @String{SIAMComp = "{SIAM} J. Comput." }
+ @String{SIAMMatrix = "{SIAM} Journal on Matrix Analysis and Applications" }
+ @String{SIAMMatrix = "{SIAM} J. Matrix Anal. Appl." }
+ @String{SIAMNumAnal = "{SIAM} Journal on Numerical Analysis" }
+ @String{SIAMNumAnal = "{SIAM} J. Numer. Anal." }
+ @String{SIAMReview = "{SIAM} Review" }
+ @String{SIAMReview = "{SIAM} Rev." }
+ @String{SIAMSciStat = "{SIAM} Journal on Scientific and Statistical
+     Computing" }
+ @String{SIAMSciStat = "{SIAM} J. Sci. Statist. Comput." }
+
+ @String{SoftPracExp = "Software Practice and Experience" }
+ @String{SoftPracExp = "Software Prac. Experience" } % didn't find in AMS MR
+ @String{StatScience = "Statistical Science" }
+ @String{StatScience = "Statist. Sci." }
+ @String{Techno = "Technometrics" }
+ @String{USSRCompMathPhys = "{USSR} Computational Mathematics and Mathematical
+     Physics" }
+ @String{USSRCompMathPhys = "{U. S. S. R.} Comput. Math. and Math. Phys." }
+ @String{VLSICompSys = "Journal of {VLSI} and Computer Systems" }
+ @String{VLSICompSys = "J. {VLSI} Comput. Syst." }
+ @String{ZAngewMathMech = "Zeitschrift fur Angewandte Mathematik und
+     Mechanik" }
+ @String{ZAngewMathMech = "Z. Angew. Math. Mech." }
+ @String{ZAngewMathPhys = "Zeitschrift fur Angewandte Mathematik und Physik" }
+ @String{ZAngewMathPhys = "Z. Angew. Math. Phys." }
+
+% Publishers % ================================================= |
+
+ @String{Academic = "Academic Press" }
+ @String{ACMPress = "{ACM} Press" }
+ @String{AdamHilger = "Adam Hilger" }
+ @String{AddisonWesley = "Addison-Wesley" }
+ @String{AllynBacon = "Allyn and Bacon" }
+ @String{AMS = "American Mathematical Society" }
+ @String{Birkhauser = "Birkha{\"u}ser" }
+ @String{CambridgePress = "Cambridge University Press" }
+ @String{Chelsea = "Chelsea" }
+ @String{ClaredonPress = "Claredon Press" }
+ @String{DoverPub = "Dover Publications" }
+ @String{Eyolles = "Eyolles" }
+ @String{HoltRinehartWinston = "Holt, Rinehart and Winston" }
+ @String{Interscience = "Interscience" }
+ @String{JohnsHopkinsPress = "The Johns Hopkins University Press" }
+ @String{JohnWileySons = "John Wiley and Sons" }
+ @String{Macmillan = "Macmillan" }
+ @String{MathWorks = "The Math Works Inc." }
+ @String{McGrawHill = "McGraw-Hill" }
+ @String{NatBurStd = "National Bureau of Standards" }
+ @String{NorthHolland = "North-Holland" }
+ @String{OxfordPress = "Oxford University Press" }  %address Oxford or London?
+ @String{PergamonPress = "Pergamon Press" }
+ @String{PlenumPress = "Plenum Press" }
+ @String{PrenticeHall = "Prentice-Hall" }
+ @String{SIAMPub = "{SIAM} Publications" }
+ @String{Springer = "Springer-Verlag" }
+ @String{TexasPress = "University of Texas Press" }
+ @String{VanNostrand = "Van Nostrand" }
+ @String{WHFreeman = "W. H. Freeman and Co." }
+
+%Entries
+
+@Article{6795724,
+  author        = "LeCun, Y. and Boser, B. and Denker, J. S. and Henderson, D. and Howard, R. E. and Hubbard, W. and Jackel, L. D.",
+  title         = "Backpropagation Applied to Handwritten Zip Code Recognition",
+  journal       = "Neural Computation",
+  volume        = "1",
+  number        = "4",
+  month         = "",
+  year          = "1989",
+  pages         = "541--551",
+  doi           = "10.1162/neco.1989.1.4.541",
+  url           = "",
+  note          = "",
+}
+
+@Article{mcculloch1943logical,
+  title={A logical calculus of the ideas immanent in nervous activity},
+  author={McCulloch, Warren S and Pitts, Walter},
+  journal={The bulletin of mathematical biophysics},
+  volume={5},
+  number={4},
+  pages={115--133},
+  year={1943},
+  publisher={Springer}
+}
+
+
+@article{MINAI1993845,
+title = {On the derivatives of the sigmoid},
+journal = {Neural Networks},
+volume = {6},
+number = {6},
+pages = {845-853},
+year = {1993},
+issn = {0893-6080},
+doi = {https://doi.org/10.1016/S0893-6080(05)80129-7},
+url = {https://www.sciencedirect.com/science/article/pii/S0893608005801297},
+author = {Ali A. Minai and Ronald D. Williams},
+keywords = {Neuron activation function, Sigmoid function, Logistic function, Eulerian numbers, Stirling numbers},
+abstract = {The sigmoid function is very widely used as a neuron activation function in artificial neural networks, which makes its attributes a matter of some interest. This paper presents some general results on the derivatives of the sigmoid. These results relate the coefficients of various derivatives to standard number sequences from combinatorial theory, and thus provide a standard efficient way of calculating these derivatives. Such derivatives can be used in approximating the effect of input perturbations on the output of single neurons and could also be useful in statistical modeling applications.}
+}
+
+
+@ARTICLE{6795724,
+  author={LeCun, Y. and Boser, B. and Denker, J. S. and Henderson, D. and Howard, R. E. and Hubbard, W. and Jackel, L. D.},
+  journal={Neural Computation}, 
+  title={Backpropagation Applied to Handwritten Zip Code Recognition}, 
+  year={1989},
+  volume={1},
+  number={4},
+  pages={541-551},
+  keywords={},
+  doi={10.1162/neco.1989.1.4.541}}
+
+@inproceedings{relu, 
+author = {Nair, Vinod and Hinton, Geoffrey E.}, 
+title = {Rectified linear units improve restricted boltzmann machines}, 
+year = {2010}, isbn = {9781605589077}, 
+publisher = {Omnipress}, address = {Madison, WI, USA}, 
+booktitle = {Proceedings of the 27th International Conference on International Conference on Machine Learning}, 
+pages = {807-814}, numpages = {8}, location = {Haifa, Israel}, series = {ICML'10} }
+
+@misc{ramachandran2017searchingactivationfunctions,
+      title={Searching for Activation Functions}, 
+      author={Prajit Ramachandran and Barret Zoph and Quoc V. Le},
+      year={2017},
+      eprint={1710.05941},
+      archivePrefix={arXiv},
+      primaryClass={cs.NE},
+      url={https://arxiv.org/abs/1710.05941}
+}
+@misc{misra2020mishselfregularizednonmonotonic,
+      title={Mish: A Self Regularized Non-Monotonic Activation Function}, 
+      author={Diganta Misra},
+      year={2020},
+      eprint={1908.08681},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/1908.08681}
+}
+
+@misc{klambauer2017selfnormalizingneuralnetworks,
+      title={Self-Normalizing Neural Networks}, 
+      author={Günter Klambauer and Thomas Unterthiner and Andreas Mayr and Sepp Hochreiter},
+      year={2017},
+      eprint={1706.02515},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/1706.02515}
+}
+
+@misc{hendrycks2023gaussianerrorlinearunits,
+      title={Gaussian Error Linear Units (GELUs)}, 
+      author={Dan Hendrycks and Kevin Gimpel},
+      year={2023},
+      eprint={1606.08415},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/1606.08415}
+}
+
+@misc{clevert2016fastaccuratedeepnetwork,
+      title={Fast and Accurate Deep Network Learning by Exponential Linear Units (ELUs)}, 
+      author={Djork-Arné Clevert and Thomas Unterthiner and Sepp Hochreiter},
+      year={2016},
+      eprint={1511.07289},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/1511.07289}
+}
+
+@article{guarnieri1999multilayer,
+  title        = {Multilayer feedforward networks with adaptive spline activation function},
+  author       = {Guarnieri, Stefano and Piazza, Francesco and Uncini, Aurelio},
+  journal      = {IEEE Transactions on Neural Networks},
+  volume       = {10},
+  number       = {3},
+  pages        = {672--683},
+  year         = {1999},
+  doi          = {10.1109/72.761726}
+}
+
+@misc{hryniowski2018polyneuronautomaticneurondiscovery,
+      title={PolyNeuron: Automatic Neuron Discovery via Learned Polyharmonic Spline Activations}, 
+      author={Andrew Hryniowski and Alexander Wong},
+      year={2018},
+      eprint={1811.04303},
+      archivePrefix={arXiv},
+      primaryClass={cs.NE},
+      url={https://arxiv.org/abs/1811.04303}
+}
+
+@article{bohra2020learning,
+  title        = {Learning activation functions in deep (spline) neural networks},
+  author       = {Bohra, Pakshal and Campos, Joaquim and Gupta, Harshit and Aziznejad, Shayan and Unser, Michael},
+  journal      = {IEEE Open Journal of Signal Processing},
+  volume       = {1},
+  pages        = {295--309},
+  year         = {2020}
+}
+
+@book{nurbs, 
+author = {Piegl, Les and Tiller, Wayne}, 
+title = {The NURBS book (2nd ed.)}, year = {1997}, 
+isbn = {3540615458}, publisher = {Springer-Verlag}, 
+address = {Berlin, Heidelberg} }
+
+@article{stone1948generalized,
+  author    = {Stone, M. H.},
+  title     = {The Generalized Weierstrass Approximation Theorem},
+  journal   = {Mathematics Magazine},
+  volume    = {21},
+  number    = {4},
+  pages     = {167--184},
+  year      = {1948},
+  doi       = {10.2307/3029750},
+  note      = {JSTOR 3029750, MR 0027121; see also 21 (5), 237--254}
+}
+
+@book{doCarmo1976,
+  author    = {Manfredo P. do Carmo},
+  title     = {Differential Geometry of Curves and Surfaces},
+  publisher = {Prentice-Hall},
+  year      = {1976},
+  address   = {Englewood Cliffs, New Jersey},
+  isbn      = {978-0132125895}
+}
+
+@misc{scipy_optimize_minimize,
+  title        = {{scipy.optimize.minimize (method = 'L-BFGS-B')}},
+  author       = {{SciPy Community}},
+  organization = {SciPy Developers},
+  year         = {2025},
+  note         = {Online; accessed \today},
+  url          = {https://docs.scipy.org/doc/scipy/reference/optimize.minimize-lbfgsb.html}
+}
+
+@misc{desjardins2015naturalneuralnetworks,
+      title={Natural Neural Networks}, 
+      author={Guillaume Desjardins and Karen Simonyan and Razvan Pascanu and Koray Kavukcuoglu},
+      year={2015},
+      eprint={1507.00210},
+      archivePrefix={arXiv},
+      primaryClass={stat.ML},
+      url={https://arxiv.org/abs/1507.00210}
+}
+
+@book{Prautzsch2002Bezier,
+  author    = {Hartmut Prautzsch and Wolfgang Boehm and Marco Paluszny},
+  title     = {B{\'e}zier and B-Spline Techniques},
+  series    = {Mathematics and Visualization},
+  year      = {2002},
+  publisher = {Springer},
+  address   = {Berlin, Heidelberg},
+  isbn      = {978-3-540-43761-1},
+  doi       = {10.1007/978-3-662-04919-8},
+  pages     = {63},
+  oclc      = {851370272}
+}
+
+@article{BIGARELLA2026122739,
+title = {Robust deep network learning of nonlinear regression tasks by parametric leaky exponential linear units (LELUs) and a diffusion metric},
+journal = {Information Sciences},
+volume = {725},
+pages = {122739},
+year = {2026},
+issn = {0020-0255},
+doi = {https://doi.org/10.1016/j.ins.2025.122739},
+url = {https://www.sciencedirect.com/science/article/pii/S0020025525008758},
+author = {Enda D.V. Bigarella},
+keywords = {Deep neural network, Nonlinear regression, Overfitting, Activation function, Diffusion loss},
+}
+
+@book{BickelDoksum2015MathStats,
+  author    = {Peter J. Bickel and Kjell A. Doksum},
+  title     = {Mathematical Statistics: Basic Ideas and Selected Topics},
+  volume    = {1},
+  edition   = {2},
+  year      = {2015},
+  publisher = {Chapman and Hall/CRC},
+  address   = {Boca Raton},
+  pages     = {20},
+  isbn      = {978-1466575578}
+}
+
+@book{Bishop2006PRML,
+  author    = {Christopher M. Bishop},
+  title     = {Pattern Recognition and Machine Learning},
+  year      = {2006},
+  publisher = {Springer},
+  address   = {New York},
+  isbn      = {978-0387310732}
+}
+@misc{mao2023crossentropylossfunctionstheoretical,
+      title={Cross-Entropy Loss Functions: Theoretical Analysis and Applications}, 
+      author={Anqi Mao and Mehryar Mohri and Yutao Zhong},
+      year={2023},
+      eprint={2304.07288},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2304.07288}
+}
+
+@article{Hornik1989Multilayer,
+  author  = {Kurt Hornik and Maxwell Stinchcombe and Halbert White},
+  title   = {Multilayer Feedforward Networks Are Universal Approximators},
+  journal = {Neural Networks},
+  year    = {1989},
+  volume  = {2},
+  number  = {5},
+  pages   = {359--366}
+}
+@article{Leshno1993NonPolynomial,
+  author  = {Moshe Leshno and Vladimir Y. Lin and Allan Pinkus and Shimon Schocken},
+  title   = {Multilayer Feedforward Networks with a Nonpolynomial Activation Function Can Approximate Any Function},
+  journal = {Neural Networks},
+  year    = {1993},
+  volume  = {6},
+  pages   = {861--867}
+}
+
+@book{Goodfellow2016DeepLearning,
+  author    = {Ian Goodfellow and Yoshua Bengio and Aaron Courville},
+  title     = {Deep Learning},
+  year      = {2016},
+  publisher = {MIT Press}
+}
+
+@misc{zagoruyko2017wideresidualnetworks,
+      title={Wide Residual Networks}, 
+      author={Sergey Zagoruyko and Nikos Komodakis},
+      year={2017},
+      eprint={1605.07146},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/1605.07146}
+}
+
+@misc{loshchilov2017sgdrstochasticgradientdescent,
+      title={SGDR: Stochastic Gradient Descent with Warm Restarts}, 
+      author={Ilya Loshchilov and Frank Hutter},
+      year={2017},
+      eprint={1608.03983},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/1608.03983}
+}
+
+@inproceedings{Shah_2016, series={VisionNet'16},
+   title={Deep Residual Networks with Exponential Linear Unit},
+   url={http://dx.doi.org/10.1145/2983402.2983406},
+   DOI={10.1145/2983402.2983406},
+   booktitle={Proceedings of the Third International Symposium on Computer Vision and the Internet},
+   publisher={ACM},
+   author={Shah, Anish and Kadam, Eashan and Shah, Hena and Shinde, Sameer and Shingade, Sandip},
+   year={2016},
+   month=sep, pages={59-65},
+   collection={VisionNet'16} }
+
+@misc{lecun1998mnist,
+  title        = {The {MNIST} Database of Handwritten Digits},
+  author       = {LeCun, Yann and Cortes, Corinna and Burges, Christopher J. C.},
+  howpublished = {\url{http://yann.lecun.com/exdb/mnist/}},
+  year         = {1998}
+}
+
+@book{hope2017learning,
+  title     = {Learning TensorFlow: A Guide to Building Deep Learning Systems},
+  author    = {Hope, Tom and Resheff, Yehezkel S. and Lieder, Itay},
+  year      = {2017},
+  publisher = {O'Reilly Media, Inc.},
+  address   = {Sebastopol, CA},
+  isbn      = {978-1491978481},
+  url       = {https://www.oreilly.com/library/view/learning-tensorflow/9781491978481/}
+}
+
+@techreport{krizhevsky2009cifar,
+  title       = {Learning Multiple Layers of Features from Tiny Images},
+  author      = {Krizhevsky, Alex},
+  institution = {University of Toronto},
+  year        = {2009}
+}
