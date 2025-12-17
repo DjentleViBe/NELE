@@ -1,9 +1,13 @@
-import torch 
-import torch.nn as nn
-import math
-
+"""
+Bezier spline Activation function
+"""
+import torch
+from torch import nn
 
 class BELU(nn.Module):
+    """
+    Bezier Activation Function
+    """
     def __init__(self, num_points=4):
         super().__init__()
         # Control points y-coordinates (learnable)
@@ -21,20 +25,6 @@ class BELU(nn.Module):
 
         # De Casteljau's algorithm
         y = self.control_points.unsqueeze(0).unsqueeze(0)  # (1,1,num_points)
-        n = y.size(-1)
-        for r in range(1, n):
-            y = (1 - t).unsqueeze(-1) * y[:, :, :-1] + t.unsqueeze(-1) * y[:, :, 1:]
+        y = (1 - t).unsqueeze(-1) * y[:, :, :-1] + t.unsqueeze(-1) * y[:, :, 1:]
         # y now shape: (batch_size, num_features, 1)
         return y.squeeze(-1)
-    
-class Net(nn.Module):
-    def __init__(self, input_dim, bezier_points):
-        super(Net, self).__init__()
-        self.net = nn.Sequential(
-            nn.Linear(input_dim, 4),
-            BELU(bezier_points),
-            nn.Linear(4, 1)
-        )
-
-    def forward(self, x):
-        return self.net(x)
