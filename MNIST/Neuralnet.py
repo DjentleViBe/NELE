@@ -1,10 +1,16 @@
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
 """
 Contains the neural network architecture for MNIST
 """
-import torch.nn as nn
-# Fully connected deep neural network
+from torch import nn
+
 class DeepFCNet(nn.Module):
-    def __init__(self, input_size, hidden_size, num_hidden_layers, num_classes, activation, activation_type):
+    """
+    Fully connected deep neural network
+    """
+    def __init__(self, input_size, hidden_size, num_hidden_layers, \
+                 num_classes, activation, activation_type):
         super().__init__()
         layers = []
         layers.append(nn.Linear(input_size, hidden_size))
@@ -21,8 +27,11 @@ class DeepFCNet(nn.Module):
                 if activation_type in ['relu', 'leaky_relu']:
                     nn.init.kaiming_normal_(m.weight, nonlinearity=activation_type)
                 else:
-                    nn.init.kaiming_normal_(m.weight) 
+                    nn.init.kaiming_normal_(m.weight)
                 nn.init.zeros_(m.bias)
 
     def forward(self, x):
+        """
+        Forward function
+        """
         return self.net(x)

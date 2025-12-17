@@ -1,9 +1,19 @@
+"""
+Noise range evaluation
+"""
 import matplotlib.pyplot as plt
 import numpy as np
-from MNIST_ENC.validation import mnist_enc_validation
+from mnist_enc.validation import mnist_enc_validation
 import config as cfg
 
 def noise_eval(device, af, i):
+    """
+    Evaluate MNIST autoencoder for a range of noise values
+    
+    :param device: device name
+    :param af: Activation function
+    :param i: iterator
+    """
     x = np.linspace(0, 3, 10)
     colors = cfg.colors
     afplot = cfg.AF_plot

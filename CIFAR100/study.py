@@ -4,7 +4,7 @@ import numpy as np
 import torch.nn as nn
 from file_operations import create_directory, getlatest
 from models.model_lelu import LELU
-from models.model_nele import NELE_LUT_PARAM_DIR, NELE_LUT_LEARN
+from models.model_nele import NeleLutParamDir, NeleLutLearn
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 from CIFAR100.neuralnet import CIFAR100CNN, prepare_datasets
@@ -59,7 +59,7 @@ def cifar100_data(epochs, learn_rate, device, exec, activation_type='default'):
     elif base == 'lelu' :
         activation = LELU()
     elif base == 'nele' :
-        activation = NELE_LUT_PARAM_DIR(device)
+        activation = NeleLutParamDir(device)
     else:
         raise ValueError("Invalid activation type")
 

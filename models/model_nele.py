@@ -1,13 +1,20 @@
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-instance-attributes
+"""
+NELE Activation Function (AF)
+"""
 import torch
-import torch.nn as nn
+from torch import nn
 import config as cfg
 
 class NELE(nn.Module):
-    def __init__(self, num_features=64, num_points=3, degree=2):
+    """
+    NELE AF with learnable parameters and xmin derived
+    """
+    def __init__(self):
         super().__init__()
-        self.num_features = num_features
-        self.num_points = num_points
-        self.degree = degree
 
         # Per-feature control points and weights
         # Shape: (num_features, num_points)
@@ -19,13 +26,16 @@ class NELE(nn.Module):
         self.y0 = nn.Parameter(torch.tensor(0.0))
 
     def forward(self, x):
+        """
+        Forward function
+        """
         mask = x > 0
         device = x.device
         t = torch.linspace(0, 1, 200).to(device)
-        N0 = (1 - t)**3
-        N1 = 3 * t * (1 - t)**2
-        N2 = 3 * t**2 * (1 - t)
-        N3 = t**3
+        n0_val = (1 - t)**3
+        n1_val = 3 * t * (1 - t)**2
+        n2_val = 3 * t**2 * (1 - t)
+        n3_val = t**3
 
         cp0 = torch.tensor([1.0, -0.1], device=device)
         cp0[0] = x.min()
@@ -41,15 +51,16 @@ class NELE(nn.Module):
 
         # Weights
         weights = torch.ones(4, device=self.w1.device)
-        weights[1] = self.w1   
-        weights[2] = self.w2  
+        weights[1] = self.w1
+        weights[2] = self.w2
         # Numerator (weighted sum of control points)
-        numerator = (N0[:, None] * weights[0] * control_points[0] +
-                 N1[:, None] * weights[1] * control_points[1] +
-                 N2[:, None] * weights[2] * control_points[2] + 
-                 N3[:, None] * weights[3] * control_points[3])
-        denominator = (N0 * weights[0] + N1 * weights[1] + N2 * weights[2]  + N3 * weights[3])[:, None]
-    
+        numerator = (n0_val[:, None] * weights[0] * control_points[0] +
+                 n1_val[:, None] * weights[1] * control_points[1] +
+                 n2_val[:, None] * weights[2] * control_points[2] +
+                 n3_val[:, None] * weights[3] * control_points[3])
+        denominator = (n0_val * weights[0] + n1_val * weights[1] + \
+                        n2_val * weights[2]  + n3_val * weights[3])[:, None]
+
         curve_points = numerator / (denominator + 1e-6)
         # Linear interpolation in PyTorch
         x_vals = curve_points[:, 0]
@@ -71,7 +82,10 @@ class NELE(nn.Module):
         y_queries = y0 + slope * (t_queries_clamped - x0)
         return torch.where(mask, x, y_queries)
 
-class NELE_LUT(nn.Module):
+class NeleLut(nn.Module):
+    """
+    NELE AF with buffer, learnable parameters and masking positive, xmin clamped
+    """
     def __init__(self, num_points=16, x_min=-1.0, x_max=0.0):
         super().__init__()
         self.num_points = num_points
@@ -95,9 +109,12 @@ class NELE_LUT(nn.Module):
         self.register_buffer('N3', t**3)
 
     def forward(self, x):
+        """
+        Forward function
+        """
         mask = x <= 0
         x_neg = x[mask]
-        
+
         # Control points
         cp0_x, cp0_y = self.x_min, self.y0
         cp1_x, cp1_y = self.x1, self.y1
@@ -107,19 +124,19 @@ class NELE_LUT(nn.Module):
         # Weights
         w0, w1, w2, w3 = 1.0, self.w1, self.w2, 1.0
         # Compute Bézier curve
-        N0, N1, N2, N3 = self.N0, self.N1, self.N2, self.N3
+        n0_val, n1_val, n2_val, n3_val = self.N0, self.N1, self.N2, self.N3
         numerator_y = (
-            N0*w0*cp0_y +
-            N1*w1*cp1_y +
-            N2*w2*cp2_y
+            n0_val*w0*cp0_y +
+            n1_val*w1*cp1_y +
+            n2_val*w2*cp2_y
         )
         numerator_x = (
-            N0*w0*cp0_x +
-            N1*w1*cp1_x +
-            N2*w2*cp2_x
+            n0_val*w0*cp0_x +
+            n1_val*w1*cp1_x +
+            n2_val*w2*cp2_x
         )
         # Denominator: scalar sum
-        denominator = N0 * w0 + N1 * w1 + N2 * w2 + N3 * w3 + 1e-12
+        denominator = n0_val * w0 + n1_val * w1 + n2_val * w2 + n3_val * w3 + 1e-12
 
         # LUT y values
         x_lut = numerator_x / denominator
@@ -129,7 +146,7 @@ class NELE_LUT(nn.Module):
         # print(x_lut.shape)
         x_min_val = x_lut[0]  # scalar tensor
         x_max_val = x_lut[-1]  # scalar tensor
-        
+
         scale = (self.num_points - 1) / (x_max_val - x_min_val)
         indices = ((x_neg - x_min_val) * scale).clamp(0, self.num_points - 2)
         idx_lower = indices.floor().long()
@@ -144,11 +161,13 @@ class NELE_LUT(nn.Module):
         y_out[mask] = y_neg
 
         return y_out
-    
-class NELE_LUT_PARAM(nn.Module):
+
+class NeleLutParam(nn.Module):
+    """
+    NELE AF with fixed params, buffers, double masking, xmin derived
+    """
     def __init__(self, device, num_points = 200):
         super().__init__()
-        
         self.cp1 = torch.tensor(cfg.cp1, device=device)
         self.cp2 = torch.tensor(cfg.cp2, device=device)
         self.cp3 = torch.tensor(cfg.cp3, device=device)
@@ -164,16 +183,20 @@ class NELE_LUT_PARAM(nn.Module):
         self.register_buffer('N3', t**3)
 
     def forward(self, x):
+        """
+        Forward function
+        """
         device = x.device
         cp0 = torch.tensor(cfg.cp0, device=device)
         cp0[0] = x.min()
         # Numerator (weighted sum of control points)
         numerator = (self.N0[:, None] * self.w0 * cp0 +
                  self.N1[:, None] * self.w1 * self.cp1 +
-                 self.N2[:, None] * self.w2 * self.cp2 + 
+                 self.N2[:, None] * self.w2 * self.cp2 +
                  self.N3[:, None] * self.w3 * self.cp3)
-        denominator = (self.N0 * self.w0 + self.N1 * self.w1 + self.N2 * self.w2  + self.N3 * self.w3)[:, None]
-    
+        denominator = (self.N0 * self.w0 + self.N1 * self.w1 + \
+                       self.N2 * self.w2  + self.N3 * self.w3)[:, None]
+
         curve_points = numerator / (denominator + 1e-6)
         # Linear interpolation in PyTorch
         x_vals = curve_points[:, 0]
@@ -196,7 +219,10 @@ class NELE_LUT_PARAM(nn.Module):
         return torch.where(x > 0, x,
                        torch.where(x < cp0[0], torch.zeros_like(x), y_queries))
 
-class NELE_LUT_PARAM_DIR(nn.Module):
+class NeleLutParamDir(nn.Module):
+    """
+    NELE AF with fixed params, double masking, buffers and xmin clamped
+    """
     def __init__(self, device, num_points = 200):
         super().__init__()
         self.num_points = num_points
@@ -215,16 +241,20 @@ class NELE_LUT_PARAM_DIR(nn.Module):
         self.register_buffer('N3', t**3)
 
     def forward(self, x):
+        """
+        Forward function
+        """
         device = x.device
         cp0 = torch.tensor(cfg.cp0, device=device)
         # cp0[0] = x.min()
         # Numerator (weighted sum of control points)
         numerator = (self.N0[:, None] * self.w0 * cp0 +
                  self.N1[:, None] * self.w1 * self.cp1 +
-                 self.N2[:, None] * self.w2 * self.cp2 + 
+                 self.N2[:, None] * self.w2 * self.cp2 +
                  self.N3[:, None] * self.w3 * self.cp3)
-        denominator = (self.N0 * self.w0 + self.N1 * self.w1 + self.N2 * self.w2  + self.N3 * self.w3)[:, None]
-    
+        denominator = (self.N0 * self.w0 + self.N1 * self.w1 + \
+                       self.N2 * self.w2  + self.N3 * self.w3)[:, None]
+
         curve_points = numerator / (denominator + 1e-6)
         # Linear interpolation in PyTorch
         x_lut = curve_points[:, 0]
@@ -232,7 +262,7 @@ class NELE_LUT_PARAM_DIR(nn.Module):
 
         x_min_val = x_lut[0]  # scalar tensor
         x_max_val = x_lut[-1]  # scalar tensor
-        
+
         scale = (self.num_points - 1) / (x_max_val - x_min_val)
         indices = ((x - x_min_val) * scale).clamp(0, self.num_points - 2)
         idx_lower = indices.floor().long()
@@ -244,12 +274,13 @@ class NELE_LUT_PARAM_DIR(nn.Module):
         y_neg = y_lower + alpha * (y_upper - y_lower)
         return torch.where(x > 0, x,
                        torch.where(x < cp0[0], torch.zeros_like(x), y_neg))
-    
-class NELE_LUT_LEARN(nn.Module):
+
+class NeleLutLearn(nn.Module):
+    """
+    NELE AF with single masking, buffers, xmin derived,
+    """
     def __init__(self, device, num_points = 200):
         super().__init__()
-        
-        
         self.w0 = torch.tensor(cfg.w0, device=device)
         self.w3 = torch.tensor(cfg.w3, device=device)
         self.l = nn.Parameter(torch.tensor(-1.0))
@@ -266,6 +297,9 @@ class NELE_LUT_LEARN(nn.Module):
         self.register_buffer('N3', t**3)
 
     def forward(self, x):
+        """
+        Forward function
+        """
         device = x.device
         cp0 = torch.tensor(cfg.cp0, device=device)
         cp1 = torch.tensor(cfg.cp1, device=device)
@@ -283,10 +317,11 @@ class NELE_LUT_LEARN(nn.Module):
         # Numerator (weighted sum of control points)
         numerator = (self.N0[:, None] * self.w0 * cp0 +
                  self.N1[:, None] * self.w1 * cp1 +
-                 self.N2[:, None] * self.w2 * cp2 + 
+                 self.N2[:, None] * self.w2 * cp2 +
                  self.N3[:, None] * self.w3 * cp3)
-        denominator = (self.N0 * self.w0 + self.N1 * self.w1 + self.N2 * self.w2  + self.N3 * self.w3)[:, None]
-    
+        denominator = (self.N0 * self.w0 + self.N1 * self.w1 + \
+                       self.N2 * self.w2  + self.N3 * self.w3)[:, None]
+
         curve_points = numerator / (denominator + 1e-6)
         # Linear interpolation in PyTorch
         x_vals = curve_points[:, 0]

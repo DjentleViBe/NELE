@@ -1,9 +1,12 @@
 """
 Contains the neural network architecture for MNIST
 """
-import torch.nn as nn
-# Fully connected deep neural network
+from torch import nn
+
 class DeepAutoencoder(nn.Module):
+    """
+    Fully connected deep neural network
+    """
     def __init__(self, activation):
         super().__init__()
         self.act = activation
@@ -17,7 +20,7 @@ class DeepAutoencoder(nn.Module):
             activation,
             nn.Linear(250, 30)  # latent space
         )
-        
+
         # Decoder
         self.decoder = nn.Sequential(
             nn.Linear(30, 250),
@@ -31,6 +34,9 @@ class DeepAutoencoder(nn.Module):
         )
 
     def forward(self, x):
+        """
+        Docstring for forward
+        """
         x = x.view(x.size(0), -1)  # flatten input
         encoded = self.encoder(x)
         decoded = self.decoder(encoded)

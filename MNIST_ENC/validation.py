@@ -1,63 +1,45 @@
-import torch.nn as nn
-import torch
-from config import input_size, hidden_size, num_hidden_layers, num_classes, batch_size_autoenc
-from MNIST_ENC.Neuralnet import DeepAutoencoder
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
-from models.model_lelu import LELU
-from models.model_nele import NELE, NELE_LUT_PARAM
-import config as cfg
+# pylint:disable=too-many-locals
+"""
+Docstring for mnist_enc.validation
+"""
 import numpy as np
+from torch import nn
+import torch
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
+from config import batch_size_autoenc
+from mnist_enc.neuralnet import DeepAutoencoder
+from mnist.utils import get_activation
 
 def mnist_enc_validation(epochs, device, noise_level, activation_type='default'):
-    if '=' in activation_type:
-        base, param = activation_type.split('=')
-        param = float(param)  # convert parameter to float if needed
-    else:
-        base = activation_type
-        param = None
-    if base == 'relu':
-        activation = nn.ReLU()
-    elif base == 'elu':
-        activation = nn.ELU(alpha=1.0)
-    elif base == 'leaky_relu' :
-        activation = nn.LeakyReLU(negative_slope=0.1)
-    elif base == 'gelu' :
-        activation = nn.GELU()
-    elif base == 'mish' :
-        activation = nn.Mish()
-    elif base == 'sigmoid' :
-        activation = nn.Sigmoid()
-    elif base == 'silu' :
-        activation = nn.SiLU()
-    elif base == 'softplus' :
-        activation = nn.Softplus()
-    elif base == 'tanh':
-        activation = nn.Tanh()
-    elif base == 'lelu' :
-        activation = LELU()
-    elif base == 'nele' :
-        activation = NELE_LUT_PARAM(device)
-    else:
-        raise ValueError("Invalid activation type")
+    """
+    Validation for MNIST autoencoder
+    
+    :param epochs: total epochs
+    :param device: device name
+    :param noise_level: noise level
+    :param activation_type: AF
+    """
+    activation = get_activation(activation_type, device)
     # Load MNIST
     transform = transforms.ToTensor()
-    test_dataset = datasets.MNIST(root='./data', train=False, transform=transform, download=True)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size_autoenc, shuffle=False)
+    test_dataset = datasets.MNIST(root='./data', train=False, \
+                                  transform=transform, download=True)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size_autoenc, \
+                             shuffle=False)
     model = DeepAutoencoder(activation).to(device)
     test_collect = []
     criterion = nn.MSELoss()
-    for i in range(1, 2):
+    for _ in range(1, 2):
         torch.manual_seed(1234)
-        checkpoint = torch.load('RESULTS/MNIST_ENC/' + activation_type + '/' + activation_type + '_' + str(epochs - 1) + '.pth',
+        checkpoint = torch.load('RESULTS/MNIST_ENC/' + \
+                            activation_type + '/' + activation_type \
+                            + '_' + str(epochs - 1) + '.pth',
                             map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
-        epoch = checkpoint['epoch']
-        epoch_loss = checkpoint['epoch_loss']
         # test_loss = checkpoint['test_loss']
         model.eval()
         test_loss_noisy = 0.0
-        total = 0.0
 
         with torch.no_grad():
             for data, _ in test_loader:

@@ -1,3 +1,6 @@
+"""
+Contains various parameters used for running the simulation
+"""
 epochs = 50
 save_every = 50
 learning_rate = 0.01
@@ -11,7 +14,7 @@ cp1 = [-0.1, -0.1]
 cp2 = [-1.0/1.4142, -1.0/1.4142]
 cp3 = [0.0, 0.0]
 ################### NLSD ######################
-learning_rate_array = [0.01, # tanh 
+learning_rate_array = [0.01, # tanh
                        0.01, #sigmoid
                        0.01, # softplus
                        0.01, # elu
@@ -25,17 +28,12 @@ learning_rate_array = [0.01, # tanh
 TYPE = 1 # 0: NELE, 1: NELE_PARAM, 2: NELE_LEARN
 AF_NLSD_NELE = ['nele=1', 'nele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'nele=7']
 FUNC_NLSD =  ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
-#FUNC_NLSD = ['exp']
 FUNC_NLSD_PLOT = ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
-FUNC_NLSD_NELE = ['sine']
-AF_NLSD = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
-     'leaky_relu', 
-      'lelu', 'mish', 'nele']
-AF_NLSD_PLOT = ['Tanh', 'Sigmoid', 'Softplus',
-           'ELU', 'SiLU', 'GELU', 'ReLU',
-       'Leaky-ReLU',  
-       'LeLU', 'Mish', 'NELE']
-# AF_NLSD_PLOT =  AF_NLSD
+FUNC_NLSD_NELE = ['sine', 'trig', 'exp', 'hyp', 'quad', 'exppoly']
+AF_NLSD = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu',\
+           'relu', 'leaky_relu', 'lelu', 'mish', 'nele']
+AF_NLSD_PLOT = ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'GELU',\
+                 'ReLU', 'Leaky-ReLU', 'LeLU', 'Mish', 'NELE']
 ################### MNIST #####################
 input_size = 28 * 28
 hidden_size = 128
@@ -45,9 +43,8 @@ batch_size = 128
 noise_level = 3.0
 AF_nele =  ['lelu=1', 'lelu=2', 'lelu=3', 'lelu=4', 'lelu=5', 'lelu=6', 'lelu=7']
 AF_plot_nele =  ['nele', 'nele', 'nele', 'nele', 'nele', 'nele', 'nele']
-AF = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
-     'leaky_relu', 
-      'lelu', 'mish', 'nele']
+AF = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', \
+      'relu', 'leaky_relu', 'lelu', 'mish', 'nele']
 AF_plot = ['Tanh', 'Sigmoid', 'Softplus',
            'ELU', 'SiLU', 'GELU', 'ReLU',
        'Leaky_ReLU',  
@@ -66,16 +63,15 @@ AF_CIFAR100 = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
       'lelu', 'mish', 'nele']
 AF_CIFAR100_NELE =  ['nele=0']
 ################# PLOTS #######################
-colors = ["#0072B2", "#56B4E9", 
+colors = ["#0072B2", "#56B4E9",
             "#E69F00", "#F0B775",
             "#009E73", "#63C6A8",
             "#CC79A7", "#DDA5C9",
             "#8E6B55", "#C7B2A8",
             '#000000'
             ]
-curve_recreation = ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU',  
-      'LeLU', 'Mish']
-STUDY =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1', 
+curve_recreation = ['Tanh', 'Sigmoid', 'Softplus', 'ELU', 'SiLU', 'LeLU', 'Mish']
+STUDY =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1',
        'sigmoid=1', 'leaky_relu=1', 'silu=1', 'lelu=1',
        'softplus=1', 'nele=1', 'mish=1',
        'tanh=2', 'relu=2', 'elu=2', 'gelu=2', 
