@@ -82,11 +82,11 @@ for type in typearray:
     plt.rcParams['text.usetex'] = True
     plt.plot(curve[:, 0], curve[:, 1], label = r'$\texttt{ELU}$ approximation', color = 'k', linewidth=0.7)
     plt.scatter(opt_ctrl[:, 0], opt_ctrl[:, 1], label=r'Control Points $\texttt{NELE}$', color = 'k', s=3)
-    print(f'\\texttt{{{type}}} & [{round(opt_ctrl[0][0], 4)}, {round(opt_ctrl[0][1], 4)}] &\
-    [{round(opt_ctrl[1][0], 4)}, {round(opt_ctrl[1][1], 4)}] &\
-    [{round(opt_ctrl[2][0], 4)}, {round(opt_ctrl[2][1], 4)}] &\
-    [{round(opt_ctrl[3][0], 4)}, {round(opt_ctrl[3][1], 4)}] &\
-    [{round(opt_w[0], 4)} , {round(opt_w[1], 4)} , {round(opt_w[2], 4)} , {round(opt_w[3], 4)}]\\\\')
+    print(f'\\texttt{{{type}}} & [{round(opt_ctrl[0][0], 3)}, {round(opt_ctrl[0][1], 3)}] &\
+    [{round(opt_ctrl[1][0], 3)}, {round(opt_ctrl[1][1], 3)}] &\
+    [{round(opt_ctrl[2][0], 3)}, {round(opt_ctrl[2][1], 3)}] &\
+    [{round(opt_ctrl[3][0], 3)}, {round(opt_ctrl[3][1], 3)}] &\
+    [{round(opt_w[0], 3)} , {round(opt_w[1], 3)} , {round(opt_w[2], 3)} , {round(opt_w[3], 3)}]\\\\')
     plt.legend()
     plt.grid(True, linewidth = 0.2)
     plt.xlabel("x")
