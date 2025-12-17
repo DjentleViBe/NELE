@@ -10,7 +10,7 @@ import torch.nn as nn
 import torch
 from csv_operations import csv_write
 import torch.optim as optim
-from NLSD.NeuralNet import Net
+from NLSD.neuralnet import Net
 
 def nlsd_data(x, y, af, device='cpu', study_type='default'):
     loss_collect = []
