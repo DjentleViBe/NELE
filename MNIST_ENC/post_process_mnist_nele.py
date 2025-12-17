@@ -1,10 +1,8 @@
-from csv_operations import csv_read
-import torch 
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib as mpl
+"""
+Docstring for MNIST_ENC.post_process_mnist_nele
+"""
 import config as cfg
-from MNIST_ENC.validation import mnist_enc_validation
+from mnist_enc.validation import mnist_enc_validation
 activations =  cfg.AF_plot
 activations_file =  cfg.AF
 colors = ["#0000FF",
@@ -13,6 +11,11 @@ colors = ["#0000FF",
             "#99342f", "#c7c7c7",
             '#000000']
 
-def mnist_enc_nele(device, reset):
-    for i, af in enumerate(cfg.AF):
+def mnist_enc_nele(device):
+    """
+    Docstring for mnist_enc_nele
+    
+    :param device: device name
+    """
+    for af in cfg.AF:
         mnist_enc_validation(cfg.epochs, device, cfg.noise_level, af)
