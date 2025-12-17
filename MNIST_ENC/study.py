@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-from MNIST_ENC.Neuralnet import DeepAutoencoder
+from MNIST_ENC.neuralnet import DeepAutoencoder
 from file_operations import create_directory
 from csv_operations import csv_write2
 import numpy as np

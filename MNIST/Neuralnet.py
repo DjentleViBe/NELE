@@ -1,3 +1,6 @@
+"""
+Contains the neural network architecture for MNIST
+"""
 import torch.nn as nn
 # Fully connected deep neural network
 class DeepFCNet(nn.Module):
