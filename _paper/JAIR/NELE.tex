@@ -247,46 +247,7 @@ Figure ~\ref{fig:nurbs} illustrates how varying the weight of the middle control
   \label{fig:nurbs}
   \end{center}
 \end{figure}
-\section{Formulation}
-The motivation for \texttt{NELE} was 
-\begin{itemize}
-\item Universality : To enable an AF which opened up a search 
-space for flexibility.
-\item Attenuation : Prevent large positive values from weakening \cite{elfwing2017sigmoidweightedlinearunitsneural}.
-\item Non Zero-Gradient : Produce negative side activations.
-\item Smoothnesss : Maintain continuity and differentiability throughout.
-\end{itemize} 
-
-The universality follows naturally from its 
-NURBS-based construction Appendix~\ref{app:nurbsparams}. Attenuation with non-zero gradients 
-is achieved through a piecewise formulation in which the 
-positive input region preserves the identity mapping of \texttt{ReLU}, 
-while the negative region is shaped to emulate smooth activations such as 
-\texttt{SiLU} or \texttt{GELU}. To ensure continuity and differentiability 
-across the junction of these regions, the control points and their 
-associated weights in the vicinity of the origin are appropriately adjusted, 
-enforcing smooth transitions between the linear and nonlinear segments.
-
-A cubic spline is employed as it provides sufficient expressivity while maintaining low computational complexity and numerical stability.
-Four control points ($p_0$, $p_1$, $p_2$, $p_3$) are selected, corresponding to a cubic spline, 
-which represents the lowest order capable of modeling nonlinear curvature while avoiding 
-overfitting and their associated weights.  
-The implementation is summarized in Algorithm ~\ref{alg:nele_training}.
-Continuity forces $p_3 = [0.0, 0.0]$ and linearity of the positive side 
-sets the slope between $p_2$ and $p_3$ = 1 while maintaining tangency as depicted in Figure ~\ref{fig:nurbsregen}.
-The remaining control points and their associated weights were treated as learnable parameters. 
-For the fixed variant, limiting $p_0$ to [-4.0, 0.0] and setting all weights 
-to 1 yielded the best results. 
-\begin{figure}[H]
-  \begin{center}
-    \includegraphics[width=0.5\linewidth]{../../PICS/Approx_gelu.pdf}
-  \caption{GELU approximated for $x \leq 0$ using cubic NURBS with 3 control points and optimized weights.
-  NURBS curve used for MNIST study is also shown for comparison.}
-  \Description{GELU activation function recreation.}
-  \label{fig:nurbsregen}
-  \end{center}
-\end{figure}
-  \begin{table}
+\begin{table}
   \caption{AF with their peak curvature values and the input positions at which these maxima occur.}
   \label{tab:AF}
   \begin{tabular}{@{}lccc@{}}
@@ -322,6 +283,46 @@ to 1 yielded the best results.
   \bottomrule
 \end{tabular}
 \end{table}
+\section{Formulation}
+The motivation for \texttt{NELE} was 
+\begin{itemize}
+\item Universality : To enable an AF which opens up a search 
+space for flexibility.
+\item Attenuation : Prevent large positive values from weakening \cite{elfwing2017sigmoidweightedlinearunitsneural}.
+\item Non Zero-Gradient : Produce negative side activations.
+\item Smoothnesss : Maintain continuity and differentiability throughout.
+\end{itemize} 
+
+The universality follows naturally from its 
+NURBS-based approximation shown in Appendix~\ref{app:nurbsparams}. Attenuation prevention with non-zero gradients 
+is achieved through a piecewise formulation in which the 
+positive input region preserves the identity mapping of \texttt{ReLU}, 
+while the negative region is shaped to emulate smooth activations such as 
+\texttt{SiLU} or \texttt{GELU}. To ensure continuity and differentiability 
+across the junction of these regions, the control points and their 
+associated weights in the vicinity of the origin are appropriately adjusted, 
+enforcing smooth transitions between the linear and nonlinear segments.
+
+A cubic spline is employed as it provides sufficient expressivity while maintaining low 
+computational complexity and numerical stability.
+Four control points ($p_0$, $p_1$, $p_2$, $p_3$) are selected, corresponding to a cubic spline, 
+which represents the lowest order capable of modeling nonlinear curvature while avoiding 
+overfitting and their associated weights ($w_n$). The implementation is summarized in Algorithm ~\ref{alg:nele_training}.
+Continuity condition forces $p_3 = [0.0, 0.0]$ and linearity of the positive side 
+sets the slope between $p_2$ and $p_3$ = 1 to maintain tangency as depicted in Figure ~\ref{fig:nurbsregen}.
+A mask is added which returns 0 for $x < p_0$.
+The remaining control points and their associated weights were either treated as 
+learnable parameters or fixed. 
+For the fixed variant, setting $p_0$ = [-4.0, 0.0], $p_1 = [0.1, 0.1]$ and $w_n = 1$ yielded the best results. 
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.5\linewidth]{../../PICS/Approx_gelu.pdf}
+  \caption{GELU approximated for $x \leq 0$ using cubic NURBS with 4 control points and optimized weights.
+  NURBS curve used in experiments is also shown for comparison.}
+  \Description{GELU activation function recreation.}
+  \label{fig:nurbsregen}
+  \end{center}
+\end{figure}
 
 \begin{algorithm}
 \caption{NELE activation function}
@@ -375,7 +376,7 @@ fair comparison across AF under identical optimization conditions.
 
 \subsection{Non-linear synthetic data (NLSD)}
 NLSD provides a controlled environment for assessing functional expressivity.
-The neural network used for curve fitting consists of a fully connected feed forward 
+The neural network used for curve fitting consists of a fully connected feed-forward 
 architecture with a single hidden layer of 64 neurons. 
 The hidden layer employs the various AF, while the output layer is linear. 
 This design isolates the contribution of the activation function and 
