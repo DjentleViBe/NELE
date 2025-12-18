@@ -17,7 +17,7 @@ cp2 = [-1.0/1.4142, -1.0/1.4142]
 cp3 = [0.0, 0.0]
 masking = 2 # 0: no, 1: single 2: double
 clamping = True
-learnable = True
+learnable = False
 ################### NLSD ######################
 learning_rate_array = [0.01, # tanh
                        0.01, #sigmoid
