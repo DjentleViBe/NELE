@@ -43,8 +43,10 @@ python main.py --type=<type_id> --mode=<mode_name> --device=<device_name>
 |```process```| Produces Training loss vs epochs, test loss across```epochs``` for different AF |
 |```process_study```|Produces median Training loss vs epochs, test loss across```epochs``` for different AF|
 
-```TYPE``` variable inside [config.py](./config.py) can be set ```0```: NELE, ```1```: NELE_PARAM (fixed parameters), ```2```: NELE_LEARN (learnable type)
-```3```: NELE_PARAM_DIR (fixed parameters without x minimum rescaling)
+## Settings
+[config](./config.py) for different studies can be downloaded from the releases section
+## Additional figures
+AF approximation plots are provided inside [figures](./figures)
 
 ## NLSD 
 ```NELE``` Parameters used for NLSD curve fitting study. These need to be changed inside [config.py](./config.py) in order to reproduce the results of the paper.
