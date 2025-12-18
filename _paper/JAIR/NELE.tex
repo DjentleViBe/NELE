@@ -347,9 +347,17 @@ For the fixed variant, setting $p_0$ = [-4.0, 0.0], $p_1 = [0.1, 0.1]$ and $w_n 
     \STATE Find ${y}$ from ${curve\_y}$ for ${curve\_x}$ = $\mathcal{D}$ values via Linear Interpolation.
     \IF{Masking}
       \IF{Double}
-        \RETURN $y$ for $\mathcal{D} \leq 0$, $\mathcal{D} \geq min(\mathcal{D})$ and $\mathcal{D}$ otherwise
-      \ELSE
-        \RETURN $y$ for $\mathcal{D} \leq 0$ and $\mathcal{D}$ otherwise
+        \IF{$min(\mathcal{D}) \leq\mathcal{D} \leq 0$}
+        \RETURN $y$ 
+        \ELSE
+        \RETURN $\mathcal{D}$
+        \ENDIF
+        \ELSE
+        \IF{$\mathcal{D} \leq 0$}
+        \RETURN $y$ 
+        \ELSE
+        \RETURN $\mathcal{D}$
+        \ENDIF
       \ENDIF
     \ELSE
       \RETURN $y$
