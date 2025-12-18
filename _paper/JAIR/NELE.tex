@@ -18,6 +18,8 @@
 \documentclass[manuscript, screen, review]{jair}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \setcopyright{cc}
 \copyrightyear{2025}
 \acmDOI{10.1613/jair.1.xxxxx}
@@ -233,19 +235,76 @@ x coordinates of the 3 control points are fixed,
 this results in a total of four unknown parameters that can be learned.
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=0.6\linewidth]{../../PICS/nurbs.pdf}
+    \includegraphics[width=0.4\linewidth]{../../PICS/nurbs.pdf}
   \caption{NURBS curves generated from three control points with quadratic 
   degree ($p=2$) and different weights.}
   \Description{Different NURBS curves.}
   \label{fig:nurbs}
   \end{center}
 \end{figure}
-
 Figure ~\ref{fig:nurbs} illustrates how varying the weight of the middle control 
   point affects the curve: a lower weight ($w=0.2$) pulls the curve away 
   from the point, uniform weight ($w=1.0$) yields the standard quadratic B-spline, 
   and a higher weight ($w=5.0$) attracts the curve toward the control point. 
-  Red markers indicate the control points used for all curves.
+  Red markers indicate the control points used for all curves. 
+  
+  \texttt{NELE} implementation is summarized in Algorithm ~\ref{alg:nele_training}. For a cubic 
+  spline, there are 4 control points and their asociated weights. For the learnable version of the 
+  activatin, a piecewise type construction is considered.
+  The last control point ($p_3$) is fixed at $[0, 0]$. To maintain tangency of the curve to the postive space, 
+  $p_2$ has to have a slope of 1, thus reducing parameter count to just its length $l$.
+  $p_1$ and $p_0$ each contains 2 parameters for coordinates, [$x_1$, $y_1$] and [$x_0$, $y_0$] respectively. 
+ Other variations are listed in Table~\ref{tab:nelevars}.
+  \begin{table}
+  \caption{Several variants of the \texttt{NELE} implementation that are provided. 
+  The spline is parameterized by control points $p_n = [x_n, y_n]$ and corresponding weights $w_n$. 
+  In the case of a cubic spline, four control points ($n = 4$) are employed.}
+  \label{tab:nelevars}
+  \begin{tabular}{@{}lllll@{}}
+    \toprule
+    VARIATION & Learnable & Fixed & Masking & Buffer\\
+    \midrule
+    \texttt{NELE} & $l$, $w_1$, $w_2$, $y_1$, $x_1$, $y_0$ & $w_0$, $w_3$, $x_0$ = $min(x)$ & $x < 0$ & no\\
+    \texttt{NELE\_LEARNABLE} & $l$, $w_1$, $w_2$, $y_1$, $x_1$, $y_0$ & $w_0$, $w_3$, $x_0$ & $x \leq 0$ & yes\\
+    \texttt{NELE\_PARAM} & - & $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$, $x_0$ = $min(x)$& $x\leq0$ and $x>x_0$ & yes\\
+    \texttt{NELE\_PARAM\_DIR} & - & $p_0$, $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$ & $x\leq 0$ and $x \geq x_0$ & yes\\
+  \bottomrule
+\end{tabular}
+\end{table}
+\begin{algorithm}
+\caption{NELE activation function}
+\label{alg:nele_training}
+\begin{algorithmic}[1]
+\REQUIRE Training data $\mathcal{D}$, initial parameters $p_0$, $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$
+\ENSURE Optimized parameters $\theta^*$
+\IF{Learnable parameters}
+    \STATE Replace $x_2$ and $y_2$ with $l/ \sqrt(2)$
+    \STATE Initialize $l$, $p_0$, $p_1$, $p_3$
+    \STATE Set $w_0$, $w_3$
+\ELSE
+    \STATE Set $p_0$, $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$
+\ENDIF
+\FOR{each batch}
+    \IF{Clamped}
+      \STATE Set $x_0$ = $min(\mathcal{D})$
+    \ENDIF
+    \STATE Evaluate 
+            $N_0 = (1-t)^3$, $N_1 = 3t(1-t)^2$, $N_2 = 3t^2(1-t)$, $N_3=t^3$
+    \STATE Calculate $\text{Numerator\_y} = \sum N_n * w_n * y_n$, $\text{Numerator\_x} = \sum N_n * w_n * x_n$, $\text{Denominator} = \sum N_n * w_n$
+    \STATE Calculate $\text{Numerator\_y}/\text{Denominator}$. $\text{Numerator\_x}/\text{Denominator}$.
+    \STATE Find $y$ for $\mathcal{D}$ values via Linear Interpolation
+    \IF{Masking}
+      \IF{Double}
+        \RETURN $y$ for $\mathcal{D} \leq 0$, $\mathcal{D} \geq min(\mathcal{D})$ and $\mathcal{D}$ otherwise
+      \ELSE
+        \RETURN $y$ for $\mathcal{D} \leq 0$ and $\mathcal{D}$ otherwise
+      \ENDIF
+    \ELSE
+      \RETURN $y$
+    \ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
 \begin{table}
   \caption{AF with their peak curvature values and the input positions at which these maxima occur.}
   \label{tab:AF}
@@ -282,10 +341,9 @@ Figure ~\ref{fig:nurbs} illustrates how varying the weight of the middle control
   \bottomrule
 \end{tabular}
 \end{table}
-
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=0.6\linewidth]{../../PICS/Approx_gelu.pdf}
+    \includegraphics[width=0.45\linewidth]{../../PICS/Approx_gelu.pdf}
   \caption{GELU approximated for $x \leq 0$ using cubic NURBS with 3 control points and optimized weights.
   NURBS curve used for MNIST study is also shown for comparison.}
   \Description{GELU activation function recreation.}
@@ -576,7 +634,7 @@ Figure~\ref{fig:mnistloss} shows how each AF influences convergence speed and fi
 \end{figure}
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=0.6\linewidth]{../../PICS/MNIST/noise_study.pdf}
+    \includegraphics[width=0.5\linewidth]{../../PICS/MNIST/noise_study.pdf}
   \caption{Robustness results for MNIST over noise strengths using different AF.\label{fig:mnistnoise}}
   \end{center}
   \Description{MNIST results}
@@ -654,7 +712,6 @@ at the end of a residual block to stabilize exploding ELU's \cite{Shah_2016}
 as implemented in \cite{hendrycks2023gaussianerrorlinearunits}. Setting from Figure~\ref{fig:nurbsregen} 
 were used to obtain Median convergence
 curves over seven runs as shown in Figure~\ref{fig:cifar100loss}.
-
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=1.0\linewidth]{../../PICS/CIFAR100/training_loss.pdf}
@@ -663,7 +720,6 @@ curves over seven runs as shown in Figure~\ref{fig:cifar100loss}.
   \end{center}
   \Description{CIFAR100 results}
 \end{figure}
-
 \section{Conclusions}
 \texttt{NELE} exhibits a combination of properties that make it particularly 
 well suited for functional approximation tasks. 
@@ -684,10 +740,8 @@ learning tasks. The empirical results consistently demonstrate that
 \texttt{NELE} achieves superior performance relative to existing activation 
 function methods, both in terms of convergence speed and predictive accuracy, 
 highlighting its potential as a universal activation function capable of 
-capturing complex functional relationships
+capturing complex functional relationships.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 %%
 %% The acknowledgments section is defined using the "acks" environment
 %% (and NOT an unnumbered section). This ensures the proper
