@@ -11,7 +11,7 @@ from torch import nn
 from torch import optim
 import config as cfg
 from models.model_lelu import LELU
-from models.model_nele import NeleLut, NELE, NeleLutParam, NeleLutLearn
+from models.model_nele import NeleUniversal
 from csv_operations import csv_write
 from file_operations import create_directory
 from NLSD.neuralnet import Net
@@ -47,24 +47,9 @@ def nlsd_data(x, y, af, device='cpu', study_type='default'):
         'softplus' : nn.Softplus(),
         'tanh': nn.Tanh(),
         'lelu' : LELU(),
+        'nele' : NeleUniversal()
     }
-    if base != "nele":
-        activation = dispatch[base]
-    elif base == "nele":
-        if cfg.TYPE == 0:
-            activation = NELE()
-            learning_rate = cfg.learning_rate_array[10]
-        elif cfg.TYPE == 2:
-            activation = NeleLutLearn(device=device, num_points=200)
-            learning_rate = cfg.learning_rate_array[10]
-        elif cfg.TYPE == 1:
-            activation = NeleLutParam(device=device, num_points=200)
-            learning_rate = cfg.learning_rate_array[10]
-        else:
-            activation = NeleLut()
-            learning_rate = cfg.learning_rate_array[10]
-    else:
-        raise ValueError("Invalid activation type")
+    activation = dispatch[base]
 
     directory = directory + '/' + af
     create_directory('RESULTS/NLSD/' + study_type + '/' + base + '/')
