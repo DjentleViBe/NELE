@@ -343,3 +343,74 @@ class NeleLutLearn(nn.Module):
         y_queries = y0 + slope * (t_queries_clamped - x0)
         return torch.where(x > 0, x,
                         y_queries)
+    
+class NeleUniversal(nn.Module):
+    """
+    NELE AF with fixed params, double masking, buffers and xmin clamped
+    """
+    def __init__(self, device, num_points = 200):
+        super().__init__()
+        self.num_points = num_points
+        self.device = device
+        t = torch.linspace(0, 1, num_points)
+        self.register_buffer('t', t)
+        self.register_buffer('N0', (1 - t)**3)
+        self.register_buffer('N1', 3 * t * (1 - t)**2)
+        self.register_buffer('N2', 3 * t**2 * (1 - t))
+        self.register_buffer('N3', t**3)
+        if cfg.learnable:
+            self.l = nn.Parameter(torch.tensor(-1.0))
+            self.w1 = nn.Parameter(torch.tensor(1.0))
+            self.w2 = nn.Parameter(torch.tensor(1.0))
+            self.y1 = nn.Parameter(torch.tensor(-0.1))
+            self.x1 = nn.Parameter(torch.tensor(-0.1))
+            self.y0 = nn.Parameter(torch.tensor(0.0))
+            self.x0 = nn.Parameter(torch.tensor(-4.0))
+        else:
+            self.cp1 = torch.tensor(cfg.cp1, device=device)
+            self.cp2 = torch.tensor(cfg.cp2, device=device)
+            self.cp3 = torch.tensor(cfg.cp3, device=device)
+            self.w0 = torch.tensor(cfg.w0, device=device)
+            self.w1 = torch.tensor(cfg.w1, device=device)
+            self.w2 = torch.tensor(cfg.w2, device=device)
+            self.w3 = torch.tensor(cfg.w3, device=device)
+
+    def forward(self, x):
+        if cfg.clamping == True:
+            if cfg.learnable == False:
+                cp0 = torch.tensor(cfg.cp0, device=self.device)
+                cp0[0] = x.min()
+            else:
+                self.x0 = x.min()
+
+        numerator = (self.N0[:, None] * self.w0 * cp0 +
+                 self.N1[:, None] * self.w1 * self.cp1 +
+                 self.N2[:, None] * self.w2 * self.cp2 +
+                 self.N3[:, None] * self.w3 * self.cp3)
+        denominator = (self.N0 * self.w0 + self.N1 * self.w1 + \
+                       self.N2 * self.w2  + self.N3 * self.w3)[:, None]
+
+        curve_points = numerator / (denominator + 1e-6)
+        # Linear interpolation in PyTorch
+        x_lut = curve_points[:, 0]
+        y_lut = curve_points[:, 1]
+
+        x_min_val = x_lut[0]  # scalar tensor
+        x_max_val = x_lut[-1]  # scalar tensor
+
+        scale = (self.num_points - 1) / (x_max_val - x_min_val)
+        indices = ((x - x_min_val) * scale).clamp(0, self.num_points - 2)
+        idx_lower = indices.floor().long()
+        idx_upper = idx_lower + 1
+        alpha = indices - idx_lower.float()
+
+        y_lower = y_lut[idx_lower]
+        y_upper = y_lut[idx_upper]
+        y = y_lower + alpha * (y_upper - y_lower)
+        # return
+        if cfg.masking == 0:
+            return y
+        elif cfg.masking == 1:
+            return torch.where(x > 0, x, y)
+        else:
+            return torch.where(x > 0, x, torch.where(x < cfg.cp0[0], torch.zeros_like(x), y))
