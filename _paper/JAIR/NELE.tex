@@ -233,6 +233,11 @@ $A \neq 0$, in general. In that case, for $n = 3$, $W'$ is linear. This implies 
 is directly proportional to the weight of the middle control point. Furthermore, if the 
 x coordinates of the 3 control points are fixed, 
 this results in a total of four unknown parameters that can be learned.
+Figure ~\ref{fig:nurbs} illustrates how varying the weight of the middle control 
+  point affects the curve: a lower weight ($w=0.2$) pulls the curve away 
+  from the point, uniform weight ($w=1.0$) yields the standard quadratic B-spline, 
+  and a higher weight ($w=5.0$) attracts the curve toward the control point. 
+  Red markers indicate the control points used for all curves. 
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=0.4\linewidth]{../../PICS/nurbs.pdf}
@@ -242,70 +247,26 @@ this results in a total of four unknown parameters that can be learned.
   \label{fig:nurbs}
   \end{center}
 \end{figure}
-Figure ~\ref{fig:nurbs} illustrates how varying the weight of the middle control 
-  point affects the curve: a lower weight ($w=0.2$) pulls the curve away 
-  from the point, uniform weight ($w=1.0$) yields the standard quadratic B-spline, 
-  and a higher weight ($w=5.0$) attracts the curve toward the control point. 
-  Red markers indicate the control points used for all curves. 
-  
+\texttt{NELE} can be constructed in a piecewise manner. For $x > 0$, a linear segment is used, 
+while for $x \leq 0$, a cubic NURBS curve with three control points and optimized weights is employed.
+This design choice can mimic the behavior of \texttt{ReLU} in the positive domain, and \texttt{GELU} in the negative domain.
+Other configurations like using NURBS for both positive and negative domains or even limiting the negative space are possible. 
+The key advantage of cubic NURBS lies in the ability to construct curves with inflection points. 
+Control points and weights used can also be learnable paramters, but this adds additional complexity to the training process.
+To approximate a target curve with \texttt{NELE}, an optimization problem is formulated to minimize the mean squared error (MSE) between the target function and the NURBS representation.
+Optimization algorithm L-BFGS-B \cite{scipy_optimize_minimize} is used to efficiently navigate the parameter space, 
+producing a smooth curve that closely follows the desired shape. The parametric values for different AF
+are given in Appendix~\ref{app:nurbsparams}.
+
   \texttt{NELE} implementation is summarized in Algorithm ~\ref{alg:nele_training}. For a cubic 
-  spline, there are 4 control points and their asociated weights. For the learnable version of the 
-  activatin, a piecewise type construction is considered.
+  spline, there are 4 control points and their associated weights. For the learnable version of the 
+  activation, a piecewise type construction is considered.
   The last control point ($p_3$) is fixed at $[0, 0]$. To maintain tangency of the curve to the postive space, 
   $p_2$ has to have a slope of 1, thus reducing parameter count to just its length $l$.
   $p_1$ and $p_0$ each contains 2 parameters for coordinates, [$x_1$, $y_1$] and [$x_0$, $y_0$] respectively. 
- Other variations are listed in Table~\ref{tab:nelevars}.
+ Other variations are listed in Table~\ref{tab:nelevars}. The usage of buffers avoids recomputing the cubic Bernstein basis functions on every forward pass.
+  
   \begin{table}
-  \caption{Several variants of the \texttt{NELE} implementation that are provided. 
-  The spline is parameterized by control points $p_n = [x_n, y_n]$ and corresponding weights $w_n$. 
-  In the case of a cubic spline, four control points ($n = 4$) are employed.}
-  \label{tab:nelevars}
-  \begin{tabular}{@{}lllll@{}}
-    \toprule
-    VARIATION & Learnable & Fixed & Masking & Buffer\\
-    \midrule
-    \texttt{NELE} & $l$, $w_1$, $w_2$, $y_1$, $x_1$, $y_0$ & $w_0$, $w_3$, $x_0$ = $min(x)$ & $x < 0$ & no\\
-    \texttt{NELE\_LEARNABLE} & $l$, $w_1$, $w_2$, $y_1$, $x_1$, $y_0$ & $w_0$, $w_3$, $x_0$ & $x \leq 0$ & yes\\
-    \texttt{NELE\_PARAM} & - & $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$, $x_0$ = $min(x)$& $x\leq0$ and $x>x_0$ & yes\\
-    \texttt{NELE\_PARAM\_DIR} & - & $p_0$, $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$ & $x\leq 0$ and $x \geq x_0$ & yes\\
-  \bottomrule
-\end{tabular}
-\end{table}
-\begin{algorithm}
-\caption{NELE activation function}
-\label{alg:nele_training}
-\begin{algorithmic}[1]
-\REQUIRE Training data $\mathcal{D}$, initial parameters $p_0$, $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$
-\ENSURE Optimized parameters $\theta^*$
-\IF{Learnable parameters}
-    \STATE Replace $x_2$ and $y_2$ with $l/ \sqrt(2)$
-    \STATE Initialize $l$, $p_0$, $p_1$, $p_3$
-    \STATE Set $w_0$, $w_3$
-\ELSE
-    \STATE Set $p_0$, $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$
-\ENDIF
-\FOR{each batch}
-    \IF{Clamped}
-      \STATE Set $x_0$ = $min(\mathcal{D})$
-    \ENDIF
-    \STATE Evaluate 
-            $N_0 = (1-t)^3$, $N_1 = 3t(1-t)^2$, $N_2 = 3t^2(1-t)$, $N_3=t^3$
-    \STATE Calculate $\text{Numerator\_y} = \sum N_n * w_n * y_n$, $\text{Numerator\_x} = \sum N_n * w_n * x_n$, $\text{Denominator} = \sum N_n * w_n$
-    \STATE Calculate $\text{Numerator\_y}/\text{Denominator}$. $\text{Numerator\_x}/\text{Denominator}$.
-    \STATE Find $y$ for $\mathcal{D}$ values via Linear Interpolation
-    \IF{Masking}
-      \IF{Double}
-        \RETURN $y$ for $\mathcal{D} \leq 0$, $\mathcal{D} \geq min(\mathcal{D})$ and $\mathcal{D}$ otherwise
-      \ELSE
-        \RETURN $y$ for $\mathcal{D} \leq 0$ and $\mathcal{D}$ otherwise
-      \ENDIF
-    \ELSE
-      \RETURN $y$
-    \ENDIF
-\ENDFOR
-\end{algorithmic}
-\end{algorithm}
-\begin{table}
   \caption{AF with their peak curvature values and the input positions at which these maxima occur.}
   \label{tab:AF}
   \begin{tabular}{@{}lccc@{}}
@@ -341,6 +302,55 @@ Figure ~\ref{fig:nurbs} illustrates how varying the weight of the middle control
   \bottomrule
 \end{tabular}
 \end{table}
+  \begin{table}
+  \caption{Several variants of the \texttt{NELE} implementation that are provided. 
+  The spline is parameterized by control points $p_n = [x_n, y_n]$ and corresponding weights $w_n$. 
+  In the case of a cubic spline, four control points ($n = 4$) are employed.}
+  \label{tab:nelevars}
+  \begin{tabular}{@{}lllll@{}}
+    \toprule
+    VARIATION & Learnable & Fixed & Masking & Buffer\\
+    \midrule
+    \texttt{NELE} & $l$, $w_1$, $w_2$, $y_1$, $x_1$, $y_0$ & $w_0$, $w_3$, $x_0$ = $min(x)$ & $x < 0$ & no\\
+    \texttt{NELE\_LEARNABLE} & $l$, $w_1$, $w_2$, $y_1$, $x_1$, $y_0$ & $w_0$, $w_3$, $x_0$ & $x \leq 0$ & yes\\
+    \texttt{NELE\_PARAM} & - & $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$, $x_0$ = $min(x)$& $x\leq0$ and $x>x_0$ & yes\\
+    \texttt{NELE\_PARAM\_DIR} & - & $p_0$, $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$ & $x\leq 0$ and $x \geq x_0$ & yes\\
+  \bottomrule
+\end{tabular}
+\end{table}
+\begin{algorithm}
+\caption{NELE activation function}
+\label{alg:nele_training}
+\begin{algorithmic}[1]
+\REQUIRE Training data $\mathcal{D}$, initial parameters $p_0$, $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$
+\ENSURE Optimized parameters $\theta^*$
+\IF{Learnable parameters}
+    \STATE Replace $x_2$ and $y_2$ with $l/ \sqrt(2)$
+    \STATE Initialize $l$, $p_0$, $p_1$, $p_3$
+    \STATE Set $w_0$, $w_3$
+\ELSE
+    \STATE Set $p_0$, $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$
+\ENDIF
+\FOR{each batch}
+    \IF{Clamped}
+      \STATE Set $x_0$ = $min(\mathcal{D})$
+    \ENDIF
+    \STATE Evaluate $N_0 = (1-t)^3$, $N_1 = 3t(1-t)^2$, $N_2 = 3t^2(1-t)$, $N_3=t^3$, where $t \in [0,1]$
+    \STATE Calculate $\text{Numerator\_y} = \sum N_n * w_n * y_n$, $\text{Numerator\_x} = \sum N_n * w_n * x_n$, $\text{Denominator} = \sum N_n * w_n$
+    \STATE Calculate ${curve\_y} = \text{Numerator\_y}/\text{Denominator}$. ${curve\_x} = \text{Numerator\_x}/\text{Denominator}$.
+    \STATE Find ${y}$ from ${curve\_y}$ for ${curve\_x}$ = $\mathcal{D}$ values via Linear Interpolation.
+    \IF{Masking}
+      \IF{Double}
+        \RETURN $y$ for $\mathcal{D} \leq 0$, $\mathcal{D} \geq min(\mathcal{D})$ and $\mathcal{D}$ otherwise
+      \ELSE
+        \RETURN $y$ for $\mathcal{D} \leq 0$ and $\mathcal{D}$ otherwise
+      \ENDIF
+    \ELSE
+      \RETURN $y$
+    \ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=0.45\linewidth]{../../PICS/Approx_gelu.pdf}
@@ -351,23 +361,12 @@ Figure ~\ref{fig:nurbs} illustrates how varying the weight of the middle control
   \end{center}
 \end{figure}
 
-\texttt{NELE} can be constructed in a piecewise manner. For $x > 0$, a linear segment is used, 
-while for $x \leq 0$, a cubic NURBS curve with three control points and optimized weights is employed.
-This design choice can mimic the behavior of \texttt{ReLU} in the positive domain, and \texttt{GELU} in the negative domain.
-Other configurations like using NURBS for both positive and negative domains or even limiting the negative space are possible. 
-The key advantage of cubic NURBS lies in the ability to construct curves with inflection points. 
-Control points and weights used can also be learnable paramters, but this adds additional complexity to the training process.
-To approximate a target curve with \texttt{NELE}, an optimization problem is formulated to minimize the mean squared error (MSE) between the target function and the NURBS representation.
-Optimization algorithm L-BFGS-B \cite{scipy_optimize_minimize} is used to efficiently navigate the parameter space, 
-producing a smooth curve that closely follows the desired shape. The parametric values for different AF
-are given in Appendix~\ref{app:nurbsparams}.
-
 \section{Experiments with \texttt{NELE}}
 Following the construction process outlined in~\ref{fig:nurbsregen}, \texttt{NELE} is benchmarked against \texttt{tanh}, \texttt{sigmoid}, \texttt{softplus}, \texttt{ELU}, \texttt{SiLU}, \texttt{GELU}, \texttt{ReLU}, \texttt{Leaky ReLU}, \texttt{LeLU} \cite{BIGARELLA2026122739} and \texttt{Mish}. The following datasets are used: 
-(i)  Non-linear synthetic data (NLSD), (ii) MNIST \cite{lecun1998mnist}, (ii) MNIST encoder, (iv) CIFAR-10 \cite{hope2017learning}
+(i)  Non-linear synthetic data (NLSD), (ii) MNIST \cite{lecun1998mnist}, (ii) MNIST autoencoder, (iv) CIFAR-10 \cite{hope2017learning}
  and (v) CIFAR-100 \cite{krizhevsky2009cifar}.
 
-\subsection{Non-linear synthetic data}
+\subsection{Non-linear synthetic data (NLSD)}
 The neural network used for curve fitting consists of a fully connected feedforward 
 architecture with a single hidden layer of 64 neurons. 
 The hidden layer employs the various AF, while the output layer is linear. 
