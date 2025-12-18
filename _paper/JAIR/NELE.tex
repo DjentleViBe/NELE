@@ -18,6 +18,8 @@
 \documentclass[manuscript, screen, review]{jair}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \setcopyright{cc}
 \copyrightyear{2025}
 \acmDOI{10.1613/jair.1.xxxxx}
@@ -231,21 +233,20 @@ $A \neq 0$, in general. In that case, for $n = 3$, $W'$ is linear. This implies 
 is directly proportional to the weight of the middle control point. Furthermore, if the 
 x coordinates of the 3 control points are fixed, 
 this results in a total of four unknown parameters that can be learned.
+Figure ~\ref{fig:nurbs} illustrates how varying the weight of the middle control 
+  point affects the curve: a lower weight ($w=0.2$) pulls the curve away 
+  from the point, uniform weight ($w=1.0$) yields the standard quadratic B-spline, 
+  and a higher weight ($w=5.0$) attracts the curve toward the control point. 
+  Red markers indicate the control points used for all curves. 
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=0.6\linewidth]{../../PICS/nurbs.pdf}
+    \includegraphics[width=0.4\linewidth]{../../PICS/nurbs.pdf}
   \caption{NURBS curves generated from three control points with quadratic 
   degree ($p=2$) and different weights.}
   \Description{Different NURBS curves.}
   \label{fig:nurbs}
   \end{center}
 \end{figure}
-
-Figure ~\ref{fig:nurbs} illustrates how varying the weight of the middle control 
-  point affects the curve: a lower weight ($w=0.2$) pulls the curve away 
-  from the point, uniform weight ($w=1.0$) yields the standard quadratic B-spline, 
-  and a higher weight ($w=5.0$) attracts the curve toward the control point. 
-  Red markers indicate the control points used for all curves.
 \begin{table}
   \caption{AF with their peak curvature values and the input positions at which these maxima occur.}
   \label{tab:AF}
@@ -282,37 +283,113 @@ Figure ~\ref{fig:nurbs} illustrates how varying the weight of the middle control
   \bottomrule
 \end{tabular}
 \end{table}
+\section{Formulation}\label{sec:form}
+The motivation for \texttt{NELE} was 
+\begin{itemize}
+\item Universality : To enable an AF which opens up a search 
+space for flexibility.
+\item Attenuation : Prevent large positive values from weakening \cite{elfwing2017sigmoidweightedlinearunitsneural}.
+\item Non Zero-Gradient : Produce negative side activations.
+\item Smoothnesss : Maintain continuity and differentiability throughout.
+\end{itemize} 
 
+The universality follows naturally from its 
+NURBS-based approximation shown in Appendix~\ref{app:nurbsparams}. Attenuation prevention with non-zero gradients 
+is achieved through a piecewise formulation in which the 
+positive input region preserves the identity mapping of \texttt{ReLU}, 
+while the negative region is shaped to emulate smooth activations such as 
+\texttt{SiLU} or \texttt{GELU}. To ensure continuity and differentiability 
+across the junction of these regions, the control points and their 
+associated weights in the vicinity of the origin are appropriately adjusted, 
+enforcing smooth transitions between the linear and nonlinear segments.
+
+A cubic spline is employed as it provides sufficient expressivity while maintaining low 
+computational complexity and numerical stability.
+Four control points ($p_0$, $p_1$, $p_2$, $p_3$) are selected, corresponding to a cubic spline, 
+which represents the lowest order capable of modeling nonlinear curvature while avoiding 
+overfitting and their associated weights ($w_n$). The implementation is summarized in Algorithm ~\ref{alg:nele_training}.
+Continuity condition forces $p_3 = [0.0, 0.0]$ and linearity of the positive side 
+sets the slope between $p_2$ and $p_3$ = 1 to maintain tangency as depicted in Figure ~\ref{fig:nurbsregen}.
+A mask is added which returns 0 for $x < p_0$.
+The remaining control points and their associated weights were either treated as 
+learnable parameters or fixed constants. 
+For the fixed variant, setting $p_0$ = [-4.0, 0.0], $p_1 = [0.1, 0.1]$ and $w_n = 1$ yielded the best results. 
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=0.6\linewidth]{../../PICS/Approx_gelu.pdf}
-  \caption{GELU approximated for $x \leq 0$ using cubic NURBS with 3 control points and optimized weights.
-  NURBS curve used for MNIST study is also shown for comparison.}
+    \includegraphics[width=0.5\linewidth]{../../PICS/Approx_gelu.pdf}
+  \caption{GELU approximated for $x \leq 0$ using cubic NURBS with 4 control points and optimized weights.
+  NURBS curve used in experiments is also shown for comparison.}
   \Description{GELU activation function recreation.}
   \label{fig:nurbsregen}
   \end{center}
 \end{figure}
 
-\texttt{NELE} can be constructed in a piecewise manner. For $x > 0$, a linear segment is used, 
-while for $x \leq 0$, a cubic NURBS curve with three control points and optimized weights is employed.
-This design choice can mimic the behavior of \texttt{ReLU} in the positive domain, and \texttt{GELU} in the negative domain.
-Other configurations like using NURBS for both positive and negative domains or even limiting the negative space are possible. 
-The key advantage of cubic NURBS lies in the ability to construct curves with inflection points. 
-Control points and weights used can also be learnable paramters, but this adds additional complexity to the training process.
-To approximate a target curve with \texttt{NELE}, an optimization problem is formulated to minimize the mean squared error (MSE) between the target function and the NURBS representation.
-Optimization algorithm L-BFGS-B \cite{scipy_optimize_minimize} is used to efficiently navigate the parameter space, 
-producing a smooth curve that closely follows the desired shape. The parametric values for different AF
-are given in Appendix~\ref{app:nurbsparams}.
+\begin{algorithm}
+\caption{NELE activation function}
+\label{alg:nele_training}
+\begin{algorithmic}[1]
+\REQUIRE Training data $\mathcal{D}$, initial parameters $p_0$, $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$
+\ENSURE Optimized parameters
+\IF{Learnable parameters}
+    \STATE Replace $x_2$ and $y_2$ with $l/ \sqrt(2)$
+    \STATE Initialize $l$, $p_0$, $p_1$, $p_3$
+    \STATE Set $w_0$, $w_3$
+\ELSE
+    \STATE Set $p_0$, $p_1$, $p_2$, $p_3$, $w_0$, $w_1$, $w_2$, $w_3$
+\ENDIF
+\FOR{each batch}
+    \IF{Clamped}
+      \STATE Set $x_0$ = $min(\mathcal{D})$
+    \ENDIF
+    \STATE Evaluate $N_0 = (1-t)^3$, $N_1 = 3t(1-t)^2$, $N_2 = 3t^2(1-t)$, $N_3=t^3$, where $t \in [0,1]$
+    \STATE Calculate $\text{Numerator\_y} = \sum N_n * w_n * y_n$, $\text{Numerator\_x} = \sum N_n * w_n * x_n$, $\text{Denominator} = \sum N_n * w_n$
+    \STATE Calculate ${curve\_y} = \text{Numerator\_y}/\text{Denominator}$. ${curve\_x} = \text{Numerator\_x}/\text{Denominator}$.
+    \STATE Find ${y}$ from ${curve\_y}$ for ${curve\_x}$ = $\mathcal{D}$ values via Linear Interpolation.
+    \IF{Masking}
+      \IF{Double}
+        \IF{$min(\mathcal{D}) \leq\mathcal{D} \leq 0$}
+        \RETURN $y$ 
+        \ELSE
+        \RETURN $\mathcal{D}$
+        \ENDIF
+        \ELSE
+        \IF{$\mathcal{D} \leq 0$}
+        \RETURN $y$ 
+        \ELSE
+        \RETURN $\mathcal{D}$
+        \ENDIF
+      \ENDIF
+    \ELSE
+      \RETURN $y$
+    \ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
 
 \section{Experiments with \texttt{NELE}}
-Following the construction process outlined in~\ref{fig:nurbsregen}, \texttt{NELE} is benchmarked against \texttt{tanh}, \texttt{sigmoid}, \texttt{softplus}, \texttt{ELU}, \texttt{SiLU}, \texttt{GELU}, \texttt{ReLU}, \texttt{Leaky ReLU}, \texttt{LeLU} \cite{BIGARELLA2026122739} and \texttt{Mish}. The following datasets are used: 
-(i)  Non-linear synthetic data (NLSD), (ii) MNIST \cite{lecun1998mnist}, (ii) MNIST encoder, (iv) CIFAR-10 \cite{hope2017learning}
- and (v) CIFAR-100 \cite{krizhevsky2009cifar}.
+Following the construction process outlined in Section ~\ref{sec:form}, 
+\texttt{NELE} is benchmarked against a representative set 
+of standard AF, \texttt{tanh}, \texttt{sigmoid}, \texttt{softplus}, 
+\texttt{ELU}, \texttt{SiLU}, \texttt{GELU}, \texttt{ReLU}, 
+\texttt{Leaky ReLU}, \texttt{LeLU} \cite{BIGARELLA2026122739} and 
+\texttt{Mish}. Experiments are conducted on a combination of synthetic and standard benchmark datasets: 
+(i)  Non-linear synthetic data (NLSD), (ii) MNIST \cite{lecun1998mnist}, (ii) MNIST autoencoder, (iv) CIFAR-10 \cite{hope2017learning}
+ and (v) CIFAR-100 \cite{krizhevsky2009cifar}. 
+All empirical evaluations are performed using feed-forward neural 
+network architectures. The behavior of \texttt{NELE} in 
+large-scale architectures, such as transformers or 
+recurrent networks, is not investigated in this work.
+All models are trained for a fixed number of epochs to ensure a 
+fair comparison across AF under identical optimization conditions.
 
-\subsection{Non-linear synthetic data}
-The neural network used for curve fitting consists of a fully connected feedforward 
+\subsection{Non-linear synthetic data (NLSD)}
+NLSD provides a controlled environment for assessing functional expressivity.
+The neural network used for curve fitting consists of a fully connected feed-forward 
 architecture with a single hidden layer of 64 neurons. 
 The hidden layer employs the various AF, while the output layer is linear. 
+This design isolates the contribution of the activation function and 
+ensures that observed differences in performance reflect the expressive 
+capacity of each activation.
 In schematic form, the network can be represented as:
 \begin{displaymath}
 x \;\xrightarrow{\text{Linear } (\text{input\_dim} \to 64)}\;
@@ -341,19 +418,19 @@ y_4 = \tanh(x) + \epsilon\tag{d}
 y_5 = x^2 +  \epsilon\tag{e}
 \end{equation}
 \begin{equation}
-  y_6 = \frac{x^3}{e^{x} - 1 + 10^{-6}} + \epsilon\tag{f}
+y_6 = \frac{x^3}{e^{x} - 1 + 10^{-6}} + \epsilon\tag{f}
 \end{equation}
 where $\epsilon \sim \mathcal{N}(0,1)$ denotes Gaussian noise added to simulate measurement 
 or environmental variability. The chosen functions span a range of behaviors, 
 including oscillatory patterns, exponential decay, saturating nonlinearities 
 and polynomial growth, thereby providing a comprehensive testbed for assessing the 
-generalization capability of different neural network architectures.
-Each dataset was used to train feedforward neural networks with various AF. 
+generalization capability of different neural network architectures. 
 The networks were evaluated based on their ability to fit the underlying 
-function while mitigating overfitting to noise ($\epsilon = 0.2$). Each model was trained for 
+function while mitigating overfitting to noise, $\epsilon = 0.2$, chosen relative to the scale of the input data. Each model was trained for 
 a maximum of 300 epochs with a learning rate ($10^{-2}$, $10^{-3}$, $10^{-4}$) and parameter initialisation 
-optimised to give the lowest training loss.
-The studies were repeated across 7 runs
+optimised to give the lowest training loss through grid search.
+The studies were repeated across 7 runs with different random seeds to 
+account for stochasticity in network initialization and data shuffling \cite{Dushatskiy_2022}.
 and the median training loss across these runs is shown in 
 Figure~\ref{fig:Lossplottrend}.
 Preliminary results indicate that AF with smooth, bounded characteristics 
@@ -422,8 +499,7 @@ K_\text{total} = \sum_{i=1}^{N} \kappa_i
 \begin{table}
   \caption{Comparison of smoothness metrics for different activation functions and \texttt{NELE} tuned for lowest training loss. 
 The table reports total curvature ($K_\text{total}$) for each AF. 
-Lower values indicate smoother behavior. The lowest value in each column 
-is highlighted in \textbf{bold}, indicating the smoothest curve.}
+Lower values indicate smoother behavior.}
   \label{tab:smooth}
   \begin{tabular}{@{}llllllll@{}}
     \toprule
@@ -576,15 +652,15 @@ Figure~\ref{fig:mnistloss} shows how each AF influences convergence speed and fi
 \end{figure}
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=0.6\linewidth]{../../PICS/MNIST/noise_study.pdf}
+    \includegraphics[width=0.5\linewidth]{../../PICS/MNIST/noise_study.pdf}
   \caption{Robustness results for MNIST over noise strengths using different AF.\label{fig:mnistnoise}}
   \end{center}
   \Description{MNIST results}
 \end{figure}
 \texttt{NELE} converged within 30 epochs with a 
 learning rate (\textit{lr}) of $0.001$ and achieved the lowest test error~\ref{tab:mnisttesult}. 
-The trained model was also tested
-with inputs containing uniform noise Unif[-a,a] added to each example at different levels a, where
+The trained model was also tested for robustness against
+inputs containing uniform noise Unif[-a,a] added to each example at different levels a, where
 a = 3 is the greatest noise strength. 
 Here, \texttt{NELE} shows good robustness with its performace matching \texttt{GELU} and exceeding
 other AF.
@@ -613,9 +689,9 @@ lowest test error among all activations evaluated.}
 \end{table}
 
 \subsection{MNIST autoencoder}
-The neural netowrk is a deep autoencoder from \cite{desjardins2015naturalneuralnetworks}
-with Adam optimizer and a batch size of 64. A learning rate of $10^{-3}$ was used 
-with Mean Squared Error loss. Figure~\ref{fig:mnistenc} shows that
+The neural network is a deep autoencoder from \cite{desjardins2015naturalneuralnetworks}
+with Adam optimizer and a batch size of 64. A learning rate of $10^{-3}$ with Mean Squared Error loss 
+produced the highest validation score with 5,000 samples. Figure~\ref{fig:mnistenc} shows that
 with settings of \texttt{NELE} from Figure~\ref{fig:nurbsregen}, the AF
 can perform quite well in tests.
 \begin{figure}[H]
@@ -632,7 +708,7 @@ can perform quite well in tests.
 The neural network is a 9-layer network with the architecture and training
 procedure from \cite{hendrycks2023gaussianerrorlinearunits}. The tuning was done 
 using learning rates of $10^{-3}$, $10^{-4}$, and $10^{-5}$ for 100 epochs.
-The best model was selected based on validation accuracy using 5,000 samples.
+The best model was selected based on validation accuracy using 90-10 training/validaition split.
 Seven runs were performed and the median values are reported.
 Figure~\ref{fig:cifar10loss} shows the training loss and test accuracy calculated every 5 epochs for CIFAR-10 over epochs using different AF.
 
@@ -654,7 +730,6 @@ at the end of a residual block to stabilize exploding ELU's \cite{Shah_2016}
 as implemented in \cite{hendrycks2023gaussianerrorlinearunits}. Setting from Figure~\ref{fig:nurbsregen} 
 were used to obtain Median convergence
 curves over seven runs as shown in Figure~\ref{fig:cifar100loss}.
-
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=1.0\linewidth]{../../PICS/CIFAR100/training_loss.pdf}
@@ -663,7 +738,6 @@ curves over seven runs as shown in Figure~\ref{fig:cifar100loss}.
   \end{center}
   \Description{CIFAR100 results}
 \end{figure}
-
 \section{Conclusions}
 \texttt{NELE} exhibits a combination of properties that make it particularly 
 well suited for functional approximation tasks. 
@@ -684,10 +758,8 @@ learning tasks. The empirical results consistently demonstrate that
 \texttt{NELE} achieves superior performance relative to existing activation 
 function methods, both in terms of convergence speed and predictive accuracy, 
 highlighting its potential as a universal activation function capable of 
-capturing complex functional relationships
+capturing complex functional relationships.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 %%
 %% The acknowledgments section is defined using the "acks" environment
 %% (and NOT an unnumbered section). This ensures the proper
@@ -916,7 +988,9 @@ y'' = (1 - \beta)^2e^{(1 - \beta)x}
 \end{displaymath}
 
 \section{Curve approximation with \texttt{NELE}\label{app:nurbsparams}}
-
+To approximate a target curve with \texttt{NELE}, an optimization problem is formulated to minimize the mean squared error (MSE) between the target function and the NURBS representation.
+Optimization algorithm L-BFGS-B \cite{scipy_optimize_minimize} is used to efficiently navigate the parameter space, 
+producing a smooth curve that closely follows the desired shape.
 \begin{table}[H]
   \caption{Control point coordinates and their respective weights for approximation on the negative space of AF using \texttt{NELE}}
   \label{tab:curveapprox}
@@ -962,13 +1036,13 @@ Select the answers that apply to your research -- one per item.
 %\hh{revised for stylistic consistency:}
 \begin{enumerate}
     \item All claims investigated in this work are clearly stated. 
-    [yes/partially/no]
+    [yes]
     \item Clear explanations are given how the work reported substantiates the claims. 
-    [yes/partially/no]
+    [yes]
     \item Limitations or technical assumptions are stated clearly and explicitly. 
-    [yes/partially/no]
+    [yes]
     \item Conceptual outlines and/or pseudo-code descriptions of the AI methods introduced in this work are provided, and important implementation details are discussed. 
-    [yes/partially/no/NA]
+    [yes]
     \item 
     Motivation is provided for all design choices, including algorithms, implementation choices, parameters, data sets and experimental protocols beyond metrics.
     [yes/partially/no]

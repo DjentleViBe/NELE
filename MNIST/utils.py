@@ -8,7 +8,7 @@ import numpy as np
 import torch
 from torch import nn
 from models.model_lelu import LELU
-from models.model_nele import NeleLutParam
+from models.model_nele import NeleUniversal
 
 def get_activation(activation_type, device=None):
     """
@@ -34,7 +34,7 @@ def get_activation(activation_type, device=None):
         'softplus' : nn.Softplus(),
         'tanh': nn.Tanh(),
         'lelu' : LELU(),
-        'nele' : NeleLutParam(device),
+        'nele' : NeleUniversal(device),
     }
 
     return dispatch[base]

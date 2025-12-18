@@ -63,7 +63,7 @@ plt.plot(*zip(*ctrlpts), label='Control points', color='red', linestyle = '--', 
 plt.xlabel("X")
 plt.ylabel("Y")
 plt.legend()
-plt.tight_layout()
 plt.ylim(-0.25, 11)
 plt.grid(True, linewidth=0.1)
+plt.tight_layout()
 plt.savefig('PICS/nurbs.pdf')

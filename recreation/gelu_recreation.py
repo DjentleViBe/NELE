@@ -82,11 +82,11 @@ def gelu_special():
             '--', label=r'$\texttt{GELU}$', color = 'red')
     plt.plot(curve_gen[:, 0], curve_gen[:, 1], label = r'$\texttt{GELU}$ approximation', \
             color = 'k', linewidth=0.7)
-    plt.plot(curve_mnist[:, 0], curve_mnist[:, 1], label=r'$\texttt{NELE}$ MNIST', \
+    plt.plot(curve_mnist[:, 0], curve_mnist[:, 1], label=r'$\texttt{NELE}$ experiment', \
             color = 'green', linewidth=1.0)
-    plt.scatter(opt_ctrl[:, 0], opt_ctrl[:, 1], label=r'Control Points $\texttt{NELE}$', \
+    plt.scatter(opt_ctrl[:, 0], opt_ctrl[:, 1], label=r'Control Points $\texttt{GELU}$ approx', \
                 color = 'k', s=3)
-    plt.scatter(opt_ctrl_mnist[:, 0], opt_ctrl_mnist[:, 1], label="Control Points MNIST", \
+    plt.scatter(opt_ctrl_mnist[:, 0], opt_ctrl_mnist[:, 1], label=r"Control Points $\texttt{NELE}$ exp", \
                 color = 'green', marker = '+')
     # Label each point p0, p1, p2, p3
     for i, (x_val, y) in enumerate(opt_ctrl_mnist):
