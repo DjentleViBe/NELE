@@ -134,7 +134,7 @@ def curve_fit_nele(reset):
             elif afunc == 'exppoly':
                 ################### EXP-POLY NOISE ##########################
                 x = torch.linspace(0, 10, 200).unsqueeze(1)
-                y = torch.tensor(x**3) / (torch.exp(x) - 1 + 1E-6) \
+                y = x**3 / (torch.exp(x) - 1 + 1E-6) \
                     + (1 / cfg.noise_level) * torch.randn(x.size())
                 loss_val, std_val = nlsd_data(x, y, af=af, study_type='exppoly')
                 loss_collect.append(loss_val)
