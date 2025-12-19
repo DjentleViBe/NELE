@@ -7,7 +7,7 @@ Functions for curve fit analysis
 """
 import torch
 from file_operations import reset_directory, create_directory
-from NLSD.study import nlsd_data
+from nlsd.study import nlsd_data
 import config as cfg
 
 def curve_fit(device, reset, exec_study):

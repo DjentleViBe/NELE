@@ -14,7 +14,7 @@ from models.model_lelu import LELU
 from models.model_nele import NeleUniversal
 from csv_operations import csv_write
 from file_operations import create_directory
-from NLSD.neuralnet import Net
+from nlsd.neuralnet import Net
 
 def nlsd_data(x, y, af, device='cpu', study_type='default'):
     """
