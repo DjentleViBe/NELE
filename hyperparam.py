@@ -97,6 +97,3 @@ def find_min():
         best_row = df.loc[idx]         # full row
 
         print(best_row)
-
-run_study()
-find_min()
