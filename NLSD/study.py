@@ -47,7 +47,7 @@ def nlsd_data(x, y, af, device='cpu', study_type='default'):
         'softplus' : nn.Softplus(),
         'tanh': nn.Tanh(),
         'lelu' : LELU(),
-        'nele' : NeleUniversal()
+        'nele' : NeleUniversal(device)
     }
     activation = dispatch[base]
 
