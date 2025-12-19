@@ -34,7 +34,7 @@ minw1 = np.ones(len(cfg.FUNC_NLSD_NELE))
 minw2 = np.ones(len(cfg.FUNC_NLSD_NELE))
 minw3 = np.ones(len(cfg.FUNC_NLSD_NELE))
 
-def run_study():
+def run_study(device):
     """Run hyper param tuning study
     """
     reset_directory("./HYPERPARAM/NLSD")
@@ -67,7 +67,7 @@ def run_study():
                                     # launch the study
                                     subprocess.run(
                                         [sys.executable, "main.py", "--mode=train_nele", 
-                                        "--device=mps", "--type=nlsd"],
+                                        f"--device={device}", "--type=nlsd"],
                                         check=True
                                     )
 
