@@ -24,7 +24,7 @@ w3 = [1.0, 1.5, 0.1981]
 
 ############################# NLSD ##################################
 lines[4] = "epochs = 300"
-lines[5] = "epochs = 300"
+lines[5] = "save_every = 600"
 curve_loss = np.ones(len(cfg.FUNC_NLSD_NELE))
 mincp0 = np.ones((len(cfg.FUNC_NLSD_NELE), 2))
 mincp1 = np.ones((len(cfg.FUNC_NLSD_NELE), 2))
@@ -47,7 +47,7 @@ def run_study(device):
                         for w_1 in w1:
                             for w_2 in w2:
                                 for w_3 in w3:
-                                    lines[7] = f"learning_rate = 0.1"
+                                    lines[6] = f"learning_rate = 0.01"
                                     cp0 = [cp0x, 0.0]
                                     cp1 = [cp1x, cp1y]
                                     cp2 = [length/1.4142, length/1.41422]
@@ -65,6 +65,7 @@ def run_study(device):
                                     )
                                     file_path.write_text("\n".join(lines) + "\n")
                                     # launch the study
+                                    
                                     subprocess.run(
                                         [sys.executable, "main.py", "--mode=train_nele", 
                                         f"--device={device}", "--type=nlsd"],
@@ -86,6 +87,7 @@ def run_study(device):
                                         }])
                                         row.to_csv(f"./HYPERPARAM/NLSD/hyperparam_{curve}.csv", mode="a", 
                                                 header=not Path(f"./HYPERPARAM/NLSD/hyperparam_{curve}.csv").exists(), index=False)
+                                    
                                     i += 1
                                     # sys.exit()
 def find_min():
@@ -95,5 +97,5 @@ def find_min():
         df = pd.read_csv(f"./HYPERPARAM/NLSD/hyperparam_{curve}.csv")
         idx = df["loss"].idxmin()      # index of minimum loss
         best_row = df.loc[idx]         # full row
-
+        print(f"{curve}")
         print(best_row)
