@@ -100,5 +100,5 @@ STUDY =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1',
 ######################### HYPERPARAM ###############
 PATIENCE = 5
 HYPER_EPOCHS = 3
-TRIALS = 200
-N_JOBS = 20
+TRIALS = 5
+N_JOBS = 1

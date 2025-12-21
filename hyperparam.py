@@ -11,10 +11,8 @@ from file_operations import create_directory, reset_directory
 import optuna
 import time
 from mnist.mnist import mnist_data
+import shutil
 
-create_directory("./HYPERPARAM")
-file_path = Path("config.py")
-lines = file_path.read_text().splitlines()
 cp0_x = [-1.0, -4.0, -6.0]
 cp1_x = [-0.1, -0.3]
 cp1_y = [-0.1, -0.3]
@@ -25,8 +23,6 @@ w2 = [1.0, 1.5, 0.1238]
 w3 = [1.0, 1.5, 0.1981]
 
 ############################# NLSD ##################################
-lines[4] = "epochs = 300"
-lines[5] = "save_every = 600"
 curve_loss = np.ones(len(cfg.FUNC_NLSD_NELE))
 mincp0 = np.ones((len(cfg.FUNC_NLSD_NELE), 2))
 mincp1 = np.ones((len(cfg.FUNC_NLSD_NELE), 2))
@@ -40,6 +36,10 @@ def run_study(device):
     """Run hyper param tuning study
     """
     reset_directory("./HYPERPARAM/NLSD")
+    file_path = Path("config.py")
+    lines = file_path.read_text().splitlines()
+    lines[4] = "epochs = 300"
+    lines[5] = "save_every = 600"
     i = 0
     for cp0x in cp0_x:
         for cp1x in cp1_x:
@@ -128,7 +128,8 @@ def objective(trial, device):
     # -------------------------
     # Write config file
     # -------------------------
-    # reset_directory("./HYPERPARAM/MNIST")
+    file_path = Path(f"./RESULTS/MNIST/nele={trial.number}/config.py")
+    lines = file_path.read_text().splitlines()
     lines[4]  = f"epochs = 1"
     lines[5]  = f"save_every = 10"
     lines[6]  = f"learning_rate = {lr}"
@@ -148,17 +149,19 @@ def objective(trial, device):
     best_val = float('inf')
     trial_id = trial.number
 
-    lines[48] = (
-                f"AF_nele = ['nele={trial_id}']"
-            )
+    lines[48] = (f"AF_nele = ['nele={trial_id}']")
     file_path.write_text("\n".join(lines) + "\n")
-    create_directory("./RESULTS/MNIST/"+cfg.AF_nele[0])
     time.sleep(trial.number * 0.5)
     print(trial.number)
-    best_val, trial =  mnist_data(cfg.epochs, cfg.learning_rate, device, 2, cfg.AF_nele[0], trial)
+    best_val, trial =  mnist_data(cfg.epochs, device, 2, cfg.AF_nele[0], trial)
     return best_val
 
 def run_study_mnist(device):
+    directory = 'RESULTS/MNIST/'
+    create_directory('RESULTS/MNIST/')
+
+    source_file = "./config.py"
+
     study = optuna.create_study(
         direction="minimize",
         sampler=optuna.samplers.TPESampler(),
@@ -167,7 +170,11 @@ def run_study_mnist(device):
             n_warmup_steps=5
         ),
     )
-
+    for nt in range(cfg.TRIALS):
+        directory = f"./RESULTS/MNIST/nele={nt}"
+        create_directory(directory)
+        shutil.copy(source_file, directory)
+    
     study.optimize(
         lambda trial: objective(trial, device),
         n_trials=cfg.TRIALS,
