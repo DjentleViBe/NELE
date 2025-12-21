@@ -21,7 +21,7 @@ from mnist.neuralnet import DeepFCNet
 from mnist.utils import save
 import config as cfg
 
-def mnist_data(epochs, device, exec_type, activation_type='default', trial = None):
+def mnist_data(directory, device, exec_type, config=None, activation_type='default', trial = None):
     """
     MNIST training
     
@@ -35,17 +35,7 @@ def mnist_data(epochs, device, exec_type, activation_type='default', trial = Non
     activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', \
                     'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
     loss_collect = np.zeros(len(activations))
-    directory = 'RESULTS/MNIST/' + activation_type + '/'
-    create_directory('RESULTS/MNIST/' + activation_type + '/')
-    create_directory('PICS/MNIST/' + activation_type + '/')
-    source_file = "./config.py"
-    # Copy file into folder
-    shutil.copy(source_file, directory)
-    config = {}
-    with open(directory + "config.py") as f:
-        exec(f.read(), config)
-    # Activation function selection
-    activation = get_activation(activation_type, device)
+    activation = get_activation(activation_type, config, device)
     # Load MNIST
     transform = transforms.Compose([
         transforms.ToTensor(),
@@ -86,8 +76,8 @@ def mnist_data(epochs, device, exec_type, activation_type='default', trial = Non
     correct_test, total_test = 0.0, 0.0
     test_loss_0, test_loss_3 = 0.0, 0.0
     if exec_type == 2:
-        epochs = cfg.HYPER_EPOCHS
-    for epoch in range(epochs):
+        config["epochs"] = cfg.HYPER_EPOCHS
+    for epoch in range(config["epochs"]):
         epoch_loss = 0
         model.train()
         for param_group in optimizer.param_groups:

@@ -116,7 +116,7 @@ def objective(trial, device):
     w_2 = trial.suggest_float("w2", min(w2), max(w2))
     w_3 = trial.suggest_float("w3", min(w3), max(w3))
 
-    lr = trial.suggest_float("learning_rate", 1e-4, 1e-2, log=True)
+    lr = trial.suggest_float("learning_rate", 1e-2, 5e-2, log=True)
 
     # -------------------------
     # Derived parameters
@@ -128,7 +128,8 @@ def objective(trial, device):
     # -------------------------
     # Write config file
     # -------------------------
-    file_path = Path(f"./RESULTS/MNIST/nele={trial.number}/config.py")
+    directory = "./RESULTS/MNIST/"
+    file_path = Path(f"{directory}nele={trial.number}/config.py")
     lines = file_path.read_text().splitlines()
     lines[4]  = f"epochs = 1"
     lines[5]  = f"save_every = 10"
@@ -148,10 +149,13 @@ def objective(trial, device):
 
     best_val = float('inf')
     trial_id = trial.number
-
+    af = f"nele={trial_id}"
     lines[48] = (f"AF_nele = ['nele={trial_id}']")
     file_path.write_text("\n".join(lines) + "\n")
-    best_val, trial =  mnist_data(cfg.epochs, device, 2, cfg.AF_nele[0], trial)
+    config = {}
+    with open(f"{directory}nele={trial.number}/config.py") as f:
+            exec(f.read(), config)
+    best_val, trial =  mnist_data(directory, device, 2, config, f'nele={trial_id}', trial)
     return best_val
 
 def run_study_mnist(device):
