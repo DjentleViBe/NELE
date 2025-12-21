@@ -8,6 +8,7 @@ import pandas as pd
 import config as cfg
 import numpy as np
 from file_operations import create_directory, reset_directory
+import optuna
 
 create_directory("./HYPERPARAM")
 
@@ -99,3 +100,82 @@ def find_min():
         best_row = df.loc[idx]         # full row
         print(f"{curve}")
         print(best_row)
+
+def objective(trial, device):
+    # -------------------------
+    # Hyperparameters to tune
+    # -------------------------
+    cp0x = trial.suggest_float("cp0x", min(cp0_x), max(cp0_x))
+    cp1x = trial.suggest_float("cp1x", min(cp1_x), max(cp1_x))
+    cp1y = trial.suggest_float("cp1y", min(cp1_y), max(cp1_y))
+    length = trial.suggest_float("length", min(l), max(l))
+
+    w0 = trial.suggest_float("w0", min(w0), max(w0))
+    w1 = trial.suggest_float("w1", min(w1), max(w1))
+    w2 = trial.suggest_float("w2", min(w2), max(w2))
+    w3 = trial.suggest_float("w3", min(w3), max(w3))
+
+    lr = trial.suggest_float("learning_rate", 1e-4, 1e-2, log=True)
+
+    # -------------------------
+    # Derived parameters
+    # -------------------------
+    cp0 = [cp0x, 0.0]
+    cp1 = [cp1x, cp1y]
+    cp2 = [length / 1.4142, length / 1.4142]
+
+    # -------------------------
+    # Write config file
+    # -------------------------
+    reset_directory("./HYPERPARAM/MNIST")
+    lines[6]  = f"epochs = 1"
+    lines[6]  = f"learning_rate = {lr}"
+    lines[7]  = f"val_ratio = 0.1"
+    lines[9]  = f"w0 = {w0}"
+    lines[10] = f"w1 = {w1}"
+    lines[11] = f"w2 = {w2}"
+    lines[12] = f"w3 = {w3}"
+    lines[13] = f"cp0 = {cp0}"
+    lines[14] = f"cp1 = {cp1}"
+    lines[15] = f"cp2 = {cp2}"
+
+    file_path.write_text("\n".join(lines) + "\n")
+
+    # -------------------------
+    # Training loop (30 epochs)
+    # -------------------------
+    MAX_EPOCHS = 30
+    PATIENCE = 6
+
+    best_val = float("inf")
+    no_improve = 0
+
+    for epoch in range(MAX_EPOCHS):
+        lines[33] = (
+                    f"AF_nele = ['nele={epoch}']"
+                )
+        subprocess.run(
+                [sys.executable, "main.py", "--mode=train_nele", 
+                f"--device={device}", "--type=mnist"],
+                check=True
+            )
+        df = pd.read_csv(f"./RESULTS/MNIST/nele={epoch}/loss_history_nele={i}.csv")                
+        val_loss = df["val"].iloc[-1]
+        # report to Optuna
+        trial.report(val_loss, epoch)
+
+        # pruning
+        if trial.should_prune():
+            raise optuna.TrialPruned()
+
+        # early stopping
+        if val_loss < best_val:
+            best_val = val_loss
+            no_improve = 0
+        else:
+            no_improve += 1
+
+        if no_improve >= PATIENCE:
+            break
+
+    return best_val
