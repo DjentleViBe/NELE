@@ -151,8 +151,6 @@ def objective(trial, device):
 
     lines[48] = (f"AF_nele = ['nele={trial_id}']")
     file_path.write_text("\n".join(lines) + "\n")
-    time.sleep(trial.number * 0.5)
-    print(trial.number)
     best_val, trial =  mnist_data(cfg.epochs, device, 2, cfg.AF_nele[0], trial)
     return best_val
 
