@@ -153,6 +153,8 @@ def objective(trial, device):
             )
     file_path.write_text("\n".join(lines) + "\n")
     create_directory("./RESULTS/MNIST/"+cfg.AF_nele[0])
+    time.sleep(trial.number * 0.5)
+    print(trial.number)
     best_val, trial =  mnist_data(cfg.epochs, cfg.learning_rate, device, 2, cfg.AF_nele[0], trial)
     return best_val
 
