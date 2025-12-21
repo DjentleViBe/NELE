@@ -100,5 +100,14 @@ STUDY =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1',
 ######################### HYPERPARAM ###############
 PATIENCE = 5
 HYPER_EPOCHS = 3
-TRIALS = 5
-N_JOBS = 1
+TRIALS = 20
+N_JOBS = 5
+range_cp0_x = [-1.0, -4.0, -6.0]
+range_cp1_x = [-0.1, -0.3]
+range_cp1_y = [-0.1, -0.3]
+range_l = [-1.0, -0.5]
+range_w0 = [1.0, 0.5, 1.9807]
+range_w1 = [1.0, 1.5, 0.7178]
+range_w2 = [1.0, 1.5, 0.1238]
+range_w3 = [1.0, 1.5, 0.1981]
+range_lr = [0.001, 0.01]
