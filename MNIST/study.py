@@ -18,8 +18,9 @@ from mnist.utils import get_activation
 from mnist.neuralnet import DeepFCNet
 from mnist.utils import save
 import config as cfg
+import optuna
 
-def mnist_data(epochs, learn_rate, device, exec_type, activation_type='default'):
+def mnist_data(epochs, learn_rate, device, exec_type, activation_type='default', trial = None):
     """
     MNIST training
     
@@ -29,6 +30,7 @@ def mnist_data(epochs, learn_rate, device, exec_type, activation_type='default')
     :param exec_type: study or standalone
     :param activation_type: Description
     """
+    best_val = float('inf')
     activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', \
                     'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
     loss_collect = np.zeros(len(activations))
@@ -76,6 +78,8 @@ def mnist_data(epochs, learn_rate, device, exec_type, activation_type='default')
     correct_val, total_val = 0.0, 0.0
     correct_test, total_test = 0.0, 0.0
     test_loss_0, test_loss_3 = 0.0, 0.0
+    if exec_type == 2:
+        epochs = cfg.HYPER_EPOCHS
     for epoch in range(epochs):
         epoch_loss = 0
         model.train()
@@ -95,6 +99,7 @@ def mnist_data(epochs, learn_rate, device, exec_type, activation_type='default')
 
         # Optional: validation
         val_acc = 0.0
+        val_err = 0.0
         if cfg.val_ratio != 0:
             model.eval()
             with torch.no_grad():
@@ -105,7 +110,27 @@ def mnist_data(epochs, learn_rate, device, exec_type, activation_type='default')
                     total_val += y.size(0)
                     correct_val += (predicted == y).sum().item()
             val_acc = correct_val / total_val
+            val_err = 1 - val_acc
         val_collect.append(val_acc)
+        if exec_type == 2:
+            if trial is not None:
+                trial.report(val_err, epoch + 1)
+                if trial.should_prune():
+                    raise optuna.TrialPruned()
+            if val_err < best_val:
+                best_val = val_err
+                no_improve = 0
+            else:
+                no_improve += 1
+
+            if no_improve >= cfg.PATIENCE:
+                loss_collect = torch.tensor(loss_collect)
+                test_collect = torch.tensor(test_collect)
+                val_collect = torch.tensor(val_collect)
+                csv_write2(directory + '/loss_history_' + activation_type + '.csv',
+                            torch.linspace(1, cfg.epochs+1, cfg.epochs+1),
+                            loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec_type)
+                return best_val, trial
 
         if (epoch + 1) % 5 == 0 or epoch == 0:
             # torch.manual_seed(1234)
@@ -135,8 +160,8 @@ def mnist_data(epochs, learn_rate, device, exec_type, activation_type='default')
         test_collect.append(test_loss_0)
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch, directory, test_loss_0)
-        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}, \
-              Test Acc 0: {test_loss_0:.4f}, Test Acc 3: {test_loss_3:.4f}, lr : {lr:.5f}")
+        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}," 
+              f"Test Acc 0: {test_loss_0:.4f}, Test Acc 3: {test_loss_3:.4f}, lr : {lr:.5f}")
 
     # Evaluate
     loss_collect = torch.tensor(loss_collect)
@@ -145,3 +170,5 @@ def mnist_data(epochs, learn_rate, device, exec_type, activation_type='default')
     csv_write2(directory + '/loss_history_' + activation_type + '.csv',
               torch.linspace(1, cfg.epochs+1, cfg.epochs+1),
               loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec_type)
+    if exec_type == 2:
+        return best_val, trial

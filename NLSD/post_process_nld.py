@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import config as cfg
 from csv_operations import csv_read
-from NLSD.smoothness import curvature_smoothness
+from nlsd.smoothness import curvature_smoothness
 from file_operations import reset_directory, create_directory
 
 def plot_only(x, study_type):

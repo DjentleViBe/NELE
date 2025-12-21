@@ -2,18 +2,18 @@
 """
 Contains various parameters used for running the simulation
 """
-epochs = 75
-save_every = 75
-learning_rate = 0.001
-val_ratio = 0.0
+epochs = 1
+save_every = 10
+learning_rate = 0.0011822018325786745
+val_ratio = 0.1
 #################### NURBS #####################
-w0 = 1.9807
-w1 = 0.7178
-w2 = 0.1238
-w3 = 0.1981
-cp0 = [-4.0, 0.0]
-cp1 = [-0.1, -0.1]
-cp2 = [-1.0/1.4142, -1.0/1.4142]
+w0 = 1.265562755757352
+w1 = 0.855259918000353
+w2 = 0.6677913185018659
+w3 = 0.7766388322934815
+cp0 = [-4.3717862589854155, 0.0]
+cp1 = [-0.262049463381773, -0.22580896374032028]
+cp2 = [-0.40149332084437517, -0.40149332084437517]
 cp3 = [0.0, 0.0]
 masking = 2 # 0: no, 1: single 2: double
 clamping = True
@@ -46,7 +46,7 @@ num_hidden_layers = 8
 num_classes = 10
 batch_size = 128
 noise_level = 3.0
-AF_nele =  ['nele=1', 'lnele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'lelu=7']
+AF_nele = ['nele=4']
 AF_plot_nele =  ['nele', 'nele', 'nele', 'nele', 'nele', 'nele', 'nele']
 AF = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', \
       'relu', 'leaky_relu', 'lelu', 'mish', 'nele']
@@ -97,3 +97,8 @@ STUDY =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1',
        'sigmoid=7', 'leaky_relu=7', 'silu=7', 
        'softplus=7', 'nele=7', 'mish=7', 'lelu=7'
        ]
+######################### HYPERPARAM ###############
+PATIENCE = 5
+HYPER_EPOCHS = 3
+TRIALS = 200
+N_JOBS = 20

@@ -5,8 +5,8 @@
 main file
 """
 import argparse
-from NLSD.curve_fit import curve_fit, curve_fit_nele
-from NLSD.post_process_nld import process_nld
+from nlsd.curve_fit import curve_fit, curve_fit_nele
+from nlsd.post_process_nld import process_nld
 from mnist.mnist import mnist_train, mnist_eval, mnist_train_nele, mnist_train_study
 from mnist.post_process_mnist_nele import mnist_nele
 from mnist.post_process_tsinm import process_mnist
@@ -23,6 +23,7 @@ from cifar10.cifar import cifar10_train, cifar10_train_nele
 from cifar100.post_process_cifar100 import process_cifar100
 from cifar100.post_process_cifar100_nele import process_cifar100_nele
 from cifar100.cifar import cifar100_train, cifar100_train_nele
+from hyperparam import run_study, find_min, run_study_mnist
 
 if __name__ == "__main__":
     print("Begin Analysis")
@@ -43,6 +44,9 @@ if __name__ == "__main__":
             curve_fit(args.device, args.reset, 1.0)
         elif args.mode == 'process':
             process_nld(args.reset)
+        elif args.mode == 'hyperparam':
+            run_study(args.device)
+            find_min()
     elif args.type == 'mnist':
         if args.mode == 'train':
             mnist_train(args.device, args.reset, args.exec)
@@ -56,6 +60,8 @@ if __name__ == "__main__":
             process_mnist()
         elif args.mode == 'process_nele':
             mnist_nele(args.device)
+        elif args.mode == 'hyperparam':
+            run_study_mnist(args.device)
     elif args.type == 'mnistenc':
         if args.mode == 'train':
             mnist_enc_train(args.device, args.reset, args.exec)

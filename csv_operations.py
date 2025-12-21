@@ -40,13 +40,13 @@ def csv_write2(filename, x, predicted, xname, yname, zname, wname, y_actual, w_a
     :param w_actual: W values
     :param exec: file mode
     """
-    if filemode == 0:
-        mode = 'w'
-    else:
+    if filemode == 1:
         mode = 'a'
+    else:
+        mode = 'w'
     with open(filename, mode=mode, newline='', encoding = 'utf-8') as file:
         writer = csv.writer(file)
-        if filemode == 0:
+        if filemode != 1:
             writer.writerow([xname, yname, zname, wname])  # header
         for xi, yi, zi, wi in zip(x, predicted, y_actual, w_actual):
             writer.writerow([xi.item(), yi.item(), zi.item(), wi.item()])
