@@ -23,7 +23,7 @@ from cifar10.cifar import cifar10_train, cifar10_train_nele
 from cifar100.post_process_cifar100 import process_cifar100
 from cifar100.post_process_cifar100_nele import process_cifar100_nele
 from cifar100.cifar import cifar100_train, cifar100_train_nele
-from hyperparam import run_study, find_min
+from hyperparam import run_study, find_min, run_study_mnist
 
 if __name__ == "__main__":
     print("Begin Analysis")
@@ -60,6 +60,8 @@ if __name__ == "__main__":
             process_mnist()
         elif args.mode == 'process_nele':
             mnist_nele(args.device)
+        elif args.mode == 'hyperparam':
+            run_study_mnist(args.device)
     elif args.type == 'mnistenc':
         if args.mode == 'train':
             mnist_enc_train(args.device, args.reset, args.exec)

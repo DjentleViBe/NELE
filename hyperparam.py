@@ -9,9 +9,10 @@ import config as cfg
 import numpy as np
 from file_operations import create_directory, reset_directory
 import optuna
+import time
+from mnist.mnist import mnist_data
 
 create_directory("./HYPERPARAM")
-
 file_path = Path("config.py")
 lines = file_path.read_text().splitlines()
 cp0_x = [-1.0, -4.0, -6.0]
@@ -110,10 +111,10 @@ def objective(trial, device):
     cp1y = trial.suggest_float("cp1y", min(cp1_y), max(cp1_y))
     length = trial.suggest_float("length", min(l), max(l))
 
-    w0 = trial.suggest_float("w0", min(w0), max(w0))
-    w1 = trial.suggest_float("w1", min(w1), max(w1))
-    w2 = trial.suggest_float("w2", min(w2), max(w2))
-    w3 = trial.suggest_float("w3", min(w3), max(w3))
+    w_0 = trial.suggest_float("w0", min(w0), max(w0))
+    w_1 = trial.suggest_float("w1", min(w1), max(w1))
+    w_2 = trial.suggest_float("w2", min(w2), max(w2))
+    w_3 = trial.suggest_float("w3", min(w3), max(w3))
 
     lr = trial.suggest_float("learning_rate", 1e-4, 1e-2, log=True)
 
@@ -127,55 +128,53 @@ def objective(trial, device):
     # -------------------------
     # Write config file
     # -------------------------
-    reset_directory("./HYPERPARAM/MNIST")
-    lines[6]  = f"epochs = 1"
+    # reset_directory("./HYPERPARAM/MNIST")
+    lines[4]  = f"epochs = 1"
+    lines[5]  = f"save_every = 10"
     lines[6]  = f"learning_rate = {lr}"
     lines[7]  = f"val_ratio = 0.1"
-    lines[9]  = f"w0 = {w0}"
-    lines[10] = f"w1 = {w1}"
-    lines[11] = f"w2 = {w2}"
-    lines[12] = f"w3 = {w3}"
+    lines[9]  = f"w0 = {w_0}"
+    lines[10] = f"w1 = {w_1}"
+    lines[11] = f"w2 = {w_2}"
+    lines[12] = f"w3 = {w_3}"
     lines[13] = f"cp0 = {cp0}"
     lines[14] = f"cp1 = {cp1}"
     lines[15] = f"cp2 = {cp2}"
 
-    file_path.write_text("\n".join(lines) + "\n")
-
     # -------------------------
     # Training loop (30 epochs)
     # -------------------------
-    MAX_EPOCHS = 30
-    PATIENCE = 6
 
-    best_val = float("inf")
-    no_improve = 0
+    best_val = float('inf')
+    trial_id = trial.number
 
-    for epoch in range(MAX_EPOCHS):
-        lines[33] = (
-                    f"AF_nele = ['nele={epoch}']"
-                )
-        subprocess.run(
-                [sys.executable, "main.py", "--mode=train_nele", 
-                f"--device={device}", "--type=mnist"],
-                check=True
+    lines[48] = (
+                f"AF_nele = ['nele={trial_id}']"
             )
-        df = pd.read_csv(f"./RESULTS/MNIST/nele={epoch}/loss_history_nele={i}.csv")                
-        val_loss = df["val"].iloc[-1]
-        # report to Optuna
-        trial.report(val_loss, epoch)
-
-        # pruning
-        if trial.should_prune():
-            raise optuna.TrialPruned()
-
-        # early stopping
-        if val_loss < best_val:
-            best_val = val_loss
-            no_improve = 0
-        else:
-            no_improve += 1
-
-        if no_improve >= PATIENCE:
-            break
-
+    file_path.write_text("\n".join(lines) + "\n")
+    create_directory("./RESULTS/MNIST/"+cfg.AF_nele[0])
+    best_val, trial =  mnist_data(cfg.epochs, cfg.learning_rate, device, 2, cfg.AF_nele[0], trial)
     return best_val
+
+def run_study_mnist(device):
+    study = optuna.create_study(
+        direction="minimize",
+        sampler=optuna.samplers.TPESampler(),
+        pruner=optuna.pruners.MedianPruner(
+            n_startup_trials=10,
+            n_warmup_steps=5
+        ),
+    )
+
+    study.optimize(
+        lambda trial: objective(trial, device),
+        n_trials=5,
+        n_jobs=1  # increase if you have GPUs/CPUs
+    )
+
+    print("Best validation loss:", study.best_value)
+    print("Best hyperparameters:")
+    for k, v in study.best_params.items():
+        print(f"  {k}: {round(v, 4)}")
+
+    return study
