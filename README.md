@@ -50,15 +50,18 @@ AF approximation plots are provided inside [figures](./figures)
 
 ## NLSD 
 ```NELE``` Parameters used for NLSD curve fitting study. These need to be changed inside [config.py](./config.py) in order to reproduce the results of the paper.
-
-|Study|l|w1|w2|y1|x1|y0|```TYPE```|w|cp0|cp1|cp2|cp3|
-|----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-Exponential|-|-|-|-|-|-|1|[1,1,1,1]|[-1.0, 0.0]|[-0.1, -0.1]| [-1.0/1.4142, -1.0/1.4142]|[0.0, 0.0]
-Hyperbola|-1.0|1.0|1.0|-0.1|-0.1|0.0|2|[1,1,1,1]|[-1.0, 0.0]|[-0.1, -0.1]| [-1.0/1.4142, -1.0/1.4142]|[0.0, 0.0]
-Quadratic|-1.0|1.0|1.0|-0.1|-0.1|0.0|2|[1,1,1,1]|[-1.0, 0.0]|[-0.1, -0.1]| [-1.0/1.4142, -1.0/1.4142]|[0.0, 0.0]
-Sinusoidal|-|-|-|-|-|-|1|[1,1,1,1]|[-4.0, 0.0]|[-0.1, -0.1]| [-1.0/1.4142, -1.0/1.4142]|[0.0, 0.0]
-Trigonometric|-|-|-|-|-|-|1|[1,1,1,1]|[-1.0, 0.0]|[-0.1, -0.1]| [-1.0/1.4142, -1.0/1.4142]|[0.0, 0.0]
-Polynomial|-1.0|1.0|1.0|-0.1|-0.1|0.0|2|[1,1,1,1]|[-1.0, 0.0]|[-0.1, -0.1]| [-1.0/1.4142, -1.0/1.4142]|[0.0, 0.0]
+|Parameter|Exp|Hyp|Quad|Sine|Trig|Poly|
+|---|---|---|---|---|---|---|
+|w0|1.9807|0.5|0.5|1.9807|1.9807|1.9807|
+|w1|0.7178|1.0|1.5|0.7178|0.7178|1.5|
+|w2|1.0|1.0|1.0|0.1238|1.5|1.0|
+|w3|1.5|1.0|1.0|1.5|0.1981|0.1981|
+|l|-0.5|-1|-0.5|-1|-1|-1|
+|cp0_x|-1.0|-1.0|-1.0|-1.0|-1.0|-1.0|
+|cp1|[-0.3, -0.1]| [-0.1, -0.1]|[-0.1, -0.3]|[-0.1, -0.1]|[-0.3, -0.1]|[-0.1, -0.3]|
+|Learnable|False|True|False|True|False|True|
+|Masking|2|1|2|1|2|1|
+|Clamping|True|False|True|False|True|False|
 
 ## MNIST
 
@@ -146,4 +149,3 @@ nele|NELE
 
 To facilitate running studies with custom configurations, the variables can be appended with additional text followed by ```=``` such as ```nele=0.001```. ```AF_plot``` array also needs to be updated accordingly if the cases need to be post-processed.
 A folder with this name is created inside ```RESULTS```, which holds the simulation raw files and inside ```PICS```, which contains any post-processing files.
-
