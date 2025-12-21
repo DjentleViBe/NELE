@@ -168,8 +168,8 @@ def run_study_mnist(device):
 
     study.optimize(
         lambda trial: objective(trial, device),
-        n_trials=5,
-        n_jobs=1  # increase if you have GPUs/CPUs
+        n_trials=cfg.TRIALS,
+        n_jobs=cfg.N_JOBS  # increase if you have GPUs/CPUs
     )
 
     print("Best validation loss:", study.best_value)
