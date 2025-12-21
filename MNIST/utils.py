@@ -8,9 +8,9 @@ import numpy as np
 import torch
 from torch import nn
 from models.model_lelu import LELU
-from models.model_nele import NeleUniversal
+from models.model_nele import NeleUniversalRead
 
-def get_activation(activation_type, device=None):
+def get_activation(activation_type, proparray, device=None):
     """
     Return PyTorch activation module based on a string.
     
@@ -22,6 +22,10 @@ def get_activation(activation_type, device=None):
     else:
         base = activation_type
         param = None
+    config = {}
+    directory = 'RESULTS/MNIST/' + activation_type + '/'
+    with open(directory + "config.py") as f:
+        exec(f.read(), config)
 
     dispatch = {
         'relu': nn.ReLU(),
@@ -34,7 +38,7 @@ def get_activation(activation_type, device=None):
         'softplus' : nn.Softplus(),
         'tanh': nn.Tanh(),
         'lelu' : LELU(),
-        'nele' : NeleUniversal(device),
+        'nele' : NeleUniversalRead(device, proparray),
     }
 
     return dispatch[base]

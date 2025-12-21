@@ -6,6 +6,8 @@
 Docstring for mnist.study
 """
 import numpy as np
+import optuna
+import shutil
 import torch
 from torch import nn
 from torch import optim
@@ -18,9 +20,8 @@ from mnist.utils import get_activation
 from mnist.neuralnet import DeepFCNet
 from mnist.utils import save
 import config as cfg
-import optuna
 
-def mnist_data(epochs, learn_rate, device, exec_type, activation_type='default', trial = None):
+def mnist_data(directory, device, exec_type, config=None, activation_type='default', trial = None):
     """
     MNIST training
     
@@ -34,11 +35,7 @@ def mnist_data(epochs, learn_rate, device, exec_type, activation_type='default',
     activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', \
                     'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
     loss_collect = np.zeros(len(activations))
-    directory = 'RESULTS/MNIST/' + activation_type + '/'
-    create_directory('RESULTS/MNIST/' + activation_type + '/')
-    create_directory('PICS/MNIST/' + activation_type + '/')
-    # Activation function selection
-    activation = get_activation(activation_type, device)
+    activation = get_activation(activation_type, config, device)
     # Load MNIST
     transform = transforms.Compose([
         transforms.ToTensor(),
@@ -58,17 +55,17 @@ def mnist_data(epochs, learn_rate, device, exec_type, activation_type='default',
         [n_train, n_val]
     )
 
-    train_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=cfg.batch_size, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=config["batch_size"], shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=config["batch_size"], shuffle=False)
 
     test_dataset = datasets.MNIST(root='./data', train=False, transform=transform, download=True)
-    test_loader = DataLoader(test_dataset, batch_size=cfg.batch_size, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=config["batch_size"], shuffle=False)
 
     # Model, loss, optimizer
-    model = DeepFCNet(cfg.input_size, cfg.hidden_size, cfg.num_hidden_layers, \
-                      cfg.num_classes, activation, activation_type).to(device)
+    model = DeepFCNet(config["input_size"], config["hidden_size"], config["num_hidden_layers"], \
+                      config["num_classes"], activation, activation_type).to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=learn_rate)
+    optimizer = optim.Adam(model.parameters(), lr=config["learning_rate"])
     criterion = criterion.to(device)
 
     loss_collect = []
@@ -79,8 +76,8 @@ def mnist_data(epochs, learn_rate, device, exec_type, activation_type='default',
     correct_test, total_test = 0.0, 0.0
     test_loss_0, test_loss_3 = 0.0, 0.0
     if exec_type == 2:
-        epochs = cfg.HYPER_EPOCHS
-    for epoch in range(epochs):
+        config["epochs"] = cfg.HYPER_EPOCHS
+    for epoch in range(config["epochs"]):
         epoch_loss = 0
         model.train()
         for param_group in optimizer.param_groups:

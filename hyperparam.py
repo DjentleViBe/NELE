@@ -1,6 +1,7 @@
 """
 Docstring for hyperparam
 """
+import shutil
 from pathlib import Path
 import sys
 import subprocess
@@ -9,24 +10,9 @@ import config as cfg
 import numpy as np
 from file_operations import create_directory, reset_directory
 import optuna
-import time
 from mnist.mnist import mnist_data
 
-create_directory("./HYPERPARAM")
-file_path = Path("config.py")
-lines = file_path.read_text().splitlines()
-cp0_x = [-1.0, -4.0, -6.0]
-cp1_x = [-0.1, -0.3]
-cp1_y = [-0.1, -0.3]
-l = [-1.0, -0.5]
-w0 = [1.0, 0.5, 1.9807]
-w1 = [1.0, 1.5, 0.7178]
-w2 = [1.0, 1.5, 0.1238]
-w3 = [1.0, 1.5, 0.1981]
-
 ############################# NLSD ##################################
-lines[4] = "epochs = 300"
-lines[5] = "save_every = 600"
 curve_loss = np.ones(len(cfg.FUNC_NLSD_NELE))
 mincp0 = np.ones((len(cfg.FUNC_NLSD_NELE), 2))
 mincp1 = np.ones((len(cfg.FUNC_NLSD_NELE), 2))
@@ -40,15 +26,19 @@ def run_study(device):
     """Run hyper param tuning study
     """
     reset_directory("./HYPERPARAM/NLSD")
+    file_path = Path("config.py")
+    lines = file_path.read_text().splitlines()
+    lines[4] = "epochs = 300"
+    lines[5] = "save_every = 600"
     i = 0
-    for cp0x in cp0_x:
-        for cp1x in cp1_x:
-            for cp1y in cp1_y:
-                for length in l:
-                    for w_0 in w0:
-                        for w_1 in w1:
-                            for w_2 in w2:
-                                for w_3 in w3:
+    for cp0x in cfg.cp0_x:
+        for cp1x in cfg.cp1_x:
+            for cp1y in cfg.cp1_y:
+                for length in cfg.l:
+                    for w_0 in cfg.w0:
+                        for w_1 in cfg.w1:
+                            for w_2 in cfg.w2:
+                                for w_3 in cfg.w3:
                                     lines[6] = f"learning_rate = 0.01"
                                     cp0 = [cp0x, 0.0]
                                     cp1 = [cp1x, cp1y]
@@ -76,7 +66,7 @@ def run_study(device):
 
                                     for j, curve in enumerate(cfg.FUNC_NLSD_NELE):
                                         df = pd.read_csv(f"./RESULTS/NLSD/{curve}/nele={i}/loss_history_nele={i}.csv")
-                                        # holdparam = f'{cp0}, {cp1}, {cp2}, {w0}, {w1}, {w2}, {w3}, {df['loss']}'
+                                        # holdparam = f'{cp0}, {cp1}, {cp2}, {cfg.w0}, {cfg.w1}, {cfg.w2}, {cfg.w3}, {df['loss']}'
                                         row = pd.DataFrame([{
                                             "cp0": cp0,
                                             "cp1": cp1,
@@ -106,17 +96,17 @@ def objective(trial, device):
     # -------------------------
     # Hyperparameters to tune
     # -------------------------
-    cp0x = trial.suggest_float("cp0x", min(cp0_x), max(cp0_x))
-    cp1x = trial.suggest_float("cp1x", min(cp1_x), max(cp1_x))
-    cp1y = trial.suggest_float("cp1y", min(cp1_y), max(cp1_y))
-    length = trial.suggest_float("length", min(l), max(l))
+    cp0x = trial.suggest_float("cp0x", min(cfg.range_cp0_x), max(cfg.range_cp0_x))
+    cp1x = trial.suggest_float("cp1x", min(cfg.range_cp1_x), max(cfg.range_cp1_x))
+    cp1y = trial.suggest_float("cp1y", min(cfg.range_cp1_y), max(cfg.range_cp1_y))
+    length = trial.suggest_float("length", min(cfg.range_l), max(cfg.range_l))
 
-    w_0 = trial.suggest_float("w0", min(w0), max(w0))
-    w_1 = trial.suggest_float("w1", min(w1), max(w1))
-    w_2 = trial.suggest_float("w2", min(w2), max(w2))
-    w_3 = trial.suggest_float("w3", min(w3), max(w3))
+    w_0 = trial.suggest_float("w0", min(cfg.range_w0), max(cfg.range_w0))
+    w_1 = trial.suggest_float("w1", min(cfg.range_w1), max(cfg.range_w1))
+    w_2 = trial.suggest_float("w2", min(cfg.range_w2), max(cfg.range_w2))
+    w_3 = trial.suggest_float("w3", min(cfg.range_w3), max(cfg.range_w3))
 
-    lr = trial.suggest_float("learning_rate", 1e-4, 1e-2, log=True)
+    lr = trial.suggest_float("learning_rate", min(cfg.range_lr), max(cfg.range_lr), log=True)
 
     # -------------------------
     # Derived parameters
@@ -128,7 +118,9 @@ def objective(trial, device):
     # -------------------------
     # Write config file
     # -------------------------
-    # reset_directory("./HYPERPARAM/MNIST")
+    directory = "./RESULTS/MNIST/"
+    file_path = Path(f"{directory}nele={trial.number}/config.py")
+    lines = file_path.read_text().splitlines()
     lines[4]  = f"epochs = 1"
     lines[5]  = f"save_every = 10"
     lines[6]  = f"learning_rate = {lr}"
@@ -147,16 +139,20 @@ def objective(trial, device):
 
     best_val = float('inf')
     trial_id = trial.number
-
-    lines[48] = (
-                f"AF_nele = ['nele={trial_id}']"
-            )
+    lines[48] = (f"AF_nele = ['nele={trial_id}']")
     file_path.write_text("\n".join(lines) + "\n")
-    create_directory("./RESULTS/MNIST/"+cfg.AF_nele[0])
-    best_val, trial =  mnist_data(cfg.epochs, cfg.learning_rate, device, 2, cfg.AF_nele[0], trial)
+    configfile = {}
+    with open(f"{directory}nele={trial.number}/config.py") as f:
+            exec(f.read(), configfile)
+    best_val, trial =  mnist_data(f"{directory}nele={trial.number}", device, 2, configfile, f'nele={trial_id}', trial)
     return best_val
 
 def run_study_mnist(device):
+    directory = 'RESULTS/MNIST/'
+    create_directory('RESULTS/MNIST/')
+
+    source_file = "./config.py"
+
     study = optuna.create_study(
         direction="minimize",
         sampler=optuna.samplers.TPESampler(),
@@ -165,7 +161,11 @@ def run_study_mnist(device):
             n_warmup_steps=5
         ),
     )
-
+    for nt in range(cfg.TRIALS):
+        directory = f"./RESULTS/MNIST/nele={nt}"
+        create_directory(directory)
+        shutil.copy(source_file, directory)
+    
     study.optimize(
         lambda trial: objective(trial, device),
         n_trials=cfg.TRIALS,
