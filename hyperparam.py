@@ -155,7 +155,7 @@ def objective(trial, device):
     config = {}
     with open(f"{directory}nele={trial.number}/config.py") as f:
             exec(f.read(), config)
-    best_val, trial =  mnist_data(directory, device, 2, config, f'nele={trial_id}', trial)
+    best_val, trial =  mnist_data(f"{directory}nele={trial.number}", device, 2, config, f'nele={trial_id}', trial)
     return best_val
 
 def run_study_mnist(device):
