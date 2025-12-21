@@ -65,10 +65,7 @@ AF approximation plots are provided inside [figures](./figures)
 
 ## MNIST
 
-
 ```NELE``` Parameters. This can be changed in [config.py](./config.py)
-
-```TYPE``` = 1
 
 |Parameter|Value|
 |----|-----|
@@ -80,12 +77,14 @@ cp0 | [-4.0, 0.0]
 cp1 | [-0.1, -0.1]
 cp2 | [-1.0/1.4142, -1.0/1.4142]
 cp3 | [0.0, 0.0]
+|Learnable|False|
+|Masking|2|
+|Clamping|True|
 
 ## MNIST autoencoder
 
 ```NELE``` Parameters. This can be changed in [config.py](./config.py)
 
-```TYPE``` = 1
 |Parameter|Value|
 |----|-----|
 w0 | 1.0
@@ -96,12 +95,14 @@ cp0 | [-4.0, 0.0]
 cp1 | [-0.1, -0.1]
 cp2 | [-1.0/1.4142, -1.0/1.4142]
 cp3 | [0.0, 0.0]
+|Learnable|False|
+|Masking|2|
+|Clamping|True|
 
 ## CIFAR10
 
 ```NELE``` Parameters. This can be changed in [config.py](./config.py)
 
-```TYPE``` = 4
 |Parameter|Value|
 |----|-----|
 w0 | 1.0
@@ -112,12 +113,14 @@ cp0 | [-4.0, 0.0]
 cp1 | [-0.1, -0.1]
 cp2 | [-1.0/1.4142, -1.0/1.4142]
 cp3 | [0.0, 0.0]
+|Learnable|False|
+|Masking|2|
+|Clamping|True|
 
 ## CIFAR100
 
 ```NELE``` Parameters. This can be changed in [config.py](./config.py)
 
-```TYPE``` = 4
 |Parameter|Value|
 |----|-----|
 w0 | 1.9807
@@ -128,6 +131,9 @@ cp0 | [-4.0, 0.0]
 cp1 | [-0.1, -0.1]
 cp2 | [-1.0/1.4142, -1.0/1.4142]
 cp3 | [0.0, 0.0]
+|Learnable|False|
+|Masking|2|
+|Clamping|True|
 
 ## config.py
 ```config.py``` is divided into sections depending on the data used for the analysis.
