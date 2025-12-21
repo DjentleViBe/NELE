@@ -23,7 +23,7 @@ def mnist_train(device, reset, exec_type):
         create_directory('./PICS/MNIST')
     for af in cfg.AF:
         print(f'Activation : {af}')
-        mnist_data(cfg.epochs, cfg.learning_rate, device, exec_type, af)
+        mnist_data(cfg.epochs, device, exec_type, af)
 
 def mnist_train_nele(device, reset, exec_type):
     """
@@ -42,7 +42,7 @@ def mnist_train_nele(device, reset, exec_type):
         create_directory('./PICS/MNIST')
     for af in cfg.AF_nele:
         print(f'Activation : {af}')
-        mnist_data(cfg.epochs, cfg.learning_rate, device, exec_type, af)
+        mnist_data(cfg.epochs, device, exec_type, af)
 
 def mnist_eval(device, reset):
     """
