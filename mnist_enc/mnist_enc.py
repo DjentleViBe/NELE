@@ -24,7 +24,16 @@ def mnist_enc_train(device, reset, exec_study):
         create_directory('./PICS/MNIST_ENC')
     for af in cfg.AF:
         print(f'Activation : {af}')
-        mnist_enc_data(cfg.epochs, cfg.learning_rate, device, exec_study, af)
+        directory = 'RESULTS/MNIST/' + af + '/'
+        create_directory('RESULTS/MNIST/' + af + '/')
+        create_directory('PICS/MNIST/' + af + '/')
+        print(f'Activation : {af}')
+        source_file = 'config.py'
+        shutil.copy(source_file, directory)
+        config = {}
+        with open(directory + "config.py") as f:
+            exec(f.read(), config)
+        mnist_enc_data(directory, device, exec_study, config, af)
 
 def mnist_enc_train_nele(device, reset, exec_study):
     """
@@ -51,7 +60,7 @@ def mnist_enc_train_nele(device, reset, exec_study):
         config = {}
         with open(directory + "config.py") as f:
             exec(f.read(), config)
-        mnist_enc_data(cfg.epochs, cfg.learning_rate, device, exec_study, af)
+        mnist_enc_data(directory, device, exec_study, config, af)
 
 def mnist_enc_eval(device, reset):
     """
@@ -88,4 +97,13 @@ def mnist_enc_train_study(device, reset, exec_study):
         create_directory('./PICS/MNIST_ENC')
     for af in cfg.STUDY:
         print(f'Activation : {af}')
-        mnist_enc_data(cfg.epochs, cfg.learning_rate, device, exec_study, af)
+        directory = 'RESULTS/MNIST/' + af + '/'
+        create_directory('RESULTS/MNIST/' + af + '/')
+        create_directory('PICS/MNIST/' + af + '/')
+        print(f'Activation : {af}')
+        source_file = 'config.py'
+        shutil.copy(source_file, directory)
+        config = {}
+        with open(directory + "config.py") as f:
+            exec(f.read(), config)
+        mnist_enc_data(directory, device, exec_study, config, af)
