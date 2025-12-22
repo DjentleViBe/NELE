@@ -100,14 +100,14 @@ def mnist_enc_data(directory, device, exec_type, config=None, activation_type='d
                     val_loss += loss.item() * x.size(0)
             val_loss /= len(val_loader.dataset)
         val_collect.append(val_loss)
-        val_err = 1 - val_loss
+    
         if exec_type == 2:
             if trial is not None:
-                trial.report(val_err, epoch + 1)
+                trial.report(val_loss, epoch + 1)
                 if trial.should_prune():
                     raise optuna.TrialPruned()
-            if val_err < best_val:
-                best_val = val_err
+            if val_loss < best_val:
+                best_val = val_loss
                 no_improve = 0
             else:
                 no_improve += 1
