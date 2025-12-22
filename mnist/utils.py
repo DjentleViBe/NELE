@@ -10,7 +10,7 @@ from torch import nn
 from models.model_lelu import LELU
 from models.model_nele import NeleUniversalRead
 
-def get_activation(activation_type, proparray, device=None):
+def get_activation(activation_type, directory, proparray, device=None):
     """
     Return PyTorch activation module based on a string.
     
@@ -23,8 +23,8 @@ def get_activation(activation_type, proparray, device=None):
         base = activation_type
         param = None
     config = {}
-    directory = 'RESULTS/MNIST/' + activation_type + '/'
-    with open(directory + "config.py") as f:
+    directory_order = directory + '/'
+    with open(directory_order + "config.py") as f:
         exec(f.read(), config)
 
     dispatch = {

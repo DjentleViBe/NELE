@@ -5,12 +5,13 @@ import shutil
 from pathlib import Path
 import sys
 import subprocess
+import optuna
 import pandas as pd
 import config as cfg
 import numpy as np
 from file_operations import create_directory, reset_directory
-import optuna
 from mnist.mnist import mnist_data
+from mnist_enc.mnist_enc import mnist_enc_data
 
 ############################# NLSD ##################################
 curve_loss = np.ones(len(cfg.FUNC_NLSD_NELE))
@@ -81,7 +82,7 @@ def run_study(device):
                                                 header=not Path(f"./HYPERPARAM/NLSD/hyperparam_{curve}.csv").exists(), index=False)
                                     
                                     i += 1
-                                    # sys.exit()
+
 def find_min():
     """Find minimum from a list of csv
     """
@@ -92,10 +93,14 @@ def find_min():
         print(f"{curve}")
         print(best_row)
 
-def objective(trial, device):
-    # -------------------------
-    # Hyperparameters to tune
-    # -------------------------
+def objective(trial, type, device):
+    """
+    Hyperparameter to tune
+    
+    :param trial: optuna trial
+    :param type: Type of study
+    :param device: device name
+    """
     cp0x = trial.suggest_float("cp0x", min(cfg.range_cp0_x), max(cfg.range_cp0_x))
     cp1x = trial.suggest_float("cp1x", min(cfg.range_cp1_x), max(cfg.range_cp1_x))
     cp1y = trial.suggest_float("cp1y", min(cfg.range_cp1_y), max(cfg.range_cp1_y))
@@ -118,7 +123,10 @@ def objective(trial, device):
     # -------------------------
     # Write config file
     # -------------------------
-    directory = "./RESULTS/MNIST/"
+    if type == 0:
+        directory = "./RESULTS/MNIST/"
+    elif type == 1:
+        directory = "./RESULTS/MNIST_ENC/"
     file_path = Path(f"{directory}nele={trial.number}/config.py")
     lines = file_path.read_text().splitlines()
     lines[4]  = f"epochs = 1"
@@ -144,12 +152,21 @@ def objective(trial, device):
     configfile = {}
     with open(f"{directory}nele={trial.number}/config.py") as f:
             exec(f.read(), configfile)
-    best_val, trial =  mnist_data(f"{directory}nele={trial.number}", device, 2, configfile, f'nele={trial_id}', trial)
+    if type == 0:
+        best_val, trial =  mnist_data(f"{directory}nele={trial.number}", 
+                            device, 2, configfile, f'nele={trial_id}', trial)
+    if type == 1:
+        best_val, trial =  mnist_enc_data(f"{directory}nele={trial.number}", 
+                            device, 2, configfile, f'nele={trial_id}', trial)
     return best_val
 
-def run_study_mnist(device):
-    directory = 'RESULTS/MNIST/'
-    create_directory('RESULTS/MNIST/')
+def run_study_mnist(type, device):
+    if type == 0:
+        directory = './RESULTS/MNIST/'
+        create_directory('./RESULTS/MNIST/')
+    elif type == 1:
+        directory = './RESULTS/MNIST_ENC/'
+        create_directory('./RESULTS/MNIST_ENC/')
 
     source_file = "./config.py"
 
@@ -162,12 +179,12 @@ def run_study_mnist(device):
         ),
     )
     for nt in range(cfg.TRIALS):
-        directory = f"./RESULTS/MNIST/nele={nt}"
-        create_directory(directory)
-        shutil.copy(source_file, directory)
-    
+        directory_order = directory + f"/nele={nt}"
+        create_directory(directory_order)
+        shutil.copy(source_file, directory_order)
+
     study.optimize(
-        lambda trial: objective(trial, device),
+        lambda trial: objective(trial, type, device),
         n_trials=cfg.TRIALS,
         n_jobs=cfg.N_JOBS  # increase if you have GPUs/CPUs
     )

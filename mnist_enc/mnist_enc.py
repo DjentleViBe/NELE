@@ -1,6 +1,7 @@
 """
 MNIST main
 """
+import shutil
 from mnist_enc.study import mnist_enc_data
 from mnist_enc.noise import noise_eval
 from file_operations import reset_directory, create_directory
@@ -41,7 +42,15 @@ def mnist_enc_train_nele(device, reset, exec_study):
         create_directory('./RESULTS/MNIST_ENC')
         create_directory('./PICS/MNIST_ENC')
     for af in cfg.AF_nele:
+        directory = 'RESULTS/MNIST/' + af + '/'
+        create_directory('RESULTS/MNIST/' + af + '/')
+        create_directory('PICS/MNIST/' + af + '/')
         print(f'Activation : {af}')
+        source_file = 'config.py'
+        shutil.copy(source_file, directory)
+        config = {}
+        with open(directory + "config.py") as f:
+            exec(f.read(), config)
         mnist_enc_data(cfg.epochs, cfg.learning_rate, device, exec_study, af)
 
 def mnist_enc_eval(device, reset):
