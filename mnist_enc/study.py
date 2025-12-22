@@ -144,8 +144,8 @@ def mnist_enc_data(directory, device, exec_type, config=None, activation_type='d
         test_collect.append(test_loss_clean)
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch, directory, test_loss_clean)
-        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_loss:.4f}, \
-              Test Acc 0: {test_loss_clean:.4f}, Test Acc 3: {test_loss_noisy:.4f}, lr : {lr:.5f}")
+        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_loss:.4f},"
+              f"Test Acc 0: {test_loss_clean:.4f}, Test Acc 3: {test_loss_noisy:.4f}, lr : {lr:.5f}")
 
     # Evaluate
     loss_collect = torch.tensor(loss_collect)
