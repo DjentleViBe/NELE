@@ -61,7 +61,7 @@ if __name__ == "__main__":
         elif args.mode == 'process_nele':
             mnist_nele(args.device)
         elif args.mode == 'hyperparam':
-            run_study_mnist(args.device)
+            run_study_mnist(0, args.device)
     elif args.type == 'mnistenc':
         if args.mode == 'train':
             mnist_enc_train(args.device, args.reset, args.exec)
@@ -77,6 +77,8 @@ if __name__ == "__main__":
             process_mnist_enc()
         elif args.mode == 'process_nele':
             mnist_enc_nele(args.device)
+        elif args.mode == 'hyperparam':
+            run_study_mnist(1, args.device)
     elif args.type == 'cifar10':
         if args.mode == 'train':
             cifar10_train(args.device, args.reset, args.exec)

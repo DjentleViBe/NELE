@@ -78,8 +78,8 @@ def plot_only(study_type):
         min_train_loss = round(np.min(losses_train), 4)
         min_train_index = np.argmin(losses_train)
 
-        print(f'{act} : Train = {min_train_loss}, index : {min_train_index}, \
-              Test error = {round(100 - max_test_loss, 2)}, index : {max_test_index}')
+        print(f'{act} : Train = {min_train_loss}, index : {min_train_index},'
+              f'Test error = {round(100 - max_test_loss, 2)}, index : {max_test_index}')
 
         ax1.plot(epochs[:limit], losses_train[:limit], colors[i], \
                  label=activations[i], linewidth = 0.7)

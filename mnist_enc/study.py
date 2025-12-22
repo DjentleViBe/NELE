@@ -6,6 +6,7 @@
 Docstring for mnist autoencoder study
 """
 import numpy as np
+import optuna
 import torch
 from torch import nn
 from torch import optim
@@ -19,7 +20,7 @@ import config as cfg
 from mnist.utils import get_activation
 from mnist.utils import save
 
-def mnist_enc_data(epochs, learn_rate, device, exec_type, activation_type='default'):
+def mnist_enc_data(directory, device, exec_type, config=None, activation_type='default', trial=None):
     """
     Docstring for mnist_enc_data
     
@@ -29,14 +30,12 @@ def mnist_enc_data(epochs, learn_rate, device, exec_type, activation_type='defau
     :param exec_type: study or standalone
     :param activation_type: Description
     """
+    best_val = float('inf')
     activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', \
                     'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
     loss_collect = np.zeros(len(activations))
-    directory = 'RESULTS/MNIST_ENC/' + activation_type + '/'
-    create_directory('RESULTS/MNIST_ENC/' + activation_type + '/')
-    create_directory('PICS/MNIST_ENC/' + activation_type + '/')
     # Activation function selection
-    activation = get_activation(activation_type, device)
+    activation = get_activation(activation_type, directory, config, device)
 
     # Load MNIST
     transform = transforms.ToTensor()
@@ -63,14 +62,16 @@ def mnist_enc_data(epochs, learn_rate, device, exec_type, activation_type='defau
     # Model, loss, optimizer
     model = DeepAutoencoder(activation).to(device)
     criterion = nn.MSELoss()
-    optimizer = optim.Adam(model.parameters(), lr=learn_rate)
+    optimizer = optim.Adam(model.parameters(), lr=config["learning_rate"])
     criterion = criterion.to(device)
 
     loss_collect = []
     val_collect = []
     test_collect = []
     # Training loop
-    for epoch in range(epochs):
+    if exec_type == 2:
+        config["epochs"] = cfg.HYPER_EPOCHS
+    for epoch in range(config["epochs"]):
         epoch_loss = 0
         model.train()
         for param_group in optimizer.param_groups:
@@ -99,6 +100,26 @@ def mnist_enc_data(epochs, learn_rate, device, exec_type, activation_type='defau
                     val_loss += loss.item() * x.size(0)
             val_loss /= len(val_loader.dataset)
         val_collect.append(val_loss)
+        val_err = 1 - val_loss
+        if exec_type == 2:
+            if trial is not None:
+                trial.report(val_err, epoch + 1)
+                if trial.should_prune():
+                    raise optuna.TrialPruned()
+            if val_err < best_val:
+                best_val = val_err
+                no_improve = 0
+            else:
+                no_improve += 1
+
+            if no_improve >= cfg.PATIENCE:
+                loss_collect = torch.tensor(loss_collect)
+                test_collect = torch.tensor(test_collect)
+                val_collect = torch.tensor(val_collect)
+                csv_write2(directory + '/loss_history_' + activation_type + '.csv',
+                            torch.linspace(1, cfg.epochs+1, cfg.epochs+1),
+                            loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec_type)
+                return best_val, trial
 
         # Test
         test_loss_clean = 0.0
@@ -133,3 +154,5 @@ def mnist_enc_data(epochs, learn_rate, device, exec_type, activation_type='defau
     csv_write2(directory + '/loss_history_' + activation_type + '.csv',
               torch.linspace(1, cfg.epochs+1, cfg.epochs+1),
               loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec_type)
+    if exec_type == 2:
+        return best_val, trial

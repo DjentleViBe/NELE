@@ -316,7 +316,7 @@ learnable parameters or fixed constants.
 For the fixed variant, setting $p_0$ = [-4.0, 0.0], $p_1 = [0.1, 0.1]$ and $w_n = 1$ yielded the best results. 
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=0.5\linewidth]{../../PICS/Approx_gelu.pdf}
+    \includegraphics[width=0.5\linewidth]{../../figures/Approx_gelu.pdf}
   \caption{GELU approximated for $x \leq 0$ using cubic NURBS with 4 control points and optimized weights.
   NURBS curve used in experiments is also shown for comparison.}
   \Description{GELU activation function recreation.}
@@ -640,7 +640,7 @@ All networks were trained using the Adam optimizer with cross-entropy loss
 learning rates of $10^{-3}$, $10^{-4}$, and $10^{-5}$. Validation used $5,000$ samples 
 to select the best model. In total, seven runs were performed for 75 epochs on the complete 
 dataset with the optimized hyperparameters and their median values are used for comparison.
-\texttt{NELE} was stopped early at epoch 50 as it showed comparable convergence to other AF.
+\texttt{NELE} shows comparable convergence at epoch 50.
 Figure~\ref{fig:mnistloss} shows how each AF influences convergence speed and final loss.
 \begin{figure}[H]
   \begin{center}
@@ -779,7 +779,7 @@ This work was carried out independently by the author.
 \section{Function analysis}
 \begin{figure}[H]\label{fig:afcollect}
   \begin{center}
-    \includegraphics[width=0.6\linewidth]{../../analysis/analysis.pdf}
+    \includegraphics[width=0.7\linewidth]{../../analysis/analysis.pdf}
   \caption{The solid lines represent the functions $y(x)$ for different activation functions. 
 The points of maximum curvature, $\kappa_{\mathrm{max}}$, are indicated by markers along each curve. 
 The dashed lines represent the curvature, $\kappa(x)$, as a function of $x$. 
@@ -1019,7 +1019,13 @@ The source code used in this paper are publicly available to ensure reproducibil
     \url{https://github.com/DjentleViBe/NELE}.
     
     \item \textbf{Additional Figures:} Addiitonal plots for the curve approximation from Table ~\ref{tab:curveapprox} are provided in the repository.
-
+    \item \textbf{Hyperparameter tuning: }Parameters used in the analysis of NLSD were optimised through grid search with points 
+    distributed equally from an initialised \texttt{GELU} approximation. Since grid search was unfeasible for other studies due to total run times, 
+    hyperparameters were optimized using an automated search procedure. 
+    For each candidate configuration, training was performed for a fixed number of 
+    epochs, with validation performance evaluated after each epoch. Poorly performing 
+    configurations were terminated early based on intermediate validation error, 
+    and the objective value was defined as the minimum validation error attained during training \cite{optuna_2019}.
     \item \textbf{Settings:} Parameters used for reproducing the results in this paper is provided in the
     \texttt{README} file of the repository.
   

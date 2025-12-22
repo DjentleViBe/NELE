@@ -7,7 +7,6 @@ Docstring for mnist.study
 """
 import numpy as np
 import optuna
-import shutil
 import torch
 from torch import nn
 from torch import optim
@@ -35,7 +34,7 @@ def mnist_data(directory, device, exec_type, config=None, activation_type='defau
     activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', \
                     'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
     loss_collect = np.zeros(len(activations))
-    activation = get_activation(activation_type, config, device)
+    activation = get_activation(activation_type, directory, config, device)
     # Load MNIST
     transform = transforms.Compose([
         transforms.ToTensor(),
