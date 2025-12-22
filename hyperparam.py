@@ -202,7 +202,7 @@ def run_study_mnist(type_study, device):
         shutil.copy(source_file, directory_order)
 
     study.optimize(
-        lambda trial: objective(trial, type, device),
+        lambda trial: objective(trial, type_study, device),
         n_trials=cfg.TRIALS,
         n_jobs=cfg.N_JOBS  # increase if you have GPUs/CPUs
     )
