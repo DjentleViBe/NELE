@@ -34,6 +34,9 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
     activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', \
                     'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
     loss_collect = np.zeros(len(activations))
+    loss_collect = []
+    val_collect = []
+    test_collect = []
     activation = get_activation(activation_type, directory, config, device)
 
     # -------------------------
