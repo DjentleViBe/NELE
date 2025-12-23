@@ -100,14 +100,14 @@ def mnist_enc_data(directory, device, exec_type, config=None, activation_type='d
                     val_loss += loss.item() * x.size(0)
             val_loss /= len(val_loader.dataset)
         val_collect.append(val_loss)
-        val_err = 1 - val_loss
+    
         if exec_type == 2:
             if trial is not None:
-                trial.report(val_err, epoch + 1)
+                trial.report(val_loss, epoch + 1)
                 if trial.should_prune():
                     raise optuna.TrialPruned()
-            if val_err < best_val:
-                best_val = val_err
+            if val_loss < best_val:
+                best_val = val_loss
                 no_improve = 0
             else:
                 no_improve += 1
@@ -144,8 +144,8 @@ def mnist_enc_data(directory, device, exec_type, config=None, activation_type='d
         test_collect.append(test_loss_clean)
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch, directory, test_loss_clean)
-        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_loss:.4f}, \
-              Test Acc 0: {test_loss_clean:.4f}, Test Acc 3: {test_loss_noisy:.4f}, lr : {lr:.5f}")
+        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_loss:.4f},"
+              f"Test Acc 0: {test_loss_clean:.4f}, Test Acc 3: {test_loss_noisy:.4f}, lr : {lr:.5f}")
 
     # Evaluate
     loss_collect = torch.tensor(loss_collect)

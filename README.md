@@ -42,6 +42,7 @@ python main.py --type=<type_id> --mode=<mode_name> --device=<device_name>
 |```eval```| Runs noise evaluation across AF |
 |```process```| Produces Training loss vs epochs, test loss across```epochs``` for different AF |
 |```process_study```|Produces median Training loss vs epochs, test loss across```epochs``` for different AF|
+|```hyperparam```|Conducts hyper parameter tuning using grid search for NLSD and random search otherwise|
 
 ## Settings
 [config](./config.py) for different studies can be downloaded from the releases section
@@ -88,13 +89,13 @@ cp3 | [0.0, 0.0]
 
 |Parameter|Value|
 |----|-----|
-w0 | 1.0
-w1 | 1.0
-w2 | 1.0
-w3 | 1.0
-cp0 | [-4.0, 0.0]
-cp1 | [-0.1, -0.1]
-cp2 | [-1.0/1.4142, -1.0/1.4142]
+w0 | 1.8427
+w1 | 0.8249
+w2 | 1.0931
+w3 | 0.3174
+cp0 | [-5.4016, 0.0]
+cp1 | [-0.1387, -0.1328]
+cp2 | [-0.9417/1.4142, -0.9417/1.4142]
 cp3 | [0.0, 0.0]
 |Learnable|False|
 |Masking|2|
@@ -135,6 +136,26 @@ cp3 | [0.0, 0.0]
 |Learnable|False|
 |Masking|2|
 |Clamping|True|
+
+## Hyper-Parameter tuning:
+The following ranges were used for hyper-parameter settings exploration:
+Property|min|max|
+|----|-----|-----|
+cp0_x | -1.0, | -6.0|
+cp1_x | -0.1 | -0.3|
+cp1_y | -0.1 | -0.3|
+l | -1.0 | -0.5|
+w0 | 1.5, | 1.9807|
+w1 | 1.5 | 0.7178|
+w2 | 1.5 | 0.1238|
+w3 | 1.5 |0.1981|
+lr | 0.001 | 0.01|
+
+PATIENCE = 5
+
+HYPER_EPOCHS = 10
+
+TRIALS = 200
 
 ## config.py
 ```config.py``` is divided into sections depending on the data used for the analysis.

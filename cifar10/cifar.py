@@ -1,6 +1,7 @@
 """
 Docstring for CIFAR10.cifar
 """
+import shutil
 from cifar10.study import cifar10_data
 from file_operations import reset_directory, create_directory
 import config as cfg
@@ -21,7 +22,16 @@ def cifar10_train(device, reset, exec_study):
         create_directory('./RESULTS/CIFAR10')
         create_directory('./PICS/CIFAR10')
     for af in cfg.AF_CIFAR10:
-        cifar10_data(cfg.epochs, cfg.learning_rate, device, exec_study, af)
+        directory = 'RESULTS/CIFAR10/' + af + '/'
+        create_directory('RESULTS/CIFAR10/' + af + '/')
+        create_directory('PICS/CIFAR10/' + af + '/')
+        print(f'Activation : {af}')
+        source_file = 'config.py'
+        shutil.copy(source_file, directory)
+        config = {}
+        with open(directory + "config.py") as f:
+            exec(f.read(), config)
+        cifar10_data(directory, device, exec_study, 0, config, af)
 
 def cifar10_train_nele(device, reset, exec_study):
     """
@@ -39,4 +49,13 @@ def cifar10_train_nele(device, reset, exec_study):
         create_directory('./RESULTS/CIFAR10')
         create_directory('./PICS/CIFAR10')
     for af in cfg.AF_CIFAR10_NELE:
-        cifar10_data(cfg.epochs, cfg.learning_rate, device, exec_study, af)
+        directory = 'RESULTS/CIFAR10/' + af + '/'
+        create_directory('RESULTS/CIFAR10/' + af + '/')
+        create_directory('PICS/CIFAR10/' + af + '/')
+        print(f'Activation : {af}')
+        source_file = 'config.py'
+        shutil.copy(source_file, directory)
+        config = {}
+        with open(directory + "config.py") as f:
+            exec(f.read(), config)
+        cifar10_data(directory, device, exec_study, 0, config, af)
