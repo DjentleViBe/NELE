@@ -1023,9 +1023,9 @@ The source code used in this paper are publicly available to ensure reproducibil
     distributed equally from an initialised \texttt{GELU} approximation. Since grid search was unfeasible for other studies due to total run times, 
     hyperparameters were optimized using an automated search procedure. 
     For each candidate configuration, training was performed for a fixed number of 
-    epochs, with validation performance evaluated after each epoch. Poorly performing 
+    epochs with patience and validation performance evaluated after each epoch. Poorly performing 
     configurations were terminated early based on intermediate validation error, 
-    and the objective value was defined as the minimum validation error attained during training \cite{optuna_2019}.
+    and the objective value was defined as the minimum validation error attained during training after 200 trials using \cite{optuna_2019}.
     \item \textbf{Settings:} Parameters used for reproducing the results in this paper is provided in the
     \texttt{README} file of the repository.
   
