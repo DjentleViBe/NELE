@@ -8,6 +8,8 @@ Docstring for CIFAR10.study
 import time
 import pickle
 import sys
+import numpy as np
+import optuna
 import torch
 from torch import nn
 from torch.optim import Adam
@@ -18,7 +20,7 @@ from cifar10.utils import save, get_activation
 from csv_operations import csv_write2
 import config as cfg
 
-def cifar10_data(epochs, learn_rate, device, exec_study, activation_type='default'):
+def cifar10_data(directory, device, exec_study, exec_type, config = None, activation_type='default', trial = None):
     """
     Docstring for cifar10_data
     
@@ -28,20 +30,17 @@ def cifar10_data(epochs, learn_rate, device, exec_study, activation_type='defaul
     :param exec_study: standalone or 7 runs
     :param activation_type: AF
     """
-    loss_collect = []
-    val_collect = []
-    test_collect = []
-    directory = 'RESULTS/CIFAR10/' + activation_type + '/'
-    create_directory('RESULTS/CIFAR10/' + activation_type + '/')
-    create_directory('PICS/CIFAR10/' + activation_type + '/')
-
-    activation = get_activation(activation_type, device)
+    best_val = float('inf')
+    activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', \
+                    'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
+    loss_collect = np.zeros(len(activations))
+    activation = get_activation(activation_type, directory, config, device)
 
     # -------------------------
     # Training setup
     # -------------------------
     model = CIFAR10CNN(activation=activation).to(device)
-    optimizer = Adam(model.parameters(), lr=learn_rate)
+    optimizer = Adam(model.parameters(), lr=config["learning_rate"])
     criterion = nn.CrossEntropyLoss()
     val_dataset = []
     if exec_study == 1:
@@ -82,7 +81,7 @@ def cifar10_data(epochs, learn_rate, device, exec_study, activation_type='defaul
     correct_val, total_val = 0, 0
     correct_test, total_test = 0, 0
     print(f'Activation : {activation_type}')
-    for epoch in range(start_epoch, epochs):
+    for epoch in range(start_epoch, config["epochs"]):
         epoch_loss = 0
         model.train()
         adjust_lr(optimizer, epoch)
@@ -90,7 +89,8 @@ def cifar10_data(epochs, learn_rate, device, exec_study, activation_type='defaul
         total_time = 0
         for param_group in optimizer.param_groups:
             lr = param_group['lr']
-
+        if exec_type == 2:
+            config["epochs"] = cfg.HYPER_EPOCHS
         for i, (x, y) in enumerate(train_loader):
             start_epoch = time.time()
 
@@ -109,7 +109,7 @@ def cifar10_data(epochs, learn_rate, device, exec_study, activation_type='defaul
             barred = '=' * filled_len + '-' * (bar_len - filled_len)
 
             # Print progress bar in-place
-            sys.stdout.write(f'\rEpoch {epoch+1}/{epochs} |[{barred}]| '
+            sys.stdout.write(f'\rEpoch {epoch+1}/{config["epochs"]} |[{barred}]| '
                             f'Batch {i+1}/{total_batches} | Loss: {loss.item():.4f} \
                             | Time: {batch_time:.2f}s')
             sys.stdout.flush()
@@ -129,7 +129,29 @@ def cifar10_data(epochs, learn_rate, device, exec_study, activation_type='defaul
                     total_val += y.size(0)
                     correct_val += (predicted == y).sum().item()
             val_acc = correct_val / max(total_val, 1.0)
+            val_err = 1 - val_acc
         val_collect.append(val_acc)
+
+        if exec_type == 2:
+            if trial is not None:
+                trial.report(val_err, epoch + 1)
+                if trial.should_prune():
+                    raise optuna.TrialPruned()
+            if val_err < best_val:
+                best_val = val_acc
+                no_improve = 0
+            else:
+                no_improve += 1
+
+            if no_improve >= cfg.PATIENCE:
+                loss_collect = torch.tensor(loss_collect)
+                test_collect = torch.tensor(test_collect)
+                val_collect = torch.tensor(val_collect)
+                csv_write2(directory + '/loss_history_' + activation_type + '.csv',
+                            torch.linspace(1, cfg.epochs+1, cfg.epochs+1),
+                            loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec_type)
+                return best_val, trial
+    
         if epoch % 5 == 0:
             model.eval()
             correct_test, total_test = 0, 0
@@ -154,3 +176,5 @@ def cifar10_data(epochs, learn_rate, device, exec_study, activation_type='defaul
     csv_write2(directory + '/loss_history_' + activation_type + '.csv',
               torch.linspace(1, cfg.epochs+1, cfg.epochs+1),
               loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec_study)
+    if exec_type == 2:
+        return best_val, trial
