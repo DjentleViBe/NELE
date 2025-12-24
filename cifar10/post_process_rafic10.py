@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from csv_operations import csv_read2
 import config as cfg
-from cifar10.utils import getselectedlosses, take_median
+from cifar10.utils import getselectedlosses, take_median, \
+                            getselectedlosses2
 activations =  cfg.AF_plot
 activations_file =  cfg.AF
 colors = cfg.colors
@@ -45,7 +46,8 @@ def plot_only(study_type, ylabelname):
                                                 losses_test1[:limit],
                                                 losses_train2[:limit],
                                                 losses_test2[:limit],
-                                                losses_train3[:limit])
+                                                losses_train3[:limit],
+                                                losses_test3[:limit])
         max_test_loss = round(np.max(losses_test), 2)
         max_test_index = np.argmax(losses_test)
         min_train_loss = round(np.min(losses_train), 4)
@@ -54,7 +56,10 @@ def plot_only(study_type, ylabelname):
               index : {max_test_index}')
         ax1.plot(epochs[:limit], losses_train[:limit], colors[i], \
                  label=activations[i], linewidth = 0.7)
-        selected_epochs, selected_losses = getselectedlosses(epochs, losses_test)
+        if study_type == 'CIFAR10':
+            selected_epochs, selected_losses = getselectedlosses(epochs, losses_test)
+        else:
+            selected_epochs, selected_losses = getselectedlosses2(epochs, losses_test)
         ax2.plot(selected_epochs, selected_losses, color = colors[i],\
                   label=activations[i], linewidth = 0.7)
 
