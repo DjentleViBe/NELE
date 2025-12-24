@@ -169,7 +169,7 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
             save(model, optimizer, epoch_loss, activation_type, epoch + 1, directory)
         print(f"\nEpoch {epoch+1}, loss: {epoch_loss:.4f},"
               f"Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / max(total_test, 1):.4f},"
-                "lr : {lr:.5f}, Time : {total_time:.4f}")
+                f"lr : {lr:.5f}, Time : {total_time:.4f}")
 
     loss_collect = torch.tensor(loss_collect)
     test_collect = torch.tensor(test_collect)
