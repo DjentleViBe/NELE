@@ -19,10 +19,10 @@ from mnist_enc.post_process_mnist import process_mnist_enc
 from mnist_enc.post_process_mnist_nele import mnist_enc_nele
 from cifar10.post_process_cifar10 import process_cifar10
 from cifar10.post_process_cifar10_nele import process_cifar10_nele
-from cifar10.cifar import cifar10_train, cifar10_train_nele
+from cifar10.cifar import cifar10_train, cifar10_train_nele, cifar10_train_study
 from cifar100.post_process_cifar100 import process_cifar100
 from cifar100.post_process_cifar100_nele import process_cifar100_nele
-from cifar100.cifar import cifar100_train, cifar100_train_nele
+from cifar100.cifar import cifar100_train, cifar100_train_nele, cifar100_train_study
 from hyperparam import run_study, find_min, run_study_hyperparam
 
 if __name__ == "__main__":
@@ -82,7 +82,9 @@ if __name__ == "__main__":
     elif args.type == 'cifar10':
         if args.mode == 'train':
             cifar10_train(args.device, args.reset, args.exec)
-        if args.mode == 'train_nele':
+        elif args.mode == 'train_study':
+            cifar10_train_study(args.device, args.reset, args.exec)
+        elif args.mode == 'train_nele':
             cifar10_train_nele(args.device, args.reset, args.exec)
         elif args.mode == 'process':
             process_cifar10()
@@ -93,7 +95,9 @@ if __name__ == "__main__":
     elif args.type == 'cifar100':
         if args.mode == 'train':
             cifar100_train(args.device, args.reset, args.exec)
-        if args.mode == 'train_nele':
+        elif args.mode == 'train_study':
+            cifar100_train_study(args.device, args.reset, args.exec)
+        elif args.mode == 'train_nele':
             cifar100_train_nele(args.device, args.reset, args.exec)
         elif args.mode == 'process':
             process_cifar100()
