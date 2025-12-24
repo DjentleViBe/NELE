@@ -71,7 +71,7 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
             pickle.dump((train_indices, val_indices), f)
     train_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, \
                               shuffle=True, num_workers=2, pin_memory=True)
-    if cfg.val_ratio != 0.0:
+    if config["val_ratio"] != 0.0:
         val_loader = DataLoader(val_dataset, batch_size=cfg.batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=cfg.batch_size, shuffle=False)
 
