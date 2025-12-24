@@ -138,10 +138,22 @@ def objective(trial, type_study, device):
     directory = ''
     if type_study == 0:
         directory = "./RESULTS/MNIST/"
+        file_path = Path(f"{directory}nele={trial.number}/config.py")
+        lines = file_path.read_text(encoding='utf-8').splitlines()
     elif type_study == 1:
         directory = "./RESULTS/MNIST_ENC/"
+        file_path = Path(f"{directory}nele={trial.number}/config.py")
+        lines = file_path.read_text(encoding='utf-8').splitlines()
     elif type_study == 2:
         directory = "./RESULTS/CIFAR10/"
+        file_path = Path(f"{directory}nele={trial.number}/config.py")
+        lines = file_path.read_text(encoding='utf-8').splitlines()
+        lines[18] = "clamping = False"
+    elif type_study == 3:
+        directory = "./RESULTS/CIFAR100/"
+        file_path = Path(f"{directory}nele={trial.number}/config.py")
+        lines = file_path.read_text(encoding='utf-8').splitlines()
+        lines[18] = "clamping = False"
     file_path = Path(f"{directory}nele={trial.number}/config.py")
     lines = file_path.read_text(encoding='utf-8').splitlines()
     lines[4]  = "epochs = 1"
