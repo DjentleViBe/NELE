@@ -152,7 +152,7 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
                 test_collect = torch.tensor(test_collect)
                 val_collect = torch.tensor(val_collect)
                 csv_write2(directory + '/loss_history_' + activation_type + '.csv',
-                            torch.linspace(1, cfg.epochs+1, cfg.epochs+1),
+                            torch.linspace(1, config["epochs"]+1, config["epochs"]+1),
                             loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec_type)
                 return best_val, trial
     
@@ -178,7 +178,7 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
     test_collect = torch.tensor(test_collect)
     val_collect = torch.tensor(val_collect)
     csv_write2(directory + '/loss_history_' + activation_type + '.csv',
-              torch.linspace(1, cfg.epochs+1, cfg.epochs+1),
+              torch.linspace(1, config["epochs"]+1, config["epochs"]+1),
               loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec_study)
     if exec_type == 2:
         return best_val, trial
