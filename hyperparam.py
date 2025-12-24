@@ -156,8 +156,8 @@ def objective(trial, type_study, device):
         lines[18] = "clamping = False"
     file_path = Path(f"{directory}nele={trial.number}/config.py")
     lines = file_path.read_text(encoding='utf-8').splitlines()
-    lines[4]  = "epochs = 1"
-    lines[5]  = "save_every = 10"
+    lines[4]  = f"epochs = {cfg.HYPER_EPOCHS}"
+    lines[5]  = "save_every = 100"
     lines[6]  = f"learning_rate = {lr}"
     lines[7]  = "val_ratio = 0.1"
     lines[9]  = f"w0 = {w_0}"
