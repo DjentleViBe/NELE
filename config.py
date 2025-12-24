@@ -97,6 +97,16 @@ STUDY =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1',
        'sigmoid=7', 'leaky_relu=7', 'silu=7', 
        'softplus=7', 'nele=7', 'mish=7', 'lelu=7'
        ]
+STUDY_3 =  ['tanh=1', 'relu=1', 'elu=1', 'gelu=1',
+       'sigmoid=1', 'leaky_relu=1', 'silu=1', 'lelu=1',
+       'softplus=1', 'nele=1', 'mish=1',
+       'tanh=2', 'relu=2', 'elu=2', 'gelu=2', 
+       'sigmoid=2', 'leaky_relu=2', 'silu=2', 
+       'softplus=2', 'nele=2', 'mish=2', 'lelu=2',
+       'tanh=3', 'relu=3', 'elu=3', 'gelu=3', 
+       'sigmoid=3', 'leaky_relu=3', 'silu=3', 
+       'softplus=3', 'nele=3', 'mish=3', 'lelu=3'
+       ]
 ######################### HYPERPARAM ###############
 PATIENCE = 5
 HYPER_EPOCHS = 3
