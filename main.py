@@ -20,6 +20,7 @@ from mnist_enc.post_process_mnist_nele import mnist_enc_nele
 from cifar10.post_process_cifar10 import process_cifar10
 from cifar10.post_process_cifar10_nele import process_cifar10_nele
 from cifar10.cifar import cifar10_train, cifar10_train_nele, cifar10_train_study
+from cifar10.post_process_rafic10 import process_cifar_study
 from cifar100.post_process_cifar100 import process_cifar100
 from cifar100.post_process_cifar100_nele import process_cifar100_nele
 from cifar100.cifar import cifar100_train, cifar100_train_nele, cifar100_train_study
@@ -90,6 +91,8 @@ if __name__ == "__main__":
             process_cifar10()
         elif args.mode == 'process_nele':
             process_cifar10_nele()
+        elif args.mode == 'process_study':
+            process_cifar_study('CIFAR10')
         elif args.mode == 'hyperparam':
             run_study_hyperparam(2, args.device)
     elif args.type == 'cifar100':
@@ -103,6 +106,8 @@ if __name__ == "__main__":
             process_cifar100()
         elif args.mode == 'process_nele':
             process_cifar100_nele()
+        elif args.mode == 'process_study':
+            process_cifar_study('CIFAR100')
         elif args.mode == 'hyperparam':
             run_study_hyperparam(2, args.device)
     print("Analysis completed")
