@@ -147,7 +147,7 @@ def cifar100_data(directory, device, exec_study, exec_type, config = None, activ
                 if trial.should_prune():
                     raise optuna.TrialPruned()
             if val_err < best_val:
-                best_val = val_acc
+                best_val = val_err
                 no_improve = 0
             else:
                 no_improve += 1
