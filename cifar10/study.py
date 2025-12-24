@@ -14,7 +14,7 @@ import torch
 from torch import nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from file_operations import create_directory, getlatest
+from file_operations import getlatest
 from cifar10.neuralnet import CIFAR10CNN, adjust_lr, prepare_datasets
 from cifar10.utils import save, get_activation
 from csv_operations import csv_write2
@@ -31,9 +31,6 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
     :param activation_type: AF
     """
     best_val = float('inf')
-    activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', \
-                    'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
-    loss_collect = np.zeros(len(activations))
     loss_collect = []
     val_collect = []
     test_collect = []
