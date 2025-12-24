@@ -27,7 +27,6 @@ def mnist_enc_train(device, reset, exec_study):
         directory = 'RESULTS/MNIST_ENC/' + af + '/'
         create_directory('RESULTS/MNIST_ENC/' + af + '/')
         create_directory('PICS/MNIST_ENC/' + af + '/')
-        print(f'Activation : {af}')
         source_file = 'config.py'
         shutil.copy(source_file, directory)
         config = {}
