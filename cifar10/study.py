@@ -109,9 +109,9 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
             barred = '=' * filled_len + '-' * (bar_len - filled_len)
 
             # Print progress bar in-place
-            sys.stdout.write(f'\rEpoch {epoch+1}/{config["epochs"]} |[{barred}]| '
-                            f'Batch {i+1}/{total_batches} | Loss: {loss.item():.4f} \
-                            | Time: {batch_time:.2f}s')
+            sys.stdout.write(f"\rEpoch {epoch+1}/{config["epochs"]} |[{barred}]|"
+                            f"Batch {i+1}/{total_batches} | Loss: {loss.item():.4f}"
+                            f"| Time: {batch_time:.2f}s")
             sys.stdout.flush()
 
         epoch_loss /= len(train_loader.dataset)
