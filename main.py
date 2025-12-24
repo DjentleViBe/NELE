@@ -109,5 +109,5 @@ if __name__ == "__main__":
         elif args.mode == 'process_study':
             process_cifar_study('CIFAR100', 'Test Error (%)')
         elif args.mode == 'hyperparam':
-            run_study_hyperparam(2, args.device)
+            run_study_hyperparam(3, args.device)
     print("Analysis completed")
