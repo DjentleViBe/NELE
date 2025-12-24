@@ -13,7 +13,7 @@ activations =  cfg.AF_plot
 activations_file =  cfg.AF
 colors = cfg.colors
 
-def plot_only(study_type):
+def plot_only(study_type, ylabelname):
     """
     Docstring for plot_only
     
@@ -22,7 +22,7 @@ def plot_only(study_type):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize = (11, 3))
     fig.subplots_adjust(wspace = 0.2, right = 0.82, bottom=0.14)
     ax1.set_ylabel('Training Loss')
-    ax2.set_ylabel('Test Accuracy (%)')
+    ax2.set_ylabel(ylabelname)
     ax1.set_yscale('log')
     ax1.set_xlabel('epochs')
     ax2.set_xlabel('epochs')
@@ -79,8 +79,8 @@ def plot_only(study_type):
     plt.cla()
     plt.close()
 
-def process_cifar_study(study):
+def process_cifar_study(study, ylabelname):
     """
     Docstring for process_cifar10
     """
-    plot_only(study)
+    plot_only(study, ylabelname)

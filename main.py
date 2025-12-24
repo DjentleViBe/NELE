@@ -92,7 +92,7 @@ if __name__ == "__main__":
         elif args.mode == 'process_nele':
             process_cifar10_nele()
         elif args.mode == 'process_study':
-            process_cifar_study('CIFAR10')
+            process_cifar_study('CIFAR10', 'Test Accuracy (%)')
         elif args.mode == 'hyperparam':
             run_study_hyperparam(2, args.device)
     elif args.type == 'cifar100':
@@ -107,7 +107,7 @@ if __name__ == "__main__":
         elif args.mode == 'process_nele':
             process_cifar100_nele()
         elif args.mode == 'process_study':
-            process_cifar_study('CIFAR100')
+            process_cifar_study('CIFAR100', 'Test Error (%)')
         elif args.mode == 'hyperparam':
             run_study_hyperparam(2, args.device)
     print("Analysis completed")
