@@ -56,6 +56,20 @@ def getselectedlosses(epochs, losses_test):
     selected_losses.append(100 - losses_test[-1])
     return selected_epochs, selected_losses
 
+def getselectedlosses2(epochs, losses_test):
+    """
+    Docstring for getselectedlosses
+    """
+    selected_epochs = []
+    selected_losses = []
+    for e, l in zip(epochs, losses_test):
+        if (e - 1) % 5 == 0:   # 1,6,11,...
+            selected_epochs.append(e)
+            selected_losses.append(100-l)
+    selected_epochs.append(epochs[-1])
+    selected_losses.append(losses_test[-1])
+    return selected_epochs, selected_losses
+
 def save(model, optimizer, epoch_loss, activation_type, epoch, directory, test_loss = 0.0):
     """
     Docstring for saving the model

@@ -14,7 +14,7 @@ import torch
 from torch import nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from file_operations import create_directory, getlatest
+from file_operations import getlatest
 from cifar10.neuralnet import CIFAR10CNN, adjust_lr, prepare_datasets
 from cifar10.utils import save, get_activation
 from csv_operations import csv_write2
@@ -31,9 +31,6 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
     :param activation_type: AF
     """
     best_val = float('inf')
-    activations =  ['Tanh', 'ReLU', 'ELU', 'GELU', 'Sigmoid', 'Leaky ReLU', \
-                    'SiLU', 'Softplus', 'LELU', 'BELU', 'Mish', 'NELE']
-    loss_collect = np.zeros(len(activations))
     loss_collect = []
     val_collect = []
     test_collect = []
@@ -74,7 +71,7 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
             pickle.dump((train_indices, val_indices), f)
     train_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, \
                               shuffle=True, num_workers=2, pin_memory=True)
-    if cfg.val_ratio != 0.0:
+    if config["val_ratio"] != 0.0:
         val_loader = DataLoader(val_dataset, batch_size=cfg.batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=cfg.batch_size, shuffle=False)
 
@@ -112,9 +109,9 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
             barred = '=' * filled_len + '-' * (bar_len - filled_len)
 
             # Print progress bar in-place
-            sys.stdout.write(f'\rEpoch {epoch+1}/{config["epochs"]} |[{barred}]| '
-                            f'Batch {i+1}/{total_batches} | Loss: {loss.item():.4f} \
-                            | Time: {batch_time:.2f}s')
+            sys.stdout.write(f"\rEpoch {epoch+1}/{config["epochs"]} |[{barred}]|"
+                            f"Batch {i+1}/{total_batches} | Loss: {loss.item():.4f}"
+                            f"| Time: {batch_time:.2f}s")
             sys.stdout.flush()
 
         epoch_loss /= len(train_loader.dataset)
@@ -122,6 +119,7 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
 
         # Optional: validation
         val_acc = 0.0
+        val_err = 0.0
         if cfg.val_ratio != 0:
             model.eval()
             with torch.no_grad():
@@ -141,7 +139,7 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
                 if trial.should_prune():
                     raise optuna.TrialPruned()
             if val_err < best_val:
-                best_val = val_acc
+                best_val = val_err
                 no_improve = 0
             else:
                 no_improve += 1
@@ -151,7 +149,7 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
                 test_collect = torch.tensor(test_collect)
                 val_collect = torch.tensor(val_collect)
                 csv_write2(directory + '/loss_history_' + activation_type + '.csv',
-                            torch.linspace(1, cfg.epochs+1, cfg.epochs+1),
+                            torch.linspace(1, config["epochs"]+1, config["epochs"]+1),
                             loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec_type)
                 return best_val, trial
     
@@ -169,15 +167,15 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
         test_collect.append(100 * correct_test / total_test)
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch + 1, directory)
-        print(f"\nEpoch {epoch+1}, loss: {epoch_loss:.4f}, \
-              Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / max(total_test, 1):.4f}, \
-                lr : {lr:.5f}, Time : {total_time:.4f}")
+        print(f"\nEpoch {epoch+1}, loss: {epoch_loss:.4f},"
+              f"Val Acc: {val_acc:.4f}, Test Acc: {100 * correct_test / max(total_test, 1):.4f},"
+                f"lr : {lr:.5f}, Time : {total_time:.4f}")
 
     loss_collect = torch.tensor(loss_collect)
     test_collect = torch.tensor(test_collect)
     val_collect = torch.tensor(val_collect)
     csv_write2(directory + '/loss_history_' + activation_type + '.csv',
-              torch.linspace(1, cfg.epochs+1, cfg.epochs+1),
+              torch.linspace(1, config["epochs"]+1, config["epochs"]+1),
               loss_collect, 'epoch', 'loss', 'val', 'test', val_collect, test_collect, exec_study)
     if exec_type == 2:
         return best_val, trial

@@ -24,10 +24,9 @@ def mnist_enc_train(device, reset, exec_study):
         create_directory('./PICS/MNIST_ENC')
     for af in cfg.AF:
         print(f'Activation : {af}')
-        directory = 'RESULTS/MNIST/' + af + '/'
-        create_directory('RESULTS/MNIST/' + af + '/')
-        create_directory('PICS/MNIST/' + af + '/')
-        print(f'Activation : {af}')
+        directory = 'RESULTS/MNIST_ENC/' + af + '/'
+        create_directory('RESULTS/MNIST_ENC/' + af + '/')
+        create_directory('PICS/MNIST_ENC/' + af + '/')
         source_file = 'config.py'
         shutil.copy(source_file, directory)
         config = {}
@@ -51,9 +50,9 @@ def mnist_enc_train_nele(device, reset, exec_study):
         create_directory('./RESULTS/MNIST_ENC')
         create_directory('./PICS/MNIST_ENC')
     for af in cfg.AF_nele:
-        directory = 'RESULTS/MNIST/' + af + '/'
-        create_directory('RESULTS/MNIST/' + af + '/')
-        create_directory('PICS/MNIST/' + af + '/')
+        directory = 'RESULTS/MNIST_ENC/' + af + '/'
+        create_directory('RESULTS/MNIST_ENC/' + af + '/')
+        create_directory('PICS/MNIST_ENC/' + af + '/')
         print(f'Activation : {af}')
         source_file = 'config.py'
         shutil.copy(source_file, directory)
@@ -97,10 +96,9 @@ def mnist_enc_train_study(device, reset, exec_study):
         create_directory('./PICS/MNIST_ENC')
     for af in cfg.STUDY:
         print(f'Activation : {af}')
-        directory = 'RESULTS/MNIST/' + af + '/'
-        create_directory('RESULTS/MNIST/' + af + '/')
-        create_directory('PICS/MNIST/' + af + '/')
-        print(f'Activation : {af}')
+        directory = 'RESULTS/MNIST_ENC/' + af + '/'
+        create_directory('RESULTS/MNIST_ENC/' + af + '/')
+        create_directory('PICS/MNIST_ENC/' + af + '/')
         source_file = 'config.py'
         shutil.copy(source_file, directory)
         config = {}
