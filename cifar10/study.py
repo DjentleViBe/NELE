@@ -122,6 +122,7 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
 
         # Optional: validation
         val_acc = 0.0
+        val_err = 0.0
         if cfg.val_ratio != 0:
             model.eval()
             with torch.no_grad():
