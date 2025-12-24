@@ -2,21 +2,21 @@
 """
 Contains various parameters used for running the simulation
 """
-epochs = 1
-save_every = 10
-learning_rate = 0.0011822018325786745
-val_ratio = 0.1
+epochs = 200
+save_every = 200
+learning_rate = 0.0014
+val_ratio = 0.0
 #################### NURBS #####################
-w0 = 1.265562755757352
-w1 = 0.855259918000353
-w2 = 0.6677913185018659
-w3 = 0.7766388322934815
-cp0 = [-4.3717862589854155, 0.0]
-cp1 = [-0.262049463381773, -0.22580896374032028]
-cp2 = [-0.40149332084437517, -0.40149332084437517]
+w0 = 1.273
+w1 = 0.7607
+w2 = 1.4628
+w3 = 0.6563
+cp0 = [-4.9992, 0.0]
+cp1 = [-0.2194, -0.248]
+cp2 = [-0.8054/1.4142, -0.8054/1.4142]
 cp3 = [0.0, 0.0]
 masking = 2 # 0: no, 1: single 2: double
-clamping = True
+clamping = False
 learnable = False
 ################### NLSD ######################
 learning_rate_array = [0.01, # tanh
@@ -47,7 +47,7 @@ num_classes = 10
 batch_size = 128
 noise_level = 3.0
 AF_nele = ['nele=4']
-AF_plot_nele =  ['nele', 'nele', 'nele', 'nele', 'nele', 'nele', 'nele']
+AF_plot_nele =  ['nele=1', 'nele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'nele=7']
 AF = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', \
       'relu', 'leaky_relu', 'lelu', 'mish', 'nele']
 AF_plot = ['Tanh', 'Sigmoid', 'Softplus',
@@ -60,12 +60,12 @@ batch_size_autoenc = 64
 AF_CIFAR10 = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
      'leaky_relu', 
       'lelu', 'mish', 'nele']
-AF_CIFAR10_NELE =  ['nele=0']
+AF_CIFAR10_NELE =  ['nele=1', 'nele=2', 'nele=3']
 ################# CIFAR-100 ####################
 AF_CIFAR100 = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
      'leaky_relu', 
       'lelu', 'mish', 'nele']
-AF_CIFAR100_NELE =  ['nele=0']
+AF_CIFAR100_NELE =  ['nele=1', 'nele=2', 'nele=3']
 ################# PLOTS #######################
 colors = ["#0072B2", "#56B4E9",
             "#E69F00", "#F0B775",
