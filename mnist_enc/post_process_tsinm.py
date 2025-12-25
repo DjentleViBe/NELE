@@ -73,22 +73,24 @@ def plot_only(study_type):
                                                 losses_test6[:limit],
                                                 losses_train7[:limit],
                                                 losses_test7[:limit])
+        losses_test = 100 - losses_test
         max_test_loss = round(np.max(losses_test), 2)
         max_test_index = np.argmax(losses_test)
         min_train_loss = round(np.min(losses_train), 4)
         min_train_index = np.argmin(losses_train)
 
-        print(f'{act} : Train = {min_train_loss}, index : {min_train_index}, \
-              Test error = {round(100 - max_test_loss, 2)}, index : {max_test_index}')
+        print(f'{act} : Train = {min_train_loss}, index : {min_train_index},' \
+              f'Test error = {round(max_test_loss, 2)}, index : {max_test_index}')
 
         ax1.plot(epochs[:limit], losses_train[:limit], colors[i], \
                  label=activations[i], linewidth = 0.7)
-        selected_losses, selected_epochs = getselectedlosses(epochs, losses_test)
+        selected_epochs, selected_losses = getselectedlosses(epochs, losses_test)
         ax2.plot(selected_epochs, selected_losses, color = colors[i], \
                  label=activations[i], linewidth = 0.7)
 
     ax1.set_xlim(1, cfg.epochs)
     ax2.set_xlim(1, cfg.epochs)
+    ax2.set_yscale('log')
     ax1.set_xticks(range(1, cfg.epochs, 10))
     ax2.set_xticks(range(1, cfg.epochs, 10))
     ax1.grid(True, linewidth = 0.1)

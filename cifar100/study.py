@@ -60,25 +60,25 @@ def cifar100_data(directory, device, exec_study, exec_type, config = None, activ
         with open('RESULTS/CIFAR100/' + activation_type + '/split_indices.pkl', 'rb') as f:
             train_indices, val_indices = pickle.load(f)
         full_train_set, _,test_dataset, _, _ = prepare_datasets(
-            val_ratio=cfg.val_ratio,
+            val_ratio=config["val_ratio"],
             mode = 1
         )
         train_dataset = torch.utils.data.Subset(full_train_set, train_indices)
-        if cfg.val_ratio != 0.0:
+        if config["val_ratio"] != 0.0:
             val_dataset = torch.utils.data.Subset(full_train_set, val_indices)
 
     # Step 2: Prepare datasets
     else:
         start_epoch = 0
         train_dataset, val_dataset, test_dataset, train_indices, val_indices = prepare_datasets(
-            val_ratio=cfg.val_ratio,
+            val_ratio=config["val_ratio"],
             mode = 0
         )
         with open('RESULTS/CIFAR100/' + activation_type + '/split_indices.pkl', 'wb') as f:
             pickle.dump((train_indices, val_indices), f)
     train_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, \
                               shuffle=True, num_workers=2, pin_memory=True)
-    if cfg.val_ratio != 0.0:
+    if config["val_ratio"] != 0.0:
         val_loader = DataLoader(val_dataset, batch_size=cfg.batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=cfg.batch_size, shuffle=False)
 

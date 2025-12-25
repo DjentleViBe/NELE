@@ -53,18 +53,18 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
         with open('RESULTS/CIFAR10/' + activation_type + '/split_indices.pkl', 'rb') as f:
             train_indices, val_indices = pickle.load(f)
         full_train_set, _,test_dataset, _, _ = prepare_datasets(
-            val_ratio=cfg.val_ratio,
+            val_ratio=config["val_ratio"],
             mode = 1
         )
         train_dataset = torch.utils.data.Subset(full_train_set, train_indices)
-        if cfg.val_ratio != 0.0:
+        if config["val_ratio"] != 0.0:
             val_dataset = torch.utils.data.Subset(full_train_set, val_indices)
 
     # Step 2: Prepare datasets
     else:
         start_epoch = 0
         train_dataset, val_dataset, test_dataset, train_indices, val_indices = prepare_datasets(
-            val_ratio=cfg.val_ratio,
+            val_ratio=config["val_ratio"],
             mode = 0
         )
         with open('RESULTS/CIFAR10/' + activation_type + '/split_indices.pkl', 'wb') as f:
@@ -120,7 +120,7 @@ def cifar10_data(directory, device, exec_study, exec_type, config = None, activa
         # Optional: validation
         val_acc = 0.0
         val_err = 0.0
-        if cfg.val_ratio != 0:
+        if config["val_ratio"] != 0:
             model.eval()
             with torch.no_grad():
                 for x, y in val_loader:

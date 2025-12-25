@@ -45,7 +45,7 @@ def mnist_data(directory, device, exec_type, config=None, activation_type='defau
                                         transform=transform, download=True)
     # Compute split sizes
     n_total = len(train_dataset_full)
-    n_val = int(n_total * cfg.val_ratio)
+    n_val = int(n_total * config["val_ratio"])
     n_train = n_total - n_val
 
     # Split
@@ -96,7 +96,7 @@ def mnist_data(directory, device, exec_type, config=None, activation_type='defau
         # Optional: validation
         val_acc = 0.0
         val_err = 0.0
-        if cfg.val_ratio != 0:
+        if config["val_ratio"] != 0:
             model.eval()
             with torch.no_grad():
                 for x, y in val_loader:
