@@ -59,6 +59,7 @@ def plot_only(study_type):
 
     ax3.set_xlim(1, cfg.epochs)
     ax4.set_xlim(1, cfg.epochs)
+    ax4.set_yscale("log")
     ax3.set_xticks(range(1, cfg.epochs, 50))
     ax4.set_xticks(range(1, cfg.epochs, 50))
     ax3.grid(True, linewidth = 0.1)
