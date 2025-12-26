@@ -156,9 +156,8 @@ class NeleUniversalRead(nn.Module):
             self.w1 = torch.tensor(self.proparray["w1"], device=device)
             self.w2 = torch.tensor(self.proparray["w2"], device=device)
             self.w3 = torch.tensor(self.proparray["w3"], device=device)
-
     def forward(self, x):
-        if cfg.learnable == False:
+        if self.proparray["learnable"] == False:
             cp0 = torch.tensor(self.proparray["cp0"], device=self.device)
             if self.proparray["clamping"] == True:
                 cp0[0] = x.min()
