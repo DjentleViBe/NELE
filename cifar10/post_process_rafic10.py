@@ -59,15 +59,15 @@ def plot_only(study_type, ylabelname):
         if study_type == 'CIFAR10':
             selected_epochs, selected_losses = getselectedlosses(epochs, losses_test)
         else:
-            selected_epochs, selected_losses = getselectedlosses2(epochs, losses_test)
+            selected_epochs, selected_losses = getselectedlosses(epochs, losses_test)
         ax2.plot(selected_epochs, selected_losses, color = colors[i],\
                   label=activations[i], linewidth = 0.7)
 
-    ax1.set_xlim(1, 200)
-    ax2.set_xlim(1, 200)
-    ax2.set_ylim(8, 15)
-    ax1.set_xticks(range(1, 200, 50))
-    ax2.set_xticks(range(1, 200, 50))
+    ax1.set_xlim(1, cfg.epochs)
+    ax2.set_xlim(1, cfg.epochs)
+    # ax2.set_ylim(8, 15)
+    ax1.set_xticks(range(1, cfg.epochs, cfg.epochs//4))
+    ax2.set_xticks(range(1, cfg.epochs, cfg.epochs//4))
     ax1.grid(True, linewidth = 0.1)
     ax2.grid(True, linewidth = 0.1)
     lines = []
