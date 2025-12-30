@@ -316,9 +316,9 @@ learnable parameters or fixed constants.
 For the fixed variant, setting $p_0$ = [-4.0, 0.0], $p_1 = [0.1, 0.1]$ and $w_n = 1$ yielded the best results. 
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=0.5\linewidth]{../../figures/Approx_gelu.pdf}
+    \includegraphics[width=0.5\linewidth]{../../PICS/Approx_gelu.pdf}
   \caption{GELU approximated for $x \leq 0$ using cubic NURBS with 4 control points and optimized weights.
-  NURBS curve used in experiments is also shown for comparison.}
+  Range of NURBS curves used for hyperparameter tuning in experiments is also shown for comparison.}
   \Description{GELU activation function recreation.}
   \label{fig:nurbsregen}
   \end{center}
@@ -709,7 +709,7 @@ The neural network is a 9-layer network with the architecture and training
 procedure from \cite{hendrycks2023gaussianerrorlinearunits}. The tuning was done 
 using learning rates of $10^{-3}$, $10^{-4}$, and $10^{-5}$ for 100 epochs.
 The best model was selected based on validation accuracy using 90-10 training/validaition split.
-Seven runs were performed and the median values are reported.
+Seven runs were performed and the median values of 3 runs are reported.
 Figure~\ref{fig:cifar10loss} shows the training loss and test accuracy calculated every 5 epochs for CIFAR-10 over epochs using different AF.
 
 \begin{figure}[H]
@@ -728,8 +728,8 @@ probability from
 \cite{loshchilov2017sgdrstochasticgradientdescent} and batch normalization 
 at the end of a residual block to stabilize exploding ELU's \cite{Shah_2016}
 as implemented in \cite{hendrycks2023gaussianerrorlinearunits}. Setting from Figure~\ref{fig:nurbsregen} 
-were used to obtain Median convergence
-curves over seven runs as shown in Figure~\ref{fig:cifar100loss}.
+were used to obtain median convergence
+curves over three runs as shown in Figure~\ref{fig:cifar100loss}.
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=1.0\linewidth]{../../PICS/CIFAR100/training_loss.pdf}
@@ -1062,25 +1062,25 @@ If yes, please complete the list below.
 
 \begin{enumerate}
     \item All assumptions and restrictions are stated clearly and formally. 
-    [yes/partially/no]
+    [yes]
     \item All novel claims are stated formally (e.g., in theorem statements). 
-    [yes/partially/no]
-    \item Proofs of all non-trivial claims are provided in sufficient detail to permit verification by readers with a reasonable degree of expertise (e.g., that expected from a PhD candidate in the same area of AI). [yes/partially/no]
+    [yes]
+    \item Proofs of all non-trivial claims are provided in sufficient detail to permit verification by readers with a reasonable degree of expertise (e.g., that expected from a PhD candidate in the same area of AI). [yes]
     \item
     Complex formalism, such as definitions or proofs, is motivated and explained clearly.
 %hh: was:
 %Proof sketches or intuitions are given for complex and/or novel results.
-    [yes/partially/no]
+    [yes]
     \item 
     The use of mathematical notation and formalism serves the purpose of enhancing clarity and precision; gratuitous use of mathematical formalism (i.e., use that does not enhance clarity or precision) is avoided.
-    [yes/partially/no]
+    [yes]
     \item 
     Appropriate citations are given for all non-trivial theoretical tools and techniques. 
-    [yes/partially/no]
+    [yes]
 \end{enumerate}
 
 \subsection*{Articles reporting on computational experiments:}
-Does this paper include computational experiments? [yes/no]
+Does this paper include computational experiments? [yes]
 
 If yes, please complete the list below.
 \begin{enumerate}
@@ -1088,26 +1088,26 @@ If yes, please complete the list below.
     All source code required for conducting experiments is included in an online appendix 
     or will be made publicly available upon publication of the paper.
     The online appendix follows best practices for source code readability and documentation as well as for long-term accessibility.
-    [yes/partially/no]
+    [yes]
     \item The source code comes with a license that
     allows free usage for reproducibility purposes.
-    [yes/partially/no]
+    [yes]
     \item The source code comes with a license that
     allows free usage for research purposes in general.
-    [yes/partially/no]
+    [yes]
     \item 
     Raw, unaggregated data from all experiments is included in an online appendix 
     or will be made publicly available upon publication of the paper.
     The online appendix follows best practices for long-term accessibility.
-    [yes/partially/no]
+    [yes]
     \item The unaggregated data comes with a license that
     allows free usage for reproducibility purposes.
-    [yes/partially/no]
+    [yes]
     \item The unaggregated data comes with a license that
     allows free usage for research purposes in general.
-    [yes/partially/no]
+    [yes]
     \item If an algorithm depends on randomness, then the method used for generating random numbers and for setting seeds is described in a way sufficient to allow replication of results. 
-    [yes/partially/no/NA]
+    [yes]
     \item The execution environment for experiments, the computing infrastructure (hardware and software) used for running them, is described, including GPU/CPU makes and models; amount of memory (cache and RAM); make and version of operating system; names and versions of relevant software libraries and frameworks. 
     [yes/partially/no]
     \item 
@@ -1115,30 +1115,30 @@ If yes, please complete the list below.
     [yes/partially/no]
     \item 
     The number of algorithm runs used to compute each result is reported. 
-    [yes/no]
+    [yes]
     \item 
     Reported results have not been ``cherry-picked'' by silently ignoring unsuccessful or unsatisfactory experiments. 
-    [yes/partially/no]
+    [yes]
     \item 
     Analysis of results goes beyond single-dimensional summaries of performance (e.g., average, median) to include measures of variation, confidence, or other distributional information. 
     [yes/no]
     \item 
     All (hyper-) parameter settings for 
     the algorithms/methods used in experiments have been reported, along with the rationale or method for determining them. 
-    [yes/partially/no/NA]
+    [yes]
     \item 
     The number and range of (hyper-) parameter settings explored prior to conducting final experiments have been indicated, along with the effort spent on (hyper-) parameter optimisation. 
-    [yes/partially/no/NA]
+    [yes]
     \item 
     Appropriately chosen statistical hypothesis tests are used to establish statistical significance
     in the presence of noise effects.
-    [yes/partially/no/NA]
+    [partially]
 \end{enumerate}
 
 
 \subsection*{Articles using data sets:}
 Does this work rely on one or more data sets (possibly obtained from a benchmark generator or similar software artifact)? 
-[yes/no]
+[yes]
 
 If yes, please complete the list below.
 \begin{enumerate}
@@ -1148,28 +1148,29 @@ If yes, please complete the list below.
     or will be made publicly available upon publication of the paper.
     The online appendix follows best practices for long-term accessibility with a license
     that allows free usage for research purposes.
-    [yes/partially/no/NA]
+    [NA]
     \item The newly introduced data set comes with a license that
     allows free usage for reproducibility purposes.
-    [yes/partially/no]
+    [yes]
     \item The newly introduced data set comes with a license that
     allows free usage for research purposes in general.
-    [yes/partially/no]
+    [yes]
     \item All data sets drawn from the literature or other public sources (potentially including authors' own previously published work) are accompanied by appropriate citations.
-    [yes/no/NA]
-    \item All data sets drawn from the existing literature (potentially including authors’ own previously published work) are publicly available. [yes/partially/no/NA]
+    [yes]
+    \item All data sets drawn from the existing literature (potentially including authors’ own previously published work) are publicly available. [yes]
     %\item All data sets that are not publicly available are described in detail.
     %[yes/partially/no/NA]
     \item All new data sets and data sets that are not publicly available are described in detail, including relevant statistics, the data collection process and annotation process if relevant.
-    [yes/partially/no/NA]
+    [yes]
     \item 
     All methods used for preprocessing, augmenting, batching or splitting data sets (e.g., in the context of hold-out or cross-validation)
-    are described in detail. [yes/partially/no/NA]
+    are described in detail. [yes]
 \end{enumerate}
 
 \subsection*{Explanations on any of the answers above (optional):}
 
-[Text here; please keep this brief.]
+[The experiments rely on synthetically generated dataset for one of the cases and is obtained by sampling 
+from known functions with additive noise]
 
 \end{document}
 \endinput
