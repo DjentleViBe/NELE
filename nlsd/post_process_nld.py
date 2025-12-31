@@ -23,17 +23,27 @@ def plot_only(x, study_type):
     """
     loss_collect = np.zeros(len(cfg.AF_NLSD))
     std_deviation_collect = np.zeros(len(cfg.AF_NLSD))
+    std_deviation_err = np.zeros(len(cfg.AF_NLSD))
     for i, act in enumerate(cfg.AF_NLSD):
         create_directory('./PICS/NLSD/' + study_type + '/' + act)
         predicted_collect = []
         actual_collect = []
         losses_collect = []
+        sigma_runs = []
+        loss_runs  = []
         for j in range(1, 8):
             directory = 'RESULTS/NLSD/' + study_type + '/' + act + '=' + str(j) + '/'
             y, predicted, y_actual = csv_read(directory + 'predictions_' + act + \
                                               '=' + str(j) + '.csv', 'x', 'y_pred', 'y_actual')
             _, loss, _ = csv_read(directory + 'loss_history_' + act + '=' + str(j) \
                                   + '.csv', 'epoch', 'loss', '')
+            y_actual = torch.tensor(y_actual)
+            predicted = torch.tensor(predicted)
+
+            sigma_j = torch.std(y_actual - predicted)
+            sigma_runs.append(sigma_j.item())
+            loss_runs.append(loss[-1])
+
             losses_collect.append(loss)
             predicted_collect.append(predicted)
             actual_collect.append(y_actual)
@@ -43,18 +53,19 @@ def plot_only(x, study_type):
         predicted = np.median(predicted_collect, axis = 0)
         y_actual = torch.tensor(y_actual)
         predicted = torch.tensor(predicted)
-        sigma_est = torch.std(y_actual - predicted)
 
-        loss_collect[i] = loss_c[-1]
-        std_deviation_collect[i] = sigma_est.item()
+        loss_collect[i] = np.median(loss_runs)
+        std_deviation_collect[i] = np.median(sigma_runs)
+        std_deviation_err[i] = np.std(sigma_runs)
+
     mpl.rcParams['pdf.use14corefonts'] = False
     mpl.rcParams['pdf.fonttype'] = 42  # keeps colors in RGB
     plt.style.use("tableau-colorblind10")
     plt.figure(figsize=(5,3))
     plt.bar(cfg.AF_NLSD_PLOT, std_deviation_collect, color=cfg.colors)
-    plt.errorbar(cfg.AF_NLSD_PLOT, std_deviation_collect, yerr=loss_collect, \
+    plt.errorbar(cfg.AF_NLSD_PLOT, std_deviation_collect, yerr=std_deviation_err, \
                  fmt='none', ecolor="black", elinewidth=3, capsize=5)
-    plt.errorbar(cfg.AF_NLSD_PLOT, std_deviation_collect, yerr=loss_collect, \
+    plt.errorbar(cfg.AF_NLSD_PLOT, std_deviation_collect, yerr=std_deviation_err, \
                  fmt='none', ecolor="white", elinewidth=0, capsize=3)
     plt.ylabel('Loss')
     plt.yscale('log')
