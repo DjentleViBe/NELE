@@ -62,14 +62,6 @@ def gelu_special():
     np.set_printoptions(precision=4, suppress=True)
     print("Optimized Control Points:\n", opt_ctrl)
     print("Optimized Weights:\n", opt_w)
-
-    opt_ctrl_mnist = np.array([
-        [-4, 0],
-        [-0.1, -0.1],
-        [-1/2**0.5, -1/2**0.5],
-        [0, 0]
-    ])
-    opt_w_mnist = np.array([1.0, 1.0, 1.0, 1.0])
     linear = np.array([[0, 0], [4, 4]])
     linear_2 = np.array([[-8, 0], [-4, 0]])
     curves = []
@@ -98,7 +90,6 @@ def gelu_special():
     # ---------------------------
     # Plot results
     # ---------------------------
-    x_mean = mean_curve[:, 0]
     curve_gen = nurbs_gen(opt_ctrl, opt_w, t_val)
     #curve_mnist = nurbs_gen(opt_ctrl_mnist, opt_w_mnist, t_val)
     plt.figure(figsize=(5, 4))
@@ -107,15 +98,15 @@ def gelu_special():
             '--', label=r'$\texttt{GELU}$', color = 'red')
     plt.plot(curve_gen[:, 0], curve_gen[:, 1], label = r'$\texttt{GELU}$ approximation', \
             color = 'k', linewidth=0.7)
-    plt.plot(x_mean, mean_curve[:, 1], label=r'$\texttt{NELE}$ experiment mean', \
+    plt.plot(curves[-1, :, 0], mean_curve[:, 1], label=r'$\texttt{NELE}$ experiment mean', \
             color = 'blue', linewidth=0.7)
     plt.fill_between(
-    x_mean,
+    curves[-1, :, 0],
     lower[:, 1],
     upper[:, 1],
     alpha=0.3,
     label="Hyper-parameter variation band"
-)
+    )
     plt.scatter(opt_ctrl[:, 0], opt_ctrl[:, 1], label=r'Control Points $\texttt{GELU}$ approx', \
                 color = 'k', s=3)
     plt.plot(linear[:, 0], linear[:, 1], color = 'blue', linewidth=0.7)
