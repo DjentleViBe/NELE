@@ -5,7 +5,8 @@
 """
 Non Linear Synthetic Data
 """
-
+import time
+import sys
 import torch
 from torch import nn
 from torch import optim
@@ -63,15 +64,26 @@ def nlsd_data(x, y, af, device='cpu', study_type='default'):
 
     # Training loop
     loss_collect = []
+    total_batches = 1
+    total_time = 0
     for epoch in range(cfg.epochs):
+        start_epoch = time.time()
         optimizer.zero_grad()
         outputs = model(x)
         loss = criterion(outputs, y)
         loss.backward()
         optimizer.step()
         loss_collect.append(loss.item())
+        end_epoch = time.time()
+        batch_time = end_epoch - start_epoch
+        total_time += batch_time
+        # Print progress bar in-place
+        sys.stdout.write(f"\rEpoch {epoch+1}/{cfg.epochs} "
+                        f"Loss: {loss.item():.4f}"
+                        f"| Time: {batch_time:.5f}s")
+        sys.stdout.flush()
         if (epoch+1) % 200 == 0:
-            print(f'Epoch [{epoch+1}/{cfg.epochs}], Loss: {loss.item():.4f}')
+            print(f'\nEpoch [{epoch+1}/{cfg.epochs}], Loss: {loss.item():.4f}')
 
     # Evaluate model
     model.eval()
