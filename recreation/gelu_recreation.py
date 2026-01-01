@@ -73,8 +73,9 @@ def gelu_special():
     linear = np.array([[0, 0], [4, 4]])
     linear_2 = np.array([[-8, 0], [-4, 0]])
     curves = []
-    for cp0x, cp1x, cp1y, length, w_0, w_1, w_2, w_3 in product(
+    for cp0x, cp0y, cp1x, cp1y, length, w_0, w_1, w_2, w_3 in product(
         cfg.range_cp0_x,
+        cfg.range_cp0_y,
         cfg.range_cp1_x,
         cfg.range_cp1_y,
         cfg.range_l,
@@ -83,7 +84,7 @@ def gelu_special():
         cfg.range_w2,
         cfg.range_w3,
     ):
-        cp0 = [cp0x, 0.0]
+        cp0 = [cp0x, cp0y]
         cp1 = [cp1x, cp1y]
         cp2 = [length/1.4142, length/1.41422]
         cp3 = [0.0, 0.0]

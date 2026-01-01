@@ -40,8 +40,9 @@ def run_study(device):
     lines[4] = "epochs = 300"
     lines[5] = "save_every = 600"
     i = 0
-    for cp0x, cp1x, cp1y, length, w_0, w_1, w_2, w_3 in product(
+    for cp0x, cp0y, cp1x, cp1y, length, w_0, w_1, w_2, w_3 in product(
         cfg.range_cp0_x,
+        cfg.range_cp0_y,
         cfg.range_cp1_x,
         cfg.range_cp1_y,
         cfg.range_l,
@@ -51,7 +52,7 @@ def run_study(device):
         cfg.range_w3,
     ):
         lines[6] = "learning_rate = 0.01"
-        cp0 = [cp0x, 0.0]
+        cp0 = [cp0x, cp0y]
         cp1 = [cp1x, cp1y]
         cp2 = [length/1.4142, length/1.41422]
         print(f'Study:{i}')
