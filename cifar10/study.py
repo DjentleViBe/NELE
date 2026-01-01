@@ -8,7 +8,6 @@ Docstring for CIFAR10.study
 import time
 import pickle
 import sys
-import numpy as np
 import optuna
 import torch
 from torch import nn
