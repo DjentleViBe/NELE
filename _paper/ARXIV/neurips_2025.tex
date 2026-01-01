@@ -311,13 +311,12 @@ learnable parameters or fixed constants.
 For the fixed variant, setting $p_0$ = [-4.0, 0.0], $p_1 = [0.1, 0.1]$ and $w_n = 1$ yielded the best results. 
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=0.5\linewidth]{../../PICS/Approx_gelu.pdf}
+    \includegraphics[width=0.4\linewidth]{../../PICS/Approx_gelu.pdf}
   \caption{GELU approximated for $x \leq 0$ using cubic NURBS with 4 control points and optimized weights.
   Range of NURBS curves used for hyperparameter tuning in experiments is also shown for comparison.}
   \label{fig:nurbsregen}
   \end{center}
 \end{figure}
-
 \begin{algorithm}
 \caption{NELE activation function}
 \label{alg:nele_training}
@@ -359,7 +358,6 @@ For the fixed variant, setting $p_0$ = [-4.0, 0.0], $p_1 = [0.1, 0.1]$ and $w_n 
 \ENDFOR
 \end{algorithmic}
 \end{algorithm}
-
 \section{Experiments with \texttt{NELE}}
 Following the construction process outlined in Section ~\ref{sec:form}, 
 \texttt{NELE} is benchmarked against a representative set 
@@ -375,7 +373,8 @@ large-scale architectures, such as transformers or
 recurrent networks, is not investigated in this work.
 All models are trained for a fixed number of epochs to ensure a 
 fair comparison across AF under identical optimization conditions.
-
+See Appendix~\ref{app:compute} for full details on all 
+runs and total compute.
 \subsection{Non-linear synthetic data (NLSD)}
 NLSD provides a controlled environment for assessing functional expressivity.
 The neural network used for curve fitting consists of a fully connected feed-forward 
@@ -1019,6 +1018,24 @@ The source code used in this paper are publicly available to ensure reproducibil
 
 It is recommended that users follow the provided \texttt{README} instructions for replicating experiments. This repository will remain publicly accessible for the foreseeable future.
 
+\section{Compute Resources for Experiments}
+\label{app:compute}
+Experiments were conducted on an NVIDIA GTX 1080 Ti GPU 
+with 64GB RAM.
+\begin{table}[h]
+\small
+\centering
+\begin{tabular}{l l l l l}
+\textbf{Dataset} & \textbf{Time per iteration} & \textbf{Time per run} & \textbf{Runs} & \textbf{Total compute} \\
+\hline
+NLSD & ~0.003 s & ~0.2 s & 7 & ~2 s \\
+MNIST & ~5 s & ~6.25 min & 7 & ~43 min \\
+MNIST\_ENC & ~17 s & ~21 min & 7 & ~2.5 hr \\
+CIFAR-10 & ~49 s & ~61 min & 3 & ~3 hr \\
+CIFAR-100 & ~108 s & ~90 min & 3 & ~5 hr \\
+\end{tabular}
+\caption{Compute resources, per-run times, number of runs, and total compute for all experiments.}
+\end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage
