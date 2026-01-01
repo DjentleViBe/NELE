@@ -76,9 +76,7 @@
 
 
 \author{%
-  Vishakh.~Begari\thanks{Use footnote for providing further information
-    about author (webpage, alternative address)---\emph{not} for acknowledging
-    funding agencies.} \\
+  Vishakh.~Begari\thanks{https://orcid.org/0009-0008-9399-8581} \\
   Independent Researcher\\
   Bavaria, Germany \\
   \texttt{vibedjentle@gmail.com} \\
@@ -236,9 +234,11 @@ Figure ~\ref{fig:nurbs} illustrates how varying the weight of the middle control
   Red markers indicate the control points used for all curves. 
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=0.4\linewidth]{../../PICS/nurbs.pdf}
-  \caption{NURBS curves generated from three control points with quadratic 
-  degree ($p=2$) and different weights.}
+    \includegraphics[width=0.8\linewidth]{../../PICS/nurbs.pdf}
+  \caption{NURBS curves generated with different weights. (a) Three control points with quadratic 
+  degree ($p=2$).
+  (b) Four control points with cubic 
+  degree ($p=3$) yields two inflection points.}
   \label{fig:nurbs}
   \end{center}
 \end{figure}
@@ -726,8 +726,8 @@ curves over three runs as shown in Figure~\ref{fig:cifar100loss}.
   \end{center}
 \end{figure}
 \section{Limitations}
-\texttt{NELE} is based on NURBS and the implementation is done using cublic splines, 
-which inherently allows a single inflection per spline segment. Modeling functions with multiple inflections 
+\texttt{NELE} is based on NURBS and the implementation is done using cublic splines and four control points, 
+which inherently allows two inflections per spline segment. Modeling functions with multiple inflections 
 would require higher-order splines, increasing computational cost. 
 For the CIFAR-10 and CIFAR-100 experiments, spline parameters were kept non-learnable to reduce 
 training time, which may limit representational flexibility. 
