@@ -98,15 +98,26 @@ def gelu_special():
             '--', label=r'$\texttt{GELU}$', color = 'red')
     plt.plot(curve_gen[:, 0], curve_gen[:, 1], label = r'$\texttt{GELU}$ approximation', \
             color = 'k', linewidth=0.7)
-    plt.plot(curves[-1, :, 0], mean_curve[:, 1], label=r'$\texttt{NELE}$ experiment mean', \
+    # 1. Collect all x-values to find global min/max
+    all_x = np.concatenate([c[:, 0] for c in curves])
+    x_grid = np.linspace(all_x.min(), all_x.max(), 200)  # fixed common x-axis
+
+    # 2. Interpolate each curve onto x_grid
+    curves_interp = []
+    for c in curves:
+        y_interp = np.interp(x_grid, c[:, 0], c[:, 1])
+        curves_interp.append(y_interp)
+    curves_interp = np.stack(curves_interp)  # shape: (num_curves, len(x_grid))
+
+    # 3. Compute mean, min, max
+    mean_y = curves_interp.mean(axis=0)
+    lower_y = curves_interp.min(axis=0)
+    upper_y = curves_interp.max(axis=0)
+
+    # 4. Plot
+    plt.fill_between(x_grid, lower_y, upper_y, alpha=0.3, label="Hyper-parameter variation band")
+    plt.plot(x_grid, mean_y, label=r'$\texttt{NELE}$ experiment mean', \
             color = 'blue', linewidth=0.7)
-    plt.fill_between(
-    curves[-1, :, 0],
-    lower[:, 1],
-    upper[:, 1],
-    alpha=0.3,
-    label="Hyper-parameter variation band"
-    )
     plt.scatter(opt_ctrl[:, 0], opt_ctrl[:, 1], label=r'Control Points $\texttt{GELU}$ approx', \
                 color = 'k', s=3)
     plt.plot(linear[:, 0], linear[:, 1], color = 'blue', linewidth=0.7)
