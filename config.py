@@ -2,8 +2,8 @@
 """
 Contains various parameters used for running the simulation
 """
-epochs = 200
-save_every = 200
+epochs = 300
+save_every = 300
 learning_rate = 0.0014
 val_ratio = 0.0
 #################### NURBS #####################
@@ -46,25 +46,22 @@ num_hidden_layers = 8
 num_classes = 10
 batch_size = 128
 noise_level = 3.0
-AF_nele = ['nele=4']
+AF_nele = ['nele=1', 'nele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'nele=7']
 AF_plot_nele =  ['nele=1', 'nele=2', 'nele=3', 'nele=4', 'nele=5', 'nele=6', 'nele=7']
 AF = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', \
       'relu', 'leaky_relu', 'lelu', 'mish', 'nele']
 AF_plot = ['Tanh', 'Sigmoid', 'Softplus',
            'ELU', 'SiLU', 'GELU', 'ReLU',
-       'Leaky_ReLU',  
-       'LeLU', 'Mish', 'NELE']
+       'Leaky_ReLU', 'LeLU', 'Mish', 'NELE']
 ################### MNIST AUTO ENC #####################
 batch_size_autoenc = 64
 ################# CIFAR-10 ####################
 AF_CIFAR10 = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
-     'leaky_relu', 
-      'lelu', 'mish', 'nele']
+     'leaky_relu', 'lelu', 'mish', 'nele']
 AF_CIFAR10_NELE =  ['nele=1', 'nele=2', 'nele=3']
 ################# CIFAR-100 ####################
 AF_CIFAR100 = ['tanh', 'sigmoid', 'softplus', 'elu', 'silu', 'gelu', 'relu',
-     'leaky_relu', 
-      'lelu', 'mish', 'nele']
+     'leaky_relu', 'lelu', 'mish', 'nele']
 AF_CIFAR100_NELE =  ['nele=1', 'nele=2', 'nele=3']
 ################# PLOTS #######################
 colors = ["#0072B2", "#56B4E9",
@@ -113,6 +110,7 @@ HYPER_EPOCHS = 3
 TRIALS = 20
 N_JOBS = 5
 range_cp0_x = [-1.0, -4.0, -6.0]
+range_cp0_y = [0.0, -1.5]
 range_cp1_x = [-0.1, -0.3]
 range_cp1_y = [-0.1, -0.3]
 range_l = [-1.0, -0.5]
