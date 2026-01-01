@@ -61,6 +61,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{amsmath}
+\usepackage{comment}
 % Note. For the workshop paper template, both \title{} and \workshoptitle{} are required, with the former indicating the paper title shown in the title and the latter indicating the workshop title displayed in the footnote. 
 \title{NELE: Non-Uniform Rational B-Spline Elementwise Learnable}
 
@@ -308,7 +309,6 @@ sets the slope between $p_2$ and $p_3$ = 1 to maintain tangency as depicted in F
 A mask is added which returns 0 for $x < p_0$.
 The remaining control points and their associated weights were either treated as 
 learnable parameters or fixed constants. 
-For the fixed variant, setting $p_0$ = [-4.0, 0.0], $p_1 = [0.1, 0.1]$ and $w_n = 1$ yielded the best results. 
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=0.4\linewidth]{../../PICS/Approx_gelu.pdf}
@@ -704,7 +704,7 @@ Figure~\ref{fig:cifar10loss} shows the training loss and test accuracy calculate
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=1.0\linewidth]{../../PICS/CIFAR10/training_loss.pdf}
-  \caption{Training and test accuracy trends for CIFAR10 over epochs using different AF.}
+  \caption{Training and test accuracy trends for CIFAR-10 over epochs using different AF.}
   \label{fig:cifar10loss}
   \end{center}
 \end{figure}
@@ -721,12 +721,28 @@ curves over three runs as shown in Figure~\ref{fig:cifar100loss}.
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=1.0\linewidth]{../../PICS/CIFAR100/training_loss.pdf}
-  \caption{Training and test accuracy trends for CIFAR100 over 50 epochs using different AF.Shaded areas indicate ±1 standard deviation across runs for \texttt{NELE}}
+  \caption{Training and test accuracy trends for CIFAR-100 over 50 epochs using different AF.Shaded areas indicate ±1 standard deviation across runs for \texttt{NELE}}
   \label{fig:cifar100loss}
   \end{center}
 \end{figure}
 \section{Limitations}
-
+\texttt{NELE} is based on NURBS and the implementation is done using cublic splines, 
+which inherently allows a single inflection per spline segment. Modeling functions with multiple inflections 
+would require higher-order splines, increasing computational cost. 
+For the CIFAR-10 and CIFAR-100 experiments, spline parameters were kept non-learnable to reduce 
+training time, which may limit representational flexibility. 
+A systematic hyperparameter sensitivity analysis was not performed for CIFAR-10 and CIFAR-100 cases, 
+as configurations were selected via random search due to the substantial computational cost of each run. 
+Experiments are limited to synthetic curve-fitting tasks and standard vision benchmarks using moderate-scale neural 
+architectures; performance on larger datasets, 
+other modalities such as natural language processing, 
+and more diverse architectures (e.g., transformers or RNN) remains an open direction for future work.
+\texttt{NELE} introduces a small constant-time overhead per neuron due to spline evaluation, 
+which scales linearly with the number of activations and does not alter the asymptotic training complexity of the 
+underlying network. In experiments, this overhead resulted in a modest increase in per-epoch training time 
+compared to standard AF. For larger datasets, overall training cost scales linearly with dataset size, 
+consistent with standard stochastic optimization, while the relative overhead remains constant. 
+A detailed evaluation of efficiency at large scale is also left for future work.
 \section{Conclusions}
 \texttt{NELE} exhibits a combination of properties that make it particularly 
 well suited for functional approximation tasks. 
@@ -1000,23 +1016,28 @@ producing a smooth curve that closely follows the desired shape.
 The source code used in this paper are publicly available to ensure reproducibility and facilitate further research:
 
 \begin{itemize}
-    \item \textbf{\texttt{NELE} Implementation:} Python implementation of the proposed NELE activation function, including training scripts and examples. Available at: 
+    \item \textbf{Implementation:} Python implementation of the proposed NELE activation function, including training scripts and examples. Available at: 
     \url{https://github.com/DjentleViBe/NELE}.
     
-    \item \textbf{Additional Figures:} Addiitonal plots for the curve approximation from Table ~\ref{tab:curveapprox} are provided in the repository.
+    \item \textbf{Additional Figures:} Additional plots for the curve approximation from Table ~\ref{tab:curveapprox} are provided in the repository.
     \item \textbf{Hyperparameter tuning: }Parameters used in the analysis of NLSD were optimised through grid search with points 
-    distributed equally from an initialised \texttt{GELU} approximation. Since grid search was unfeasible for other studies due to total run times, 
+    distributed equally from the best performing competinng afcollect. Since grid search was unfeasible for other studies due to total run times, 
     hyperparameters were optimized using an automated search procedure. 
-    For each candidate configuration, training was performed for a fixed number of 
-    epochs with patience and validation performance evaluated after each epoch. Poorly performing 
-    configurations were terminated early based on intermediate validation error, 
-    and the objective value was defined as the minimum validation error attained during training after 200 trials using \cite{optuna_2019}.
-    \item \textbf{Settings:} Parameters used for reproducing the results in this paper is provided in the
+    For each candidate configuration, training was performed for a fixed number of epochs 
+    with early stopping based on validation performance evaluated at each epoch. 
+    Configurations with poor intermediate validation error were pruned early. 
+    The search was terminated 
+    when validation performance exceeded that of competing AF. 
+    The objective value was defined as the minimum validation error attained 
+    during training, and the optimization was carried out over 200 trials using 
+    Optuna \cite{optuna_2019}.
+    \item \textbf{Settings:} Parameters used for reproducing the results of this paper is provided in the
     \texttt{README} file of the repository.
   
 \end{itemize}
 
-It is recommended that users follow the provided \texttt{README} instructions for replicating experiments. This repository will remain publicly accessible for the foreseeable future.
+It is recommended that users follow the provided \texttt{README} instructions in the repository for replicating experiments. 
+This repository will remain publicly accessible for the foreseeable future.
 
 \section{Compute Resources for Experiments}
 \label{app:compute}
@@ -1034,10 +1055,10 @@ MNIST\_ENC & ~17 s & ~21 min & 7 & ~2.5 hr \\
 CIFAR-10 & ~49 s & ~61 min & 3 & ~3 hr \\
 CIFAR-100 & ~108 s & ~90 min & 3 & ~5 hr \\
 \end{tabular}
-\caption{Compute resources, per-run times, number of runs, and total compute for all experiments.}
+\caption{Compute resources, per-run times, number of runs, and total compute for experiments with \texttt{NELE}.}
 \end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\begin{comment}
 \newpage
 \section*{NeurIPS Paper Checklist}
 
@@ -1084,8 +1105,8 @@ CIFAR-100 & ~108 s & ~90 min & 3 & ~5 hr \\
 
 \item {\bf Limitations}
     \item[] Question: Does the paper discuss the limitations of the work performed by the authors?
-    \item[] Answer: \answerTODO{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
-    \item[] Justification: \justificationTODO{}
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: A separate limitations section is added detailing factors that influence the performance of the approach. Computational efficiency and their scaling is limited to the datasets used in the study. Large scale benchmarks, distributed training and detailed runtime profiling is left for future work.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that the paper has no limitation while the answer No means that the paper has limitations, but those are not discussed in the paper. 
@@ -1290,6 +1311,6 @@ CIFAR-100 & ~108 s & ~90 min & 3 & ~5 hr \\
     \end{itemize}
 
 \end{enumerate}
-
+\end{comment}
 
 \end{document}
