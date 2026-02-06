@@ -6,7 +6,7 @@ Docstring for CIFAR10.post_process_cifar10
 """
 import matplotlib.pyplot as plt
 import numpy as np
-from csv_operations import csv_read2
+from csv_operations import csv_read
 import config as cfg
 from cifar10.utils import getselectedlosses, take_median, \
                             getselectedlosses2
@@ -30,19 +30,19 @@ def plot_only(study_type, ylabelname):
     for i, act in enumerate(activations_file):
         act = act.split('=')[0]
         limit = cfg.epochs
-        epochs, losses_train1, _, losses_test1 = csv_read2('RESULTS/' \
-                                        + study_type  + '/' + act + '/loss_history_' \
-                                            + act + '.csv', 'epoch', \
-                                            'loss', 'val', 'test')
-        epochs, losses_train2, _, losses_test2 = csv_read2('RESULTS/' \
-                                        + study_type  + '/' + act + '/loss_history_' \
-                                            + act + '.csv', 'epoch', \
-                                            'loss', 'val', 'test')
-        epochs, losses_train3, _, losses_test3 = csv_read2('RESULTS/' \
-                                        + study_type  + '/' + act + '/loss_history_' \
-                                            + act + '.csv', 'epoch', \
-                                            'loss', 'val', 'test')
-        losses_train, losses_test = take_median(losses_train1[:limit],
+        epochs, losses_train1, losses_test1 = csv_read('RESULTS/' \
+                                            + study_type  + '/' + act \
+                                            + '=1/loss_history_' + act \
+                                            + '=1.csv', 'epoch', 'loss', 'test')
+        epochs, losses_train2, losses_test2 = csv_read('RESULTS/' \
+                                            + study_type  + '/' + act \
+                                            + '=2/loss_history_' + act \
+                                            + '=2.csv', 'epoch', 'loss', 'test')
+        epochs, losses_train3, losses_test3 = csv_read('RESULTS/' \
+                                            + study_type  + '/' + act \
+                                            + '=3/loss_history_' + act \
+                                            + '=3.csv', 'epoch', 'loss', 'test')
+        losses_train, losses_test, std_train, std_test = take_median(losses_train1[:limit],
                                                 losses_test1[:limit],
                                                 losses_train2[:limit],
                                                 losses_test2[:limit],
@@ -56,18 +56,21 @@ def plot_only(study_type, ylabelname):
               index : {max_test_index}')
         ax1.plot(epochs[:limit], losses_train[:limit], colors[i], \
                  label=activations[i], linewidth = 0.7)
-        if study_type == 'CIFAR10':
-            selected_epochs, selected_losses = getselectedlosses(epochs, losses_test)
-        else:
-            selected_epochs, selected_losses = getselectedlosses2(epochs, losses_test)
+        selected_epochs, selected_losses = getselectedlosses(epochs, losses_test)
+        selected_epochs, std_losses = getselectedlosses(epochs, std_test)
+        std_losses = np.asarray(std_losses)
+        std_losses = 100 - std_losses
         ax2.plot(selected_epochs, selected_losses, color = colors[i],\
                   label=activations[i], linewidth = 0.7)
-
-    ax1.set_xlim(1, 200)
-    ax2.set_xlim(101, 200)
-    ax2.set_ylim(8, 15)
-    ax1.set_xticks(range(1, 200, 50))
-    ax2.set_xticks(range(101, 200, 50))
+        if 'nele' in activations_file[i]:
+            plt.fill_between(selected_epochs,
+                    np.asarray(selected_losses) - np.asarray(std_losses),
+                    np.asarray(selected_losses) + np.asarray(std_losses),
+                    alpha=0.15, color = 'k')
+    ax1.set_xlim(1, cfg.epochs)
+    ax2.set_xlim(1, cfg.epochs)
+    ax1.set_xticks(range(1, cfg.epochs, cfg.epochs//4))
+    ax2.set_xticks(range(1, cfg.epochs, cfg.epochs//4))
     ax1.grid(True, linewidth = 0.1)
     ax2.grid(True, linewidth = 0.1)
     lines = []

@@ -59,7 +59,7 @@ def plot_only(study_type):
                                             + study_type  + '/' + act \
                                             + '=7/loss_history_' + act \
                                             + '=7.csv', 'epoch', 'loss', 'test')
-        losses_train, losses_test = take_median(losses_train1[:limit],
+        losses_train, losses_test, std_train, std_test = take_median(losses_train1[:limit],
                                                 losses_test1[:limit],
                                                 losses_train2[:limit],
                                                 losses_test2[:limit],
@@ -84,8 +84,16 @@ def plot_only(study_type):
         ax1.plot(epochs[:limit], losses_train[:limit], colors[i], \
                  label=activations[i], linewidth = 0.7)
         selected_epochs, selected_losses = getselectedlosses(epochs, losses_test)
+        selected_epochs, std_losses = getselectedlosses(epochs, std_test)
+        std_losses = np.asarray(std_losses)
+        std_losses = 100 - std_losses
         ax2.plot(selected_epochs, selected_losses, color = colors[i], \
                  label=activations[i], linewidth = 0.7)
+        if 'nele' in activations_file[i]:
+            plt.fill_between(selected_epochs,
+                    np.asarray(selected_losses) - np.asarray(std_losses),
+                    np.asarray(selected_losses) + np.asarray(std_losses),
+                    alpha=0.15, color = 'k')
 
     ax1.set_xlim(1, cfg.epochs)
     ax2.set_xlim(1, cfg.epochs)

@@ -59,7 +59,7 @@ def plot_only(study_type):
                                             + study_type  + '/' + act \
                                             + '=7/loss_history_' + act \
                                             + '=7.csv', 'epoch', 'loss', 'test')
-        losses_train, losses_test = take_median(losses_train1[:limit],
+        losses_train, losses_test, std_train, std_test = take_median(losses_train1[:limit],
                                                 losses_test1[:limit],
                                                 losses_train2[:limit],
                                                 losses_test2[:limit],
@@ -74,19 +74,24 @@ def plot_only(study_type):
                                                 losses_train7[:limit],
                                                 losses_test7[:limit])
         # losses_test = 100 - losses_test
-        max_test_loss = 100 - round(np.min(losses_test), 4)
+        max_test_loss = round(np.min(losses_test), 4)
         max_test_index = np.argmax(losses_test)
         min_train_loss = round(np.min(losses_train), 4)
         min_train_index = np.argmin(losses_train)
 
         print(f'{act} : Train = {min_train_loss}, index : {min_train_index},' \
-              f'Test error = {round(100 - max_test_loss, 4)}, index : {max_test_index}')
+              f'Test error = {round(max_test_loss, 4)}, index : {max_test_index}')
 
         ax1.plot(epochs[:limit], losses_train[:limit], colors[i], \
                  label=activations[i], linewidth = 0.7)
         # selected_epochs, selected_losses = getselectedlosses(epochs, losses_test)
         ax2.plot(epochs, losses_test, color = colors[i], \
                  label=activations[i], linewidth = 0.7)
+        if 'nele' in activations_file[i]:
+            plt.fill_between(epochs,
+                    np.asarray(losses_test) - np.asarray(std_test),
+                    np.asarray(losses_test) + np.asarray(std_test),
+                    alpha=0.15, color = 'k')
 
     ax1.set_xlim(1, cfg.epochs)
     ax2.set_xlim(1, cfg.epochs)

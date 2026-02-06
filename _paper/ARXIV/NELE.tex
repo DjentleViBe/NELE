@@ -1,141 +1,135 @@
-%% This is a JAIR Example File Compiled by Nicholas Mattei (nsmattei@tulane.edu) 
-%% and Odd Erik Gundersen (odderik@ntnu.no)
-%% and Mykel Kochenderfer (mykel@stanford.edu)
-%% September 15, 2025
-%%
-%% This file is based off the ACM Latex Template https://www.acm.org/publications/proceedings-template
-%% Revision 2.12 (12/28/2024)
-%% 
-%% Please see https://www.jair.org/index.php/jair for more information and submission instructions.
-%%
+\documentclass{article}
 
-%% The first command in your LaTeX source must be the \documentclass
-%% command.
-%%
-%% For final camera ready please change the
-%% command to \documentclass[]{jair}.
-%%
-\documentclass[manuscript, screen, review]{jair}
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2025
+
+% The authors should use one of these tracks.
+% Before accepting by the NeurIPS conference, select one of the options below.
+% 0. "default" for submission
+% \usepackage{neurips_2025}
+% the "default" option is equal to the "main" option, which is used for the Main Track with double-blind reviewing.
+% 1. "main" option is used for the Main Track
+%  \usepackage[main]{neurips_2025}
+% 2. "position" option is used for the Position Paper Track
+%  \usepackage[position]{neurips_2025}
+% 3. "dandb" option is used for the Datasets & Benchmarks Track
+ % \usepackage[dandb]{neurips_2025}
+% 4. "creativeai" option is used for the Creative AI Track
+%  \usepackage[creativeai]{neurips_2025}
+% 5. "sglblindworkshop" option is used for the Workshop with single-blind reviewing
+ % \usepackage[sglblindworkshop]{neurips_2025}
+% 6. "dblblindworkshop" option is used for the Workshop with double-blind reviewing
+%  \usepackage[dblblindworkshop]{neurips_2025}
+
+% After being accepted, the authors should add "final" behind the track to compile a camera-ready version.
+% 1. Main Track
+ % \usepackage[main, final]{neurips_2025}
+% 2. Position Paper Track
+%  \usepackage[position, final]{neurips_2025}
+% 3. Datasets & Benchmarks Track
+ % \usepackage[dandb, final]{neurips_2025}
+% 4. Creative AI Track
+%  \usepackage[creativeai, final]{neurips_2025}
+% 5. Workshop with single-blind reviewing
+%  \usepackage[sglblindworkshop, final]{neurips_2025}
+% 6. Workshop with double-blind reviewing
+%  \usepackage[dblblindworkshop, final]{neurips_2025}
+% Note. For the workshop paper template, both \title{} and \workshoptitle{} are required, with the former indicating the paper title shown in the title and the latter indicating the workshop title displayed in the footnote.
+% For workshops (5., 6.), the authors should add the name of the workshop, "\workshoptitle" command is used to set the workshop title.
+% \workshoptitle{WORKSHOP TITLE}
+
+% "preprint" option is used for arXiv or other preprint submissions
+\usepackage[preprint]{neurips_2025}
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2025}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{algorithm}
 \usepackage{algorithmic}
-\setcopyright{cc}
-\copyrightyear{2025}
-\acmDOI{10.1613/jair.1.xxxxx}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{comment}
+% Note. For the workshop paper template, both \title{} and \workshoptitle{} are required, with the former indicating the paper title shown in the title and the latter indicating the workshop title displayed in the footnote. 
+\title{NELE: Non-Uniform Rational B-Spline Elementwise Learnable}
 
-%%
-\JAIRAE{Insert JAIR AE Name}
-\JAIRTrack{} % Insert JAIR Track Name only if part of a special track
-\acmVolume{}
-\acmArticle{}
-\acmMonth{12}
-\acmYear{2025}
 
-\RequirePackage[
-  datamodel=acmdatamodel,
-  style=acmauthoryear,
-  backend=biber,
-  giveninits=true,
-  uniquename=init
-  ]{biblatex}
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
 
-\renewcommand*{\bibopenbracket}{(}
-\renewcommand*{\bibclosebracket}{)}
 
-%%
-%% For managing citations, use BibLaTeX with the acmauthoryear style.
-%% The next line specifies the bibliography file.
-\addbibresource{sample-base.bib}
-
-%%
-%% end of the preamble, start of the body of the document source.
-\begin{document}
-
-%%
-%% The "title" command has an optional parameter,
-%% allowing the author to define a "short title" to be used in page headers.
-%\title{JAIR Example Template}
-\title[NELE]{NELE: Non-Uniform Rational B-Spline Elementwise Learnable}
-
-%%
-%% The "author" command and its associated commands are used to define
-%% the authors and their affiliations.
-%% Of note is the shared affiliation of the first two authors, and the
-%% "authornote" and "authornotemark" commands
-%% used to denote shared contribution to the research and/or corresponding author.
-\author{Vishakh Begari}
-\orcid{0009-0008-9399-8581}
-\email{vibedjentle@gmail.com}
-\affiliation{%
-  \institution{Independent Researcher}
-  \city{Gauting}
-  \state{Bavaria}
-  \country{Germany}
+\author{%
+  Vishakh.~Begari\thanks{https://orcid.org/0009-0008-9399-8581} \\
+  Independent Researcher\\
+  Bavaria, Germany \\
+  \texttt{vibedjentle@gmail.com} \\
+  % examples of more authors
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \AND
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
 }
 
-%% The short list of authors must be made of the list of all authors' lastnames.
-\renewcommand{\shortauthors}{Begari}
-%% If this is too long and overlaps other information printed in the page headers, use
-%\renewcommand{\shortauthors}{Xu et al.}
 
-%%
-%% The abstract is a short summary of the work to be presented in the
-%% article.
+\begin{document}
+
+
+\maketitle
+
+
 \begin{abstract}
-{\bf Background:} 
-    The design of activation functions (AF) 
+  The design of activation functions (AF) 
     is central to the expressiveness and efficiency of neural networks. 
     Yet the pursuit of a universal activation function, one that can 
     automatically adapt its shape to suit a wide variety of tasks, remains 
-    an open challenge.  
-    
-    {\bf Objectives:}
-    In this work, the author proposes \texttt{NELE} (NURBS Elementwise Learnable), 
+    an open challenge. In this work, the author proposes \texttt{NELE} (NURBS Elementwise Learnable), 
     a learnable activation function based on Non-Uniform Rational B-Splines (NURBS).
-
-    {\bf Methods:}
     Unlike conventional fixed activations, \texttt{NELE} 
     learns a smooth, data driven mapping from inputs to outputs 
     through a set of control points and corresponding weights.
     This yields a continuous, differentiable family of functions capable 
     of modeling a broad spectrum of nonlinear behaviors, effectively 
     unifying diverse activation patterns within a single formulation.
-
-    {\bf Results:}
     \texttt{NELE} was evaluated on several state-of-the-art benchmark datasets.
     The empirical results indicate that \texttt{NELE} achieves consistently better performance 
-    than multiple existing AF approaches.
-
-    {\bf Conclusions:}
-    The theoretical universality of NURBS, its ability to approximate a wide class 
+    than multiple existing AF approaches. The theoretical universality of NURBS, its ability to approximate a wide class 
     of functions and its inherent flexibility, positions \texttt{NELE} as a promising candidate 
     for a universal activation function.
+
 \end{abstract}
-
-%\begin{abstract}
-%      A clear and well-documented \LaTeX\ document is presented as an
-%  article formatted for publication by ACM in a conference proceedings
-%  or journal publication. Based on the ``acmart'' document class, this
-%  article presents and explains many of the common variations, as well
-%  as many of the formatting elements an author may use in the
-%  preparation of the documentation of their work.
-%\end{abstract}
-
-
-%% JAIR Note: 
-%% Do not include ACM CCS Concepts or Keywords
-
-
-%% To be updated by authors.
-\received{26 December 2025}
-\received[accepted]{26 December 2025}
-
-%%
-%% This command processes the author and affiliation and title
-%% information and builds the first part of the formatted document.
-\maketitle
-
 \section{Introduction}
 Activation functions (AF) are a core component of artificial neural networks, determining how neurons process input 
 signals and introduce non-linearity into the network. Their evolution reflects the growing complexity 
@@ -240,14 +234,16 @@ Figure ~\ref{fig:nurbs} illustrates how varying the weight of the middle control
   Red markers indicate the control points used for all curves. 
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=0.4\linewidth]{../../PICS/nurbs.pdf}
-  \caption{NURBS curves generated from three control points with quadratic 
-  degree ($p=2$) and different weights.}
-  \Description{Different NURBS curves.}
+    \includegraphics[width=0.8\linewidth]{../../PICS/nurbs.pdf}
+  \caption{NURBS curves generated with different weights. (a) Three control points with quadratic 
+  degree ($p=2$).
+  (b) Four control points with cubic 
+  degree ($p=3$) yields two inflection points.}
   \label{fig:nurbs}
   \end{center}
 \end{figure}
 \begin{table}
+    \centering
   \caption{AF with their peak curvature values and the input positions at which these maxima occur.}
   \label{tab:AF}
   \begin{tabular}{@{}lccc@{}}
@@ -313,17 +309,14 @@ sets the slope between $p_2$ and $p_3$ = 1 to maintain tangency as depicted in F
 A mask is added which returns 0 for $x < p_0$.
 The remaining control points and their associated weights were either treated as 
 learnable parameters or fixed constants. 
-For the fixed variant, setting $p_0$ = [-4.0, 0.0], $p_1 = [0.1, 0.1]$ and $w_n = 1$ yielded the best results. 
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=0.5\linewidth]{../../PICS/Approx_gelu.pdf}
+    \includegraphics[width=0.4\linewidth]{../../PICS/Approx_gelu.pdf}
   \caption{GELU approximated for $x \leq 0$ using cubic NURBS with 4 control points and optimized weights.
   Range of NURBS curves used for hyperparameter tuning in experiments is also shown for comparison.}
-  \Description{GELU activation function recreation.}
   \label{fig:nurbsregen}
   \end{center}
 \end{figure}
-
 \begin{algorithm}
 \caption{NELE activation function}
 \label{alg:nele_training}
@@ -365,7 +358,6 @@ For the fixed variant, setting $p_0$ = [-4.0, 0.0], $p_1 = [0.1, 0.1]$ and $w_n 
 \ENDFOR
 \end{algorithmic}
 \end{algorithm}
-
 \section{Experiments with \texttt{NELE}}
 Following the construction process outlined in Section ~\ref{sec:form}, 
 \texttt{NELE} is benchmarked against a representative set 
@@ -381,7 +373,8 @@ large-scale architectures, such as transformers or
 recurrent networks, is not investigated in this work.
 All models are trained for a fixed number of epochs to ensure a 
 fair comparison across AF under identical optimization conditions.
-
+See Appendix~\ref{app:compute} for full details on all 
+runs and total compute.
 \subsection{Non-linear synthetic data (NLSD)}
 NLSD provides a controlled environment for assessing functional expressivity.
 The neural network used for curve fitting consists of a fully connected feed-forward 
@@ -493,10 +486,10 @@ K_\text{total} = \sum_{i=1}^{N} \kappa_i
     using the proposed neural network, illustrating the network's 
     ability to approximate diverse nonlinear patterns.}
     \label{fig:curvefittingtrend}
-    \Description{Non linear synthetic data curve fitting}
 \end{figure}
 
 \begin{table}
+\centering
   \caption{Comparison of smoothness metrics for different activation functions and \texttt{NELE} tuned for lowest training loss. 
 The table reports total curvature ($K_\text{total}$) for each AF. 
 Lower values indicate smoother behavior.}
@@ -580,7 +573,6 @@ loss values that were lower or similar across all benchmark functions.
     reaching a lower training loss for the sinusoidal function, 
     the corresponding fit lacks smoothness.}
     \label{fig:standarddevtrend}
-    \Description{Predictions}
 \end{figure}
 \begin{figure}[H]
     \centering
@@ -627,7 +619,6 @@ loss values that were lower or similar across all benchmark functions.
     showing the convergence behavior and learning dynamics for each 
     functional form and AF.}
     \label{fig:Lossplottrend}
-    \Description{Training loss}
 \end{figure}
 
 \subsection{MNIST}
@@ -645,17 +636,15 @@ Figure~\ref{fig:mnistloss} shows how each AF influences convergence speed and fi
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=1.0\linewidth]{../../PICS/MNIST/training_loss.pdf}
-  \caption{Training and test accuracy trends for MNIST over epochs using different AF. Differences in the test accuracy curves reflect 
-  the varying generalization performance of each AF.\label{fig:mnistloss}}
+  \caption{Training and test accuracy trends for MNIST over epochs using different AF.
+  Shaded areas indicate ±1 standard deviation across runs for \texttt{NELE}\label{fig:mnistloss}}
   \end{center}
-  \Description{MNIST training loss}
 \end{figure}
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=0.5\linewidth]{../../PICS/MNIST/noise_study.pdf}
   \caption{Robustness results for MNIST over noise strengths using different AF.\label{fig:mnistnoise}}
   \end{center}
-  \Description{MNIST results}
 \end{figure}
 \texttt{NELE} converged within 30 epochs with a 
 learning rate (\textit{lr}) of $0.001$ and achieved the lowest test error~\ref{tab:mnisttesult}. 
@@ -665,6 +654,7 @@ a = 3 is the greatest noise strength.
 Here, \texttt{NELE} shows good robustness with its performace matching \texttt{GELU} and exceeding
 other AF.
 \begin{table}
+    \centering
   \caption{Comparison of training loss and test error on the MNIST classification task
 trained with different AF. \texttt{NELE} achieves the 
 lowest test error among all activations evaluated.}
@@ -699,8 +689,7 @@ can perform quite well in tests.
     \includegraphics[width=1.0\linewidth]{../../PICS/MNIST_ENC/training_loss.pdf}
   \caption{Training loss and test reconstruction error 
   trends for MNIST autoencoder over epochs using 
-  different AF.\label{fig:mnistenc}}
-  \Description{MNIST autoencoder results}
+  different AF. Shaded areas indicate ±1 standard deviation across runs for \texttt{NELE}\label{fig:mnistenc}}
   \end{center}
 \end{figure}
 
@@ -715,10 +704,9 @@ Figure~\ref{fig:cifar10loss} shows the training loss and test accuracy calculate
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=1.0\linewidth]{../../PICS/CIFAR10/training_loss.pdf}
-  \caption{Training and test accuracy trends for CIFAR10 over epochs using different AF.}
+  \caption{Training and test accuracy trends for CIFAR-10 over epochs using different AF.}
   \label{fig:cifar10loss}
   \end{center}
-  \Description{CIFAR10 results}
 \end{figure}
 
 \subsection{CIFAR-100}
@@ -733,11 +721,28 @@ curves over three runs as shown in Figure~\ref{fig:cifar100loss}.
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=1.0\linewidth]{../../PICS/CIFAR100/training_loss.pdf}
-  \caption{Training and test accuracy trends for CIFAR100 over 50 epochs using different AF.}
+  \caption{Training and test accuracy trends for CIFAR-100 over 50 epochs using different AF.Shaded areas indicate ±1 standard deviation across runs for \texttt{NELE}}
   \label{fig:cifar100loss}
   \end{center}
-  \Description{CIFAR100 results}
 \end{figure}
+\section{Limitations}
+\texttt{NELE} is based on NURBS and the implementation is done using cublic splines and four control points, 
+which inherently allows two inflections per spline segment. Modeling functions with multiple inflections 
+would require higher-order splines, increasing computational cost. 
+For the CIFAR-10 and CIFAR-100 experiments, spline parameters were kept non-learnable to reduce 
+training time, which may limit representational flexibility. 
+A systematic hyperparameter sensitivity analysis was not performed for CIFAR-10 and CIFAR-100 cases, 
+as configurations were selected via random search due to the substantial computational cost of each run. 
+Experiments are limited to synthetic curve-fitting tasks and standard vision benchmarks using moderate-scale neural 
+architectures; performance on larger datasets, 
+other modalities such as natural language processing, 
+and more diverse architectures (e.g., transformers or RNN) remains an open direction for future work.
+\texttt{NELE} introduces a small constant-time overhead per neuron due to spline evaluation, 
+which scales linearly with the number of activations and does not alter the asymptotic training complexity of the 
+underlying network. In experiments, this overhead resulted in a modest increase in per-epoch training time 
+compared to standard AF. For larger datasets, overall training cost scales linearly with dataset size, 
+consistent with standard stochastic optimization, while the relative overhead remains constant. 
+A detailed evaluation of efficiency at large scale is also left for future work.
 \section{Conclusions}
 \texttt{NELE} exhibits a combination of properties that make it particularly 
 well suited for functional approximation tasks. 
@@ -759,22 +764,17 @@ learning tasks. The empirical results consistently demonstrate that
 function methods, both in terms of convergence speed and predictive accuracy, 
 highlighting its potential as a universal activation function capable of 
 capturing complex functional relationships.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%% The acknowledgments section is defined using the "acks" environment
-%% (and NOT an unnumbered section). This ensures the proper
-%% identification of the section in the article metadata, and the
-%% consistent spelling of the heading.
-\begin{acks}
+
+\begin{ack}
 This work was carried out independently by the author.
-\end{acks}
+\end{ack}
 
-%%
-%% The next line prints the references.
-\printbibliography
+\bibliographystyle{unsrt}
+\bibliography{NELE}
 
-%%
-%% If your work has an appendix, this is the place to put it.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \appendix
 \section{Function analysis}
 \begin{figure}[H]\label{fig:afcollect}
@@ -785,7 +785,6 @@ The points of maximum curvature, $\kappa_{\mathrm{max}}$, are indicated by marke
 The dashed lines represent the curvature, $\kappa(x)$, as a function of $x$. 
 Each color corresponds to a different activation function as shown in the legend.}
   \end{center}
-  \Description{Analysis}
 \end{figure}
 \subsection{Tanh}\label{app:tanh}
 
@@ -994,15 +993,17 @@ producing a smooth curve that closely follows the desired shape.
 \begin{table}[H]
   \caption{Control point coordinates and their respective weights for approximation on the negative space of AF using \texttt{NELE}}
   \label{tab:curveapprox}
+  \centering
+\scriptsize
   \begin{tabular}{@{}llllll@{}}
     \toprule
     AF&$p_0$&$p_1$&$p_2$&$p_3$&$w$\\
     \midrule
     \texttt{Tanh} & [-4.0, -1.0] &    [-0.884, -0.983] &    [-1.099, -1.078] &    [0.0, -0.001] &    [1.942 , 0.831 , 0.253 , 0.209]\\
     \texttt{Sigmoid} & [-4.0, 0.017] &    [-2.03, 0.059] &    [-1.498, 0.112] &    [0.0, 0.501] &    [1.31 , 0.886 , 0.719 , 0.808]\\
-    \texttt{Softplus} & [-4.0, 0.017] &    [-2.332, 0.056] &    [-1.157, 0.105] &    [-0.0, 0.694] &    [1.233 , 0.985 , 0.808 , 0.701]\\
+    \texttt{Softplus} & [-4.0, 0.017] &    [-2.332, 0.056] &    [-1.157, 0.105] &    [0.0, 0.694] &    [1.233 , 0.985 , 0.808 , 0.701]\\
     \texttt{ELU} & [-4.0, -0.984] &    [-2.394, -0.935] &    [-0.913, -0.912] &    [0.001, -0.001] &    [1.227 , 1.017 , 0.79 , 0.54]\\
-    \texttt{SiLU} & [-4.0, -0.078] &    [-2.383, -0.112] &    [-1.011, -0.547] &    [-0.0, 0.003] &    [1.226 , 1.012 , 0.806 , 0.611]\\
+    \texttt{SiLU} & [-4.0, -0.078] &    [-2.383, -0.112] &    [-1.011, -0.547] &    [0.0, 0.003] &    [1.226 , 1.012 , 0.806 , 0.611]\\
     \texttt{LeLU} & [-4.0, -1.373] &    [-2.375, -1.166] &    [-0.898, -0.917] &    [-0.001, 0.002] &    [1.235 , 1.015 , 0.776 , 0.524]\\
     \texttt{Mish} & [-4.0, -0.079] &    [-2.358, -0.113] &    [-0.868, -0.598] &    [-0.001, 0.008] &    [1.275 , 1.037 , 0.779 , 0.509]\\
     \texttt{GELU} & [-4.0, 0.0] &    [-0.321, 0.058] &    [-2.134, -0.913] &    [0.0, 0.0] &    [1.980 , 0.717 , 0.124 , 0.198]\\
@@ -1015,164 +1016,301 @@ producing a smooth curve that closely follows the desired shape.
 The source code used in this paper are publicly available to ensure reproducibility and facilitate further research:
 
 \begin{itemize}
-    \item \textbf{\texttt{NELE} Implementation:} Python implementation of the proposed NELE activation function, including training scripts and examples. Available at: 
+    \item \textbf{Implementation:} Python implementation of the proposed NELE activation function, including training scripts and examples. Available at: 
     \url{https://github.com/DjentleViBe/NELE}.
     
-    \item \textbf{Additional Figures:} Addiitonal plots for the curve approximation from Table ~\ref{tab:curveapprox} are provided in the repository.
+    \item \textbf{Additional Figures:} Additional plots for the curve approximation from Table ~\ref{tab:curveapprox} are provided in the repository.
     \item \textbf{Hyperparameter tuning: }Parameters used in the analysis of NLSD were optimised through grid search with points 
-    distributed equally from an initialised \texttt{GELU} approximation. Since grid search was unfeasible for other studies due to total run times, 
+    distributed equally from the best performing competinng afcollect. Since grid search was unfeasible for other studies due to total run times, 
     hyperparameters were optimized using an automated search procedure. 
-    For each candidate configuration, training was performed for a fixed number of 
-    epochs with patience and validation performance evaluated after each epoch. Poorly performing 
-    configurations were terminated early based on intermediate validation error, 
-    and the objective value was defined as the minimum validation error attained during training after 200 trials using \cite{optuna_2019}.
-    \item \textbf{Settings:} Parameters used for reproducing the results in this paper is provided in the
+    For each candidate configuration, training was performed for a fixed number of epochs 
+    with early stopping based on validation performance evaluated at each epoch. 
+    Configurations with poor intermediate validation error were pruned early. 
+    The search was terminated 
+    when validation performance exceeded that of competing AF. 
+    The objective value was defined as the minimum validation error attained 
+    during training, and the optimization was carried out over 200 trials using 
+    Optuna \cite{optuna_2019}.
+    \item \textbf{Settings:} Parameters used for reproducing the results of this paper is provided in the
     \texttt{README} file of the repository.
   
 \end{itemize}
 
-It is recommended that users follow the provided \texttt{README} instructions for replicating experiments. This repository will remain publicly accessible for the foreseeable future.
+It is recommended that users follow the provided \texttt{README} instructions in the repository for replicating experiments. 
+This repository will remain publicly accessible for the foreseeable future.
 
-\section{Reproducibility Checklist for JAIR}
+\section{Compute Resources for Experiments}
+\label{app:compute}
+Experiments were conducted on an NVIDIA GTX 1080 Ti GPU 
+with 64GB RAM.
+\begin{table}[h]
+\caption{Compute resources, per-run times, number of runs, and total compute for experiments with \texttt{NELE}.}
+\small
+\centering
+\begin{tabular}{l l l l l}
+\textbf{Dataset} & \textbf{Time per iteration} & \textbf{Time per run} & \textbf{Runs} & \textbf{Total compute} \\
+\hline
+NLSD & ~0.003 s & ~0.2 s & 7 & ~2 s \\
+MNIST & ~5 s & ~6.25 min & 7 & ~43 min \\
+MNIST\_ENC & ~17 s & ~21 min & 7 & ~2.5 hr \\
+CIFAR-10 & ~49 s & ~61 min & 3 & ~3 hr \\
+CIFAR-100 & ~108 s & ~90 min & 3 & ~5 hr \\
+\end{tabular}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
+\newpage
+\section*{NeurIPS Paper Checklist}
 
-Select the answers that apply to your research -- one per item. 
+% %%% BEGIN INSTRUCTIONS %%%
+% The checklist is designed to encourage best practices for responsible machine learning research, addressing issues of reproducibility, transparency, research ethics, and societal impact. Do not remove the checklist: {\bf The papers not including the checklist will be desk rejected.} The checklist should follow the references and follow the (optional) supplemental material.  The checklist does NOT count towards the page
+% limit. 
 
-\subsection*{All articles:}
+% Please read the checklist guidelines carefully for information on how to answer these questions. For each question in the checklist:
+% \begin{itemize}
+%     \item You should answer \answerYes{}, \answerNo{}, or \answerNA{}.
+%     \item \answerNA{} means either that the question is Not Applicable for that particular paper or the relevant information is Not Available.
+%     \item Please provide a short (1–2 sentence) justification right after your answer (even for NA). 
+%    % \item {\bf The papers not including the checklist will be desk rejected.}
+% \end{itemize}
 
-%\hh{revised for stylistic consistency:}
+% {\bf The checklist answers are an integral part of your paper submission.} They are visible to the reviewers, area chairs, senior area chairs, and ethics reviewers. You will be asked to also include it (after eventual revisions) with the final version of your paper, and its final version will be published with the paper.
+
+% The reviewers of your paper will be asked to use the checklist as one of the factors in their evaluation. While "\answerYes{}" is generally preferable to "\answerNo{}", it is perfectly acceptable to answer "\answerNo{}" provided a proper justification is given (e.g., "error bars are not reported because it would be too computationally expensive" or "we were unable to find the license for the dataset we used"). In general, answering "\answerNo{}" or "\answerNA{}" is not grounds for rejection. While the questions are phrased in a binary way, we acknowledge that the true answer is often more nuanced, so please just use your best judgment and write a justification to elaborate. All supporting evidence can appear either in the main paper or the supplemental material, provided in appendix. If you answer \answerYes{} to a question, in the justification please point to the section(s) where related material for the question can be found.
+
+% IMPORTANT, please:
+% \begin{itemize}
+%     \item {\bf Delete this instruction block, but keep the section heading ``NeurIPS Paper Checklist"},
+%     \item  {\bf Keep the checklist subsection headings, questions/answers and guidelines below.}
+%     \item {\bf Do not modify the questions and only use the provided macros for your answers}.
+% \end{itemize} 
+ 
+
+% %%% END INSTRUCTIONS %%%
+
+
 \begin{enumerate}
-    \item All claims investigated in this work are clearly stated. 
-    [yes]
-    \item Clear explanations are given how the work reported substantiates the claims. 
-    [yes]
-    \item Limitations or technical assumptions are stated clearly and explicitly. 
-    [yes]
-    \item Conceptual outlines and/or pseudo-code descriptions of the AI methods introduced in this work are provided, and important implementation details are discussed. 
-    [yes]
-    \item 
-    Motivation is provided for all design choices, including algorithms, implementation choices, parameters, data sets and experimental protocols beyond metrics.
-    [yes/partially/no]
+
+\item {\bf Claims}
+    \item[] Question: Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: The abstract and introduction summarizes motivation, objective, results and conclusion. The claims made match theoretical and experimental results. Guidelines are given in the repository on how to reproduce expected results.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the abstract and introduction do not include the claims made in the paper.
+        \item The abstract and/or introduction should clearly state the claims made, including the contributions made in the paper and important assumptions and limitations. A No or NA answer to this question will not be perceived well by the reviewers. 
+        \item The claims made should match theoretical and experimental results, and reflect how much the results can be expected to generalize to other settings. 
+        \item It is fine to include aspirational goals as motivation as long as it is clear that these goals are not attained by the paper. 
+    \end{itemize}
+
+\item {\bf Limitations}
+    \item[] Question: Does the paper discuss the limitations of the work performed by the authors?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: A separate limitations section is added detailing factors that influence the performance of the approach. Computational efficiency and their scaling is limited to the datasets used in the study. Large scale benchmarks, distributed training and detailed runtime profiling is left for future work.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper has no limitation while the answer No means that the paper has limitations, but those are not discussed in the paper. 
+        \item The authors are encouraged to create a separate "Limitations" section in their paper.
+        \item The paper should point out any strong assumptions and how robust the results are to violations of these assumptions (e.g., independence assumptions, noiseless settings, model well-specification, asymptotic approximations only holding locally). The authors should reflect on how these assumptions might be violated in practice and what the implications would be.
+        \item The authors should reflect on the scope of the claims made, e.g., if the approach was only tested on a few datasets or with a few runs. In general, empirical results often depend on implicit assumptions, which should be articulated.
+        \item The authors should reflect on the factors that influence the performance of the approach. For example, a facial recognition algorithm may perform poorly when image resolution is low or images are taken in low lighting. Or a speech-to-text system might not be used reliably to provide closed captions for online lectures because it fails to handle technical jargon.
+        \item The authors should discuss the computational efficiency of the proposed algorithms and how they scale with dataset size.
+        \item If applicable, the authors should discuss possible limitations of their approach to address problems of privacy and fairness.
+        \item While the authors might fear that complete honesty about limitations might be used by reviewers as grounds for rejection, a worse outcome might be that reviewers discover limitations that aren't acknowledged in the paper. The authors should use their best judgment and recognize that individual actions in favor of transparency play an important role in developing norms that preserve the integrity of the community. Reviewers will be specifically instructed to not penalize honesty concerning limitations.
+    \end{itemize}
+
+\item {\bf Theory assumptions and proofs}
+    \item[] Question: For each theoretical result, does the paper provide the full set of assumptions and a complete (and correct) proof?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: The theoretical background for the impletemented activation function is based on existing concept of geometry. Proof for the working of the implementation is provided.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include theoretical results. 
+        \item All the theorems, formulas, and proofs in the paper should be numbered and cross-referenced.
+        \item All assumptions should be clearly stated or referenced in the statement of any theorems.
+        \item The proofs can either appear in the main paper or the supplemental material, but if they appear in the supplemental material, the authors are encouraged to provide a short proof sketch to provide intuition. 
+        \item Inversely, any informal proof provided in the core of the paper should be complemented by formal proofs provided in appendix or supplemental material.
+        \item Theorems and Lemmas that the proof relies upon should be properly referenced. 
+    \end{itemize}
+
+    \item {\bf Experimental result reproducibility}
+    \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and/or conclusions of the paper (regardless of whether the code and data are provided or not)?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: Standard datasets and exsiting state of the art models are used. The algoorithm for the Activation fucntion and settings used to reporiduce the results are provided.
+    \item[] Guidelines: 
+    \begin{itemize}
+        \item The answer NA means that the paper does not include experiments.
+        \item If the paper includes experiments, a No answer to this question will not be perceived well by the reviewers: Making the paper reproducible is important, regardless of whether the code and data are provided or not.
+        \item If the contribution is a dataset and/or model, the authors should describe the steps taken to make their results reproducible or verifiable. 
+        \item Depending on the contribution, reproducibility can be accomplished in various ways. For example, if the contribution is a novel architecture, describing the architecture fully might suffice, or if the contribution is a specific model and empirical evaluation, it may be necessary to either make it possible for others to replicate the model with the same dataset, or provide access to the model. In general. releasing code and data is often one good way to accomplish this, but reproducibility can also be provided via detailed instructions for how to replicate the results, access to a hosted model (e.g., in the case of a large language model), releasing of a model checkpoint, or other means that are appropriate to the research performed.
+        \item While NeurIPS does not require releasing code, the conference does require all submissions to provide some reasonable avenue for reproducibility, which may depend on the nature of the contribution. For example
+        \begin{enumerate}
+            \item If the contribution is primarily a new algorithm, the paper should make it clear how to reproduce that algorithm.
+            \item If the contribution is primarily a new model architecture, the paper should describe the architecture clearly and fully.
+            \item If the contribution is a new model (e.g., a large language model), then there should either be a way to access this model for reproducing the results or a way to reproduce the model (e.g., with an open-source dataset or instructions for how to construct the dataset).
+            \item We recognize that reproducibility may be tricky in some cases, in which case authors are welcome to describe the particular way they provide for reproducibility. In the case of closed-source models, it may be that access to the model is limited in some way (e.g., to registered users), but it should be possible for other researchers to have some path to reproducing or verifying the results.
+        \end{enumerate}
+    \end{itemize}
+
+
+\item {\bf Open access to data and code}
+    \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: Code is written in Python and uses open-source free libraries. A detailed README is provided in the repo for conducting the experiments.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that paper does not include experiments requiring code.
+        \item Please see the NeurIPS code and data submission guidelines (\url{https://nips.cc/public/guides/CodeSubmissionPolicy}) for more details.
+        \item While we encourage the release of code and data, we understand that this might not be possible, so “No” is an acceptable answer. Papers cannot be rejected simply for not including code, unless this is central to the contribution (e.g., for a new open-source benchmark).
+        \item The instructions should contain the exact command and environment needed to run to reproduce the results. See the NeurIPS code and data submission guidelines (\url{https://nips.cc/public/guides/CodeSubmissionPolicy}) for more details.
+        \item The authors should provide instructions on data access and preparation, including how to access the raw data, preprocessed data, intermediate data, and generated data, etc.
+        \item The authors should provide scripts to reproduce all experimental results for the new proposed method and baselines. If only a subset of experiments are reproducible, they should state which ones are omitted from the script and why.
+        \item At submission time, to preserve anonymity, the authors should release anonymized versions (if applicable).
+        \item Providing as much information as possible in supplemental material (appended to the paper) is recommended, but including URLs to data and code is permitted.
+    \end{itemize}
+
+
+\item {\bf Experimental setting/details}
+    \item[] Question: Does the paper specify all the training and test details (e.g., data splits, hyperparameters, how they were chosen, type of optimizer, etc.) necessary to understand the results?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: Full details are provided with the code.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include experiments.
+        \item The experimental setting should be presented in the core of the paper to a level of detail that is necessary to appreciate the results and make sense of them.
+        \item The full details can be provided either with the code, in appendix, or as supplemental material.
+    \end{itemize}
+
+\item {\bf Experiment statistical significance}
+    \item[] Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: For each activation function, experiments were repeated over seven independent noise realizations. For NLSD, performance was evaluated using the standard deviation of residuals between predicted and true values. Bars report the median across runs, and error bars indicate ±1 standard deviation across runs.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include experiments.
+        \item The authors should answer "Yes" if the results are accompanied by error bars, confidence intervals, or statistical significance tests, at least for the experiments that support the main claims of the paper.
+        \item The factors of variability that the error bars are capturing should be clearly stated (for example, train/test split, initialization, random drawing of some parameter, or overall run with given experimental conditions).
+        \item The method for calculating the error bars should be explained (closed form formula, call to a library function, bootstrap, etc.)
+        \item The assumptions made should be given (e.g., Normally distributed errors).
+        \item It should be clear whether the error bar is the standard deviation or the standard error of the mean.
+        \item It is OK to report 1-sigma error bars, but one should state it. The authors should preferably report a 2-sigma error bar than state that they have a 96\% CI, if the hypothesis of Normality of errors is not verified.
+        \item For asymmetric distributions, the authors should be careful not to show in tables or figures symmetric error bars that would yield results that are out of range (e.g. negative error rates).
+        \item If error bars are reported in tables or plots, The authors should explain in the text how they were calculated and reference the corresponding figures or tables in the text.
+    \end{itemize}
+
+\item {\bf Experiments compute resources}
+    \item[] Question: For each experiment, does the paper provide sufficient information on the computer resources (type of compute workers, memory, time of execution) needed to reproduce the experiments?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: Run time per epoch, individual run and total time along with hardware spec is tabulated in Appendix.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not include experiments.
+        \item The paper should indicate the type of compute workers CPU or GPU, internal cluster, or cloud provider, including relevant memory and storage.
+        \item The paper should provide the amount of compute required for each of the individual experimental runs as well as estimate the total compute. 
+        \item The paper should disclose whether the full research project required more compute than the experiments reported in the paper (e.g., preliminary or failed experiments that didn't make it into the paper). 
+    \end{itemize}
+    
+\item {\bf Code of ethics}
+    \item[] Question: Does the research conducted in the paper conform, in every respect, with the NeurIPS Code of Ethics \url{https://neurips.cc/public/EthicsGuidelines}?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification:
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the authors have not reviewed the NeurIPS Code of Ethics.
+        \item If the authors answer No, they should explain the special circumstances that require a deviation from the Code of Ethics.
+        \item The authors should make sure to preserve anonymity (e.g., if there is a special consideration due to laws or regulations in their jurisdiction).
+    \end{itemize}
+
+
+\item {\bf Broader impacts}
+    \item[] Question: Does the paper discuss both potential positive societal impacts and negative societal impacts of the work performed?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: The proposed activation function may have positive impacts by improving model efficiency, stability, or performance across machine learning applications. As a low level mathematical component, it does not introduce direct societal risks; any downstream negative impacts would stem from how machine learning systems are applied rather than from the activation function itself.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that there is no societal impact of the work performed.
+        \item If the authors answer NA or No, they should explain why their work has no societal impact or why the paper does not address societal impact.
+        \item Examples of negative societal impacts include potential malicious or unintended uses (e.g., disinformation, generating fake profiles, surveillance), fairness considerations (e.g., deployment of technologies that could make decisions that unfairly impact specific groups), privacy considerations, and security considerations.
+        \item The conference expects that many papers will be foundational research and not tied to particular applications, let alone deployments. However, if there is a direct path to any negative applications, the authors should point it out. For example, it is legitimate to point out that an improvement in the quality of generative models could be used to generate deepfakes for disinformation. On the other hand, it is not needed to point out that a generic algorithm for optimizing neural networks could enable people to train models that generate Deepfakes faster.
+        \item The authors should consider possible harms that could arise when the technology is being used as intended and functioning correctly, harms that could arise when the technology is being used as intended but gives incorrect results, and harms following from (intentional or unintentional) misuse of the technology.
+        \item If there are negative societal impacts, the authors could also discuss possible mitigation strategies (e.g., gated release of models, providing defenses in addition to attacks, mechanisms for monitoring misuse, mechanisms to monitor how a system learns from feedback over time, improving the efficiency and accessibility of ML).
+    \end{itemize}
+    
+\item {\bf Safeguards}
+    \item[] Question: Does the paper describe safeguards that have been put in place for responsible release of data or models that have a high risk for misuse (e.g., pretrained language models, image generators, or scraped datasets)?
+    \item[] Answer: \answerNA{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: This work proposes a mathematical activation function and does not introduce datasets, pretrained models, or artifacts that pose a risk of misuse. As such, no special safeguards for responsible release are required.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper poses no such risks.
+        \item Released models that have a high risk for misuse or dual-use should be released with necessary safeguards to allow for controlled use of the model, for example by requiring that users adhere to usage guidelines or restrictions to access the model or implementing safety filters. 
+        \item Datasets that have been scraped from the Internet could pose safety risks. The authors should describe how they avoided releasing unsafe images.
+        \item We recognize that providing effective safeguards is challenging, and many papers do not require this, but we encourage authors to take this into account and make a best faith effort.
+    \end{itemize}
+
+\item {\bf Licenses for existing assets}
+    \item[] Question: Are the creators or original owners of assets (e.g., code, data, models), used in the paper, properly credited and are the license and terms of use explicitly mentioned and properly respected?
+    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: models used are cited to their original papers. Standard datasets are used without re-packaging.
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not use existing assets.
+        \item The authors should cite the original paper that produced the code package or dataset.
+        \item The authors should state which version of the asset is used and, if possible, include a URL.
+        \item The name of the license (e.g., CC-BY 4.0) should be included for each asset.
+        \item For scraped data from a particular source (e.g., website), the copyright and terms of service of that source should be provided.
+        \item If assets are released, the license, copyright information, and terms of use in the package should be provided. For popular datasets, \url{paperswithcode.com/datasets} has curated licenses for some datasets. Their licensing guide can help determine the license of a dataset.
+        \item For existing datasets that are re-packaged, both the original license and the license of the derived asset (if it has changed) should be provided.
+        \item If this information is not available online, the authors are encouraged to reach out to the asset's creators.
+    \end{itemize}
+
+\item {\bf New assets}
+    \item[] Question: Are new assets introduced in the paper well documented and is the documentation provided alongside the assets?
+    \item[] Answer: \answerNA{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification:
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not release new assets.
+        \item Researchers should communicate the details of the dataset/code/model as part of their submissions via structured templates. This includes details about training, license, limitations, etc. 
+        \item The paper should discuss whether and how consent was obtained from people whose asset is used.
+        \item At submission time, remember to anonymize your assets (if applicable). You can either create an anonymized URL or include an anonymized zip file.
+    \end{itemize}
+
+\item {\bf Crowdsourcing and research with human subjects}
+    \item[] Question: For crowdsourcing experiments and research with human subjects, does the paper include the full text of instructions given to participants and screenshots, if applicable, as well as details about compensation (if any)? 
+    \item[] Answer: \answerNA{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification:
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not involve crowdsourcing nor research with human subjects.
+        \item Including this information in the supplemental material is fine, but if the main contribution of the paper involves human subjects, then as much detail as possible should be included in the main paper. 
+        \item According to the NeurIPS Code of Ethics, workers involved in data collection, curation, or other labor should be paid at least the minimum wage in the country of the data collector. 
+    \end{itemize}
+
+\item {\bf Institutional review board (IRB) approvals or equivalent for research with human subjects}
+    \item[] Question: Does the paper describe potential risks incurred by study participants, whether such risks were disclosed to the subjects, and whether Institutional Review Board (IRB) approvals (or an equivalent approval/review based on the requirements of your country or institution) were obtained?
+    \item[] Answer: \answerNA{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification:
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the paper does not involve crowdsourcing nor research with human subjects.
+        \item Depending on the country in which research is conducted, IRB approval (or equivalent) may be required for any human subjects research. If you obtained IRB approval, you should clearly state this in the paper. 
+        \item We recognize that the procedures for this may vary significantly between institutions and locations, and we expect authors to adhere to the NeurIPS Code of Ethics and the guidelines for their institution. 
+        \item For initial submissions, do not include any information that would break anonymity (if applicable), such as the institution conducting the review.
+    \end{itemize}
+
+\item {\bf Declaration of LLM usage}
+    \item[] Question: Does the paper describe the usage of LLMs if it is an important, original, or non-standard component of the core methods in this research? Note that if the LLM is used only for writing, editing, or formatting purposes and does not impact the core methodology, scientific rigorousness, or originality of the research, declaration is not required.
+    %this research? 
+    \item[] Answer: \answerNA{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification:
+    \item[] Guidelines:
+    \begin{itemize}
+        \item The answer NA means that the core method development in this research does not involve LLMs as any important, original, or non-standard components.
+        \item Please refer to our LLM policy (\url{https://neurips.cc/Conferences/2025/LLM}) for what should or should not be described.
+    \end{itemize}
+
 \end{enumerate}
-
-\subsection*{Articles containing theoretical contributions:}
-Does this paper make theoretical contributions? 
-[yes/no] 
-
-If yes, please complete the list below.
-
-\begin{enumerate}
-    \item All assumptions and restrictions are stated clearly and formally. 
-    [yes]
-    \item All novel claims are stated formally (e.g., in theorem statements). 
-    [yes]
-    \item Proofs of all non-trivial claims are provided in sufficient detail to permit verification by readers with a reasonable degree of expertise (e.g., that expected from a PhD candidate in the same area of AI). [yes]
-    \item
-    Complex formalism, such as definitions or proofs, is motivated and explained clearly.
-%hh: was:
-%Proof sketches or intuitions are given for complex and/or novel results.
-    [yes]
-    \item 
-    The use of mathematical notation and formalism serves the purpose of enhancing clarity and precision; gratuitous use of mathematical formalism (i.e., use that does not enhance clarity or precision) is avoided.
-    [yes]
-    \item 
-    Appropriate citations are given for all non-trivial theoretical tools and techniques. 
-    [yes]
-\end{enumerate}
-
-\subsection*{Articles reporting on computational experiments:}
-Does this paper include computational experiments? [yes]
-
-If yes, please complete the list below.
-\begin{enumerate}
-    \item 
-    All source code required for conducting experiments is included in an online appendix 
-    or will be made publicly available upon publication of the paper.
-    The online appendix follows best practices for source code readability and documentation as well as for long-term accessibility.
-    [yes]
-    \item The source code comes with a license that
-    allows free usage for reproducibility purposes.
-    [yes]
-    \item The source code comes with a license that
-    allows free usage for research purposes in general.
-    [yes]
-    \item 
-    Raw, unaggregated data from all experiments is included in an online appendix 
-    or will be made publicly available upon publication of the paper.
-    The online appendix follows best practices for long-term accessibility.
-    [yes]
-    \item The unaggregated data comes with a license that
-    allows free usage for reproducibility purposes.
-    [yes]
-    \item The unaggregated data comes with a license that
-    allows free usage for research purposes in general.
-    [yes]
-    \item If an algorithm depends on randomness, then the method used for generating random numbers and for setting seeds is described in a way sufficient to allow replication of results. 
-    [yes]
-    \item The execution environment for experiments, the computing infrastructure (hardware and software) used for running them, is described, including GPU/CPU makes and models; amount of memory (cache and RAM); make and version of operating system; names and versions of relevant software libraries and frameworks. 
-    [yes/partially/no]
-    \item 
-    The evaluation metrics used in experiments are clearly explained and their choice is explicitly motivated. 
-    [yes/partially/no]
-    \item 
-    The number of algorithm runs used to compute each result is reported. 
-    [yes]
-    \item 
-    Reported results have not been ``cherry-picked'' by silently ignoring unsuccessful or unsatisfactory experiments. 
-    [yes]
-    \item 
-    Analysis of results goes beyond single-dimensional summaries of performance (e.g., average, median) to include measures of variation, confidence, or other distributional information. 
-    [yes/no]
-    \item 
-    All (hyper-) parameter settings for 
-    the algorithms/methods used in experiments have been reported, along with the rationale or method for determining them. 
-    [yes]
-    \item 
-    The number and range of (hyper-) parameter settings explored prior to conducting final experiments have been indicated, along with the effort spent on (hyper-) parameter optimisation. 
-    [yes]
-    \item 
-    Appropriately chosen statistical hypothesis tests are used to establish statistical significance
-    in the presence of noise effects.
-    [partially]
-\end{enumerate}
-
-
-\subsection*{Articles using data sets:}
-Does this work rely on one or more data sets (possibly obtained from a benchmark generator or similar software artifact)? 
-[yes]
-
-If yes, please complete the list below.
-\begin{enumerate}
-    \item 
-    All newly introduced data sets 
-    are included in an online appendix 
-    or will be made publicly available upon publication of the paper.
-    The online appendix follows best practices for long-term accessibility with a license
-    that allows free usage for research purposes.
-    [NA]
-    \item The newly introduced data set comes with a license that
-    allows free usage for reproducibility purposes.
-    [yes]
-    \item The newly introduced data set comes with a license that
-    allows free usage for research purposes in general.
-    [yes]
-    \item All data sets drawn from the literature or other public sources (potentially including authors' own previously published work) are accompanied by appropriate citations.
-    [yes]
-    \item All data sets drawn from the existing literature (potentially including authors’ own previously published work) are publicly available. [yes]
-    %\item All data sets that are not publicly available are described in detail.
-    %[yes/partially/no/NA]
-    \item All new data sets and data sets that are not publicly available are described in detail, including relevant statistics, the data collection process and annotation process if relevant.
-    [yes]
-    \item 
-    All methods used for preprocessing, augmenting, batching or splitting data sets (e.g., in the context of hold-out or cross-validation)
-    are described in detail. [yes]
-\end{enumerate}
-
-\subsection*{Explanations on any of the answers above (optional):}
-
-[The experiments rely on synthetically generated dataset for one of the cases and is obtained by sampling 
-from known functions with additive noise]
+\end{comment}
 
 \end{document}
-\endinput
-%%
-%% End of file `sample-acmlarge.tex'.

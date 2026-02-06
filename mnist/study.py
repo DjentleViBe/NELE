@@ -5,6 +5,8 @@
 """
 Docstring for mnist.study
 """
+import time
+import sys
 import numpy as np
 import optuna
 import torch
@@ -77,11 +79,14 @@ def mnist_data(directory, device, exec_type, config=None, activation_type='defau
     if exec_type == 2:
         config["epochs"] = cfg.HYPER_EPOCHS
     for epoch in range(config["epochs"]):
+        total_batches = len(train_loader)
+        total_time = 0
         epoch_loss = 0
         model.train()
         for param_group in optimizer.param_groups:
             lr = param_group['lr']
-        for _, (data, target) in enumerate(train_loader):
+        for i, (data, target) in enumerate(train_loader):
+            start_epoch = time.time()
             data = data.to(device)
             target = target.to(device)
             optimizer.zero_grad()
@@ -90,6 +95,18 @@ def mnist_data(directory, device, exec_type, config=None, activation_type='defau
             loss.backward()
             optimizer.step()
             epoch_loss += loss.item() * data.size(0)
+            end_epoch = time.time()
+            batch_time = end_epoch - start_epoch
+            total_time += batch_time
+            # Progress bar
+            bar_len = 30
+            filled_len = int(round(bar_len * (i + 1) / total_batches))
+            barred = '=' * filled_len + '-' * (bar_len - filled_len)
+            # Print progress bar in-place
+            sys.stdout.write(f"\rEpoch {epoch+1}/{config["epochs"]} |[{barred}]|"
+                            f"Batch {i+1}/{total_batches} | Loss: {loss.item():.4f}"
+                            f"| Time: {batch_time:.2f}s")
+            sys.stdout.flush()
         epoch_loss /= len(train_loader.dataset)
         loss_collect.append(epoch_loss)
 
@@ -156,8 +173,9 @@ def mnist_data(directory, device, exec_type, config=None, activation_type='defau
         test_collect.append(test_loss_0)
         if (epoch + 1) % cfg.save_every  == 0:
             save(model, optimizer, epoch_loss, activation_type, epoch, directory, test_loss_0)
-        print(f"Epoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}," 
-              f"Test Acc 0: {test_loss_0:.4f}, Test Acc 3: {test_loss_3:.4f}, lr : {lr:.5f}")
+        print(f"\nEpoch {epoch+1}, loss: {epoch_loss:.4f}, Val Acc: {val_acc:.4f}," 
+              f"Test Acc 0: {test_loss_0:.4f}, Test Acc 3: {test_loss_3:.4f}, lr : {lr:.5f}, "
+              f"Time : {total_time:.4f}")
 
     # Evaluate
     loss_collect = torch.tensor(loss_collect)

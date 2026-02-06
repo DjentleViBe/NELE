@@ -102,4 +102,7 @@ def take_median(*args):
     median_train = np.median(np.stack(train_arrays, axis=0), axis=0)
     median_test  = np.median(np.stack(test_arrays, axis=0), axis=0)
 
-    return median_train, median_test
+    std_train = np.std(np.stack(train_arrays, axis=0), axis=0)
+    std_test = np.std(np.stack(test_arrays, axis=0), axis=0)
+
+    return median_train, median_test, std_train, std_test
