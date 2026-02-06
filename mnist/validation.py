@@ -10,7 +10,7 @@ from config import input_size, hidden_size, num_hidden_layers, num_classes, batc
 from mnist.neuralnet import DeepFCNet
 from mnist.utils import get_activation
 
-def mnist_validation(epochs, device, noise_level, activation_type='default'):
+def mnist_validation(directory, epochs, device, noise_level, activation_type='default', config=None):
     """
     Validation for MNIST
     
@@ -19,7 +19,7 @@ def mnist_validation(epochs, device, noise_level, activation_type='default'):
     :param noise_level: noise level
     :param activation_type: AF
     """
-    activation = get_activation(activation_type, device)
+    activation = get_activation(activation_type, directory, config, device)
     # Load MNIST
     transform = transforms.Compose([
         transforms.ToTensor(),
@@ -35,8 +35,8 @@ def mnist_validation(epochs, device, noise_level, activation_type='default'):
     for i in range(1, 8):
         torch.manual_seed(1234)
         checkpoint = torch.load('RESULTS/MNIST/' + \
-                            activation_type + '=' + str(i) \
-                            + '/' + activation_type + '=' \
+                            activation_type.split('=')[0] + '=' + str(i) \
+                            + '/' + activation_type.split('=')[0] + '=' \
                             + str(i) + '_' + str(epochs - 1) + '.pth',
                             map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
@@ -57,5 +57,5 @@ def mnist_validation(epochs, device, noise_level, activation_type='default'):
         test_collect.append(test_acc)
     test_collect = np.asarray(test_collect)
     test_acc_med = np.median(test_collect)
-    print(f'{activation_type}, Test Accuracy: {test_acc_med:.2f}%')
+    print(f'{activation_type.split('=')[0]}, Test Accuracy: {test_acc_med:.2f}%')
     return test_acc_med
