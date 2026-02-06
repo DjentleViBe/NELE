@@ -74,10 +74,12 @@ def mnist_eval(device, reset):
     else:
         create_directory('./RESULTS/MNIST')
         create_directory('./PICS/MNIST')
-    for i, af in enumerate(cfg.AF):
+    for i, af in enumerate(cfg.STUDY_3):
+        j = 0
         # print(f'Activation : {af}')
         # mnist_validation(cfg.epochs, device, cfg.noise_level, af)
-        noise_eval(device, af, i)
+        noise_eval(device, af, i, j)
+        j += 1
 
 def mnist_train_study(device, reset, exec_type):
     """
