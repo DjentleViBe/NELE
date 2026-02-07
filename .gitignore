@@ -26,3 +26,4 @@ data
 RESULTS/*
 *.zip
 !_paper/PICS/*
+*.DS_Store
