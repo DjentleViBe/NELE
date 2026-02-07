@@ -19,7 +19,6 @@ def mnist_validation(directory, epochs, device, noise_level, activation_type='de
     :param noise_level: noise level
     :param activation_type: AF
     """
-    activation = get_activation(activation_type, directory, config, device)
     # Load MNIST
     transform = transforms.Compose([
         transforms.ToTensor(),
@@ -29,14 +28,15 @@ def mnist_validation(directory, epochs, device, noise_level, activation_type='de
                                 transform=transform, download=True)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, \
                              shuffle=False)
+    activation = get_activation(activation_type.lower() + '=1', directory, config, device)
     model = DeepFCNet(input_size, hidden_size, num_hidden_layers, \
-                      num_classes, activation, activation_type)
+                        num_classes, activation, activation_type).to(device)
     test_collect = []
     for i in range(1, 8):
         torch.manual_seed(1234)
         checkpoint = torch.load('RESULTS/MNIST/' + \
-                            activation_type.split('=')[0] + '=' + str(i) \
-                            + '/' + activation_type.split('=')[0] + '=' \
+                            activation_type + '=' + str(i) \
+                            + '/' + activation_type + '=' \
                             + str(i) + '_' + str(epochs - 1) + '.pth',
                             map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
@@ -47,6 +47,8 @@ def mnist_validation(directory, epochs, device, noise_level, activation_type='de
 
         with torch.no_grad():
             for data, target in test_loader:
+                data = data.to(device)
+                target = target.to(device)
                 noise = torch.empty_like(data).uniform_(-noise_level, noise_level)
                 x_noisy = data + noise
                 outputs = model(x_noisy)

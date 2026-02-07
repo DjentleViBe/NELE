@@ -29,7 +29,7 @@ def get_activation(activation_type, directory, proparray, device=None):
 
     dispatch = {
         'relu': nn.ReLU(),
-        'elu' : nn.ELU(alpha=param or 1.0),
+        'elu' : nn.ELU(alpha=1.0),
         'leaky_relu' : nn.LeakyReLU(negative_slope=0.1),
         'gelu' : nn.GELU(),
         'mish' : nn.Mish(),

@@ -134,7 +134,7 @@ class NeleUniversalRead(nn.Module):
         self.num_points = num_points
         self.device = device
         self.proparray = proparray
-        t = torch.linspace(0, 1, num_points)
+        t = torch.linspace(0, 1, num_points, device=device)
         self.register_buffer('t', t)
         self.register_buffer('N0', (1 - t)**3)
         self.register_buffer('N1', 3 * t * (1 - t)**2)

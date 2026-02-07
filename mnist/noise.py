@@ -7,7 +7,7 @@ import numpy as np
 from mnist.validation import mnist_validation
 import config as cfg
 
-def noise_eval(device, af, i, j):
+def noise_eval(device, af, i):
     """
     Evaluate MNIST for a range of noise values
     
@@ -20,15 +20,15 @@ def noise_eval(device, af, i, j):
     afplot = cfg.AF_plot
     test_acc = []
     for noise_level in x:
-        directory = './RESULTS/MNIST/' + af + '/'
-        source_file = 'config.py'
-        shutil.copy(source_file, './RESULTS/MNIST/')
+        directory = './RESULTS/MNIST/'
+        #source_file = 'config.py'
+        #shutil.copy(source_file, directory)
         config = {}
-        with open('./RESULTS/MNIST/' + "config.py") as f:
+        with open(directory + "config.py") as f:
             exec(f.read(), config)
         test_acc_med = mnist_validation(directory, cfg.epochs, device, noise_level, af, config)
         test_acc.append(test_acc_med)
-    plt.plot(x, test_acc, label = afplot[j], color = colors[j])
+    plt.plot(x, test_acc, label = afplot[i], color = colors[i])
     plt.xlabel('Noise strength')
     plt.ylabel('Test accuracy (%)')
     plt.legend()
