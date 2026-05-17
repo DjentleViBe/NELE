@@ -1,0 +1,144 @@
+"""
+Nele is a custom activation function based of NURBS curves.
+"""
+import torch
+from torch import nn
+
+class Nele(nn.Module):
+    """
+    NELE AF with hyperparam learning, masking options, buffer and xmin clamping
+    """
+    def __init__(self, device,
+                 cp0 = None,
+                 cp1 = None,
+                 cp2 = None,
+                 cp3 = None,
+                 w0 = 1.273,
+                 w1 = 0.7607,
+                 w2 = 1.4628,
+                 w3 = 0.6563,
+                 learnable = False,
+                 clamping = True,
+                 masking = 2,
+                 num_points = 200):
+        super().__init__()
+        self.num_points = num_points
+        self.device = device
+        self.learnable = learnable
+        self.clamping = clamping
+        self.masking = masking
+        self.cp0 = cp0 if cp0 is not None else [-4.9992, 0.0]
+        self.cp1 = cp1 if cp1 is not None else [-0.2194, -0.248]
+        self.cp2 = cp2 if cp2 is not None else [-0.8054 / 1.4142, -0.8054 / 1.4142]
+        self.cp3 = cp3 if cp3 is not None else [0.0, 0.0]
+        self.w0 = w0
+        self.w1 = w1
+        self.w2 = w2
+        self.w3 = w3
+        t = torch.linspace(0, 1, num_points)
+        self.register_buffer('t', t)
+        self.register_buffer('N0', (1 - t)**3)
+        self.register_buffer('N1', 3 * t * (1 - t)**2)
+        self.register_buffer('N2', 3 * t**2 * (1 - t))
+        self.register_buffer('N3', t**3)
+        if self.learnable:
+            self.l = nn.Parameter(torch.tensor(cp2[0] * 1.4142))
+            self.w1 = nn.Parameter(torch.tensor(w1))
+            self.w2 = nn.Parameter(torch.tensor(w2))
+            self.y1 = nn.Parameter(torch.tensor(cp1[1]))
+            self.x1 = nn.Parameter(torch.tensor(cp1[0]))
+            self.y0 = nn.Parameter(torch.tensor(0.0))
+            self.x0 = nn.Parameter(torch.tensor(cp0[0]))
+        else:
+            self.cp1 = torch.tensor(cp1, device=device)
+            self.cp2 = torch.tensor(cp2, device=device)
+            self.cp3 = torch.tensor(cp3, device=device)
+            self.w0 = torch.tensor(w0, device=device)
+            self.w1 = torch.tensor(w1, device=device)
+            self.w2 = torch.tensor(w2, device=device)
+            self.w3 = torch.tensor(w3, device=device)
+
+    def forward(self, x):
+        """Forward pass with optional masking and clamping."""
+        if not self.learnable:
+            cp0 = torch.tensor(self.cp0, device=self.device)
+            if self.clamping is True:
+                cp0[0] = x.min()
+            numerator = (self.N0[:, None] * self.w0 * cp0 +
+                 self.N1[:, None] * self.w1 * self.cp1 +
+                 self.N2[:, None] * self.w2 * self.cp2 +
+                 self.N3[:, None] * self.w3 * self.cp3)
+            denominator = (self.N0 * self.w0 + self.N1 * self.w1 + \
+                        self.N2 * self.w2  + self.N3 * self.w3)[:, None]
+
+            curve_points = numerator / (denominator + 1e-6)
+            # Linear interpolation in PyTorch
+            x_lut = curve_points[:, 0]
+            y_lut = curve_points[:, 1]
+
+            x_min_val = x_lut[0]  # scalar tensor
+            x_max_val = x_lut[-1]  # scalar tensor
+
+            scale = (self.num_points - 1) / (x_max_val - x_min_val)
+            indices = ((x - x_min_val) * scale).clamp(0, self.num_points - 2)
+            idx_lower = indices.floor().long()
+            idx_upper = idx_lower + 1
+            alpha = indices - idx_lower.float()
+
+            y_lower = y_lut[idx_lower]
+            y_upper = y_lut[idx_upper]
+            y = y_lower + alpha * (y_upper - y_lower)
+        else:
+            mask = x <= 0
+            x_neg = x[mask]
+            cp0_x, cp0_y = self.x0, self.y0
+            if self.clamping is True:
+                cp0_x = x.min()
+            cp1_x, cp1_y = self.x1, self.y1
+            cp2_val = self.l / 1.4142
+            cp2_x, cp2_y = cp2_val, cp2_val
+            # Weights
+            w0, w1, w2, w3 = 1.0, self.w1, self.w2, 1.0
+            # Compute Bézier curve
+            n0_val, n1_val, n2_val, n3_val = self.N0, self.N1, self.N2, self.N3
+            numerator_y = (
+                n0_val*w0*cp0_y +
+                n1_val*w1*cp1_y +
+                n2_val*w2*cp2_y
+            )
+            numerator_x = (
+                n0_val*w0*cp0_x +
+                n1_val*w1*cp1_x +
+                n2_val*w2*cp2_x
+            )
+            # Denominator: scalar sum
+            denominator = n0_val * w0 + n1_val * w1 + n2_val * w2 + n3_val * w3 + 1e-12
+
+            # LUT y values
+            x_lut = numerator_x / denominator
+            y_lut = numerator_y / denominator
+            # Linear interpolation
+            # Vectorized linear interpolation
+            # print(x_lut.shape)
+            x_min_val = x_lut[0]  # scalar tensor
+            x_max_val = x_lut[-1]  # scalar tensor
+
+            scale = (self.num_points - 1) / (x_max_val - x_min_val)
+            indices = ((x_neg - x_min_val) * scale).clamp(0, self.num_points - 2)
+            idx_lower = indices.floor().long()
+            idx_upper = idx_lower + 1
+            alpha = indices - idx_lower.float()
+
+            y_lower = y_lut[idx_lower]
+            y_upper = y_lut[idx_upper]
+            y_neg = y_lower + alpha * (y_upper - y_lower)
+            # Scatter back
+            y = x.clone()
+            y[mask] = y_neg
+
+        # return
+        if self.masking == 0:
+            return y
+        if self.masking == 1:
+            return torch.where(x > 0, x, y)
+        return torch.where(x > 0, x, torch.where(x < self.cp0[0], torch.zeros_like(x), y))
