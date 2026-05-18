@@ -27,13 +27,9 @@ class NeleActivation(nn.Module):
         self.clamping = clamping
         self.masking = masking
         self.cp0 = cp0 if cp0 is not None else [-4.9992, 0.0]
-        self.cp1 = cp1 if cp1 is not None else [-0.2194, -0.248]
-        self.cp2 = cp2 if cp2 is not None else [-0.8054 / 1.4142, -0.8054 / 1.4142]
-        self.cp3 = cp3 if cp3 is not None else [0.0, 0.0]
-        self.w0 = w0
-        self.w1 = w1
-        self.w2 = w2
-        self.w3 = w3
+        self._cp1 = cp1 if cp1 is not None else [-0.2194, -0.248]
+        self._cp2 = cp2 if cp2 is not None else [-0.8054 / 1.4142, -0.8054 / 1.4142]
+        self._cp3 = cp3 if cp3 is not None else [0.0, 0.0]
         t = torch.linspace(0, 1, num_points)
         self.register_buffer('t', t)
         self.register_buffer('N0', (1 - t)**3)
@@ -49,9 +45,9 @@ class NeleActivation(nn.Module):
             self.y0 = nn.Parameter(torch.tensor(0.0))
             self.x0 = nn.Parameter(torch.tensor(cp0[0]))
         else:
-            self.register_buffer('cp1', torch.tensor(self._init_cp1))
-            self.register_buffer('cp2', torch.tensor(self._init_cp2))
-            self.register_buffer('cp3', torch.tensor(self._init_cp3))
+            self.register_buffer('cp1', torch.tensor(self._cp1))
+            self.register_buffer('cp2', torch.tensor(self._cp2))
+            self.register_buffer('cp3', torch.tensor(self._cp3))
             self.register_buffer('w0', torch.tensor(w0))
             self.register_buffer('w1', torch.tensor(w1))
             self.register_buffer('w2', torch.tensor(w2))
