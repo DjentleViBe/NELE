@@ -11,6 +11,10 @@ git clone https://github.com/DjentleViBe/NELE
 ```
 pip install -e .
 ```
+3. Import the package:
+```
+from Nele import Nele
+```
 
 # Usage
 
