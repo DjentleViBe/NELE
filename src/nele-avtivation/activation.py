@@ -4,11 +4,11 @@ Nele is a custom activation function based of NURBS curves.
 import torch
 from torch import nn
 
-class Nele(nn.Module):
+class NeleActivation(nn.Module):
     """
     NELE AF with hyperparam learning, masking options, buffer and xmin clamping
     """
-    def __init__(self, device,
+    def __init__(self,
                  cp0 = None,
                  cp1 = None,
                  cp2 = None,
@@ -23,7 +23,6 @@ class Nele(nn.Module):
                  num_points = 200):
         super().__init__()
         self.num_points = num_points
-        self.device = device
         self.learnable = learnable
         self.clamping = clamping
         self.masking = masking
@@ -50,18 +49,18 @@ class Nele(nn.Module):
             self.y0 = nn.Parameter(torch.tensor(0.0))
             self.x0 = nn.Parameter(torch.tensor(cp0[0]))
         else:
-            self.cp1 = torch.tensor(cp1, device=device)
-            self.cp2 = torch.tensor(cp2, device=device)
-            self.cp3 = torch.tensor(cp3, device=device)
-            self.w0 = torch.tensor(w0, device=device)
-            self.w1 = torch.tensor(w1, device=device)
-            self.w2 = torch.tensor(w2, device=device)
-            self.w3 = torch.tensor(w3, device=device)
+            self.register_buffer('cp1', torch.tensor(self._init_cp1))
+            self.register_buffer('cp2', torch.tensor(self._init_cp2))
+            self.register_buffer('cp3', torch.tensor(self._init_cp3))
+            self.register_buffer('w0', torch.tensor(w0))
+            self.register_buffer('w1', torch.tensor(w1))
+            self.register_buffer('w2', torch.tensor(w2))
+            self.register_buffer('w3', torch.tensor(w3))
 
     def forward(self, x):
         """Forward pass with optional masking and clamping."""
         if not self.learnable:
-            cp0 = torch.tensor(self.cp0, device=self.device)
+            cp0 = torch.tensor(self.cp0, device=x.device)
             if self.clamping is True:
                 cp0[0] = x.min()
             numerator = (self.N0[:, None] * self.w0 * cp0 +
